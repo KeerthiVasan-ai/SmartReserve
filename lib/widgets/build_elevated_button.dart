@@ -9,13 +9,16 @@ class BuildElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: actionOnButton,
-      style: OutlinedButton.styleFrom(minimumSize: const Size(200, 50)),
-      child: Text(
-        buttonText.toUpperCase(),
-        style: const TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.blueGrey),
+    return Padding(
+      padding: const EdgeInsets.all(25.0),
+      child: ElevatedButton(
+        onPressed: actionOnButton,
+        style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+        child: Text(
+          buttonText.toUpperCase(),
+          style: const TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.blueGrey),
+        ),
       ),
     );
   }
