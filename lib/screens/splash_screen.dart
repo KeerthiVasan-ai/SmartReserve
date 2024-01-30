@@ -16,7 +16,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Timer(const Duration(seconds: 3),
         ()=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const Auth()))
@@ -26,12 +25,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            Text("Smart Class Room Booking"),
-            Text("v1.0.0"),
-          ],
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Smart Class Room Booking"),
+              Text("v1.0.0"),
+            ],
+          ),
         ),
       ),
     );
