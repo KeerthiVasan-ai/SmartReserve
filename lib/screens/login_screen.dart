@@ -1,6 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "dart:developer" as dev;
 import "package:flutter/material.dart";
+import "package:smart_reserve/screens/forget_passoword_screen.dart";
 
 import "../widgets/build_app_bar.dart";
 import "/widgets/build_elevated_button.dart";
@@ -38,6 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       }
     }
+  }
+
+  void forgetPassword() {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> const ForgetPasswordScreen()));
   }
 
   @override
@@ -81,17 +86,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: true,
                     ),
                     const SizedBox(height: 10.0),
-                    const Padding(
-                      padding: /**/EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Forget Password?",
-                            style: TextStyle(
-                                color: Colors.black, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                    GestureDetector(
+                      onTap: forgetPassword,
+                      child: const Padding(
+                        padding: /**/EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Forget Password?",
+                              style: TextStyle(
+                                  color: Colors.black, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10.0),
@@ -99,7 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       actionOnButton: _login,
                       buttonText: "Login",
                     )
-                    // buildElevatedButton(onClick, "Login"),
                   ],
                 ),
               ),
@@ -108,17 +115,3 @@ class _LoginScreenState extends State<LoginScreen> {
         ));
   }
 }
-
-
-// try{
-// await FirebaseAuth.instance.signInWithEmailAndPassword(
-// email: userName.text,
-// password: password.text);
-// } on FirebaseAuthException catch(e){
-//
-// if(e.code == 'user-not-found'){
-//
-// } else if(e.code == 'wrong-password'){
-//
-// }
-// }
