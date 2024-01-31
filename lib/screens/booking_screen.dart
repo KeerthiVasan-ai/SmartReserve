@@ -1,8 +1,13 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:smart_reserve/screens/verify_screen.dart";
+import "package:smart_reserve/services/fetch_user_booking.dart";
 import "package:smart_reserve/services/update_time_slots.dart";
+import "package:smart_reserve/services/validation.dart";
+import "package:smart_reserve/view_models/generate_token.dart";
+import "package:smart_reserve/view_models/generate_week.dart";
 import "dart:developer" as dev;
 
 import "../models/booking_model.dart";
@@ -23,9 +28,12 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
+
+  final String uid = FirebaseAuth.instance.currentUser!.uid;
   late TextEditingController tokenNumber;
   late TextEditingController name;
   late TextEditingController courseCode;
+  late TextEditingController ticketId;
   late Map<String, bool> timeSlots = <String, bool>{};
   TextEditingController date = TextEditingController();
   List<String> selectedSlots = [];
@@ -34,9 +42,13 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   void initState() {
     super.initState();
+    ticketId = TextEditingController();
     tokenNumber = TextEditingController();
     name = TextEditingController();
     courseCode = TextEditingController();
+    setState(() {
+      ticketId.text = generateToken();
+    });
     _displayDetails();
   }
 
@@ -47,7 +59,53 @@ class _BookingScreenState extends State<BookingScreen> {
     dev.log(selectedSlots.toString(), name: "Slots");
     dev.log(date.text, name: "Date");
 
+    FetchUserBooking.fetchBookingDetails(uid).listen((snapshot) {
+      checkConditions(snapshot);
+    });
+
+  }
+
+  void checkConditions(QuerySnapshot snapshot) {
     if (_formKey.currentState!.validate() && selectedSlots.isNotEmpty) {
+      if (snapshot.docs.isEmpty) {
+        dev.log("SUBMITTING");
+        performSubmission();
+      } else {
+
+        String currentWeek = getWeekNumber(date.text);
+
+        List<QueryDocumentSnapshot> filteredSnapshots =
+        snapshot.docs.where((doc) => doc['week'] == currentWeek).toList();
+
+        if (filteredSnapshots.length == 1) {
+          int slotsLength = filteredSnapshots[0]['slots'].length;
+
+          if (slotsLength == 1) {
+            if (selectedSlots.length == 2) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text("Already Booked 1 slot for this Week")));
+            } else {
+              dev.log("SUBMITTING");
+              performSubmission();
+            }
+          } else if (slotsLength == 2) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text("Limit Reached For this Week")));
+          }
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Limit Reached For this Week")));
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+          const SnackBar(content: Text("Select the Time Slots")));
+    }
+  }
+
+
+  void performSubmission() {
       showDialog(
           context: context,
           builder: (context) {
@@ -56,8 +114,10 @@ class _BookingScreenState extends State<BookingScreen> {
             );
           });
       BookingDetails bookingDetails = BookingDetails(
+          ticketId: ticketId.text,
           tokenNumber: tokenNumber.text,
           name: name.text,
+          week: getWeekNumber(date.text),
           courseCode: courseCode.text,
           date: date.text,
           slots: selectedSlots);
@@ -65,12 +125,13 @@ class _BookingScreenState extends State<BookingScreen> {
       final String uid = FirebaseAuth.instance.currentUser!.uid;
       Map<String, dynamic> bookingData = bookingDetails.getBookingDetails();
 
-      InsertBookingDetails.addIndividualBookingDetails(uid: uid, bookingData: bookingData, tokenNumber: tokenNumber.text);
-      InsertBookingDetails.addBookingDetails(tokenNumber: tokenNumber.text, bookingData: bookingData);
+      InsertBookingDetails.addIndividualBookingDetails(uid: uid, bookingData: bookingData, ticketId: ticketId.text);
+      InsertBookingDetails.addBookingDetails(date:date.text,ticketId: ticketId.text, bookingData: bookingData);
       DateTime myDate = DateFormat("dd-MM-yyyy").parse(date.text);
       updateTimeSlots(DateFormat('yyyy-MM-dd').format(myDate), selectedSlots);
 
       Navigator.pop(context);
+
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Booked Successfully")));
 
@@ -79,10 +140,7 @@ class _BookingScreenState extends State<BookingScreen> {
           return VerifyScreen(bookingDetails: bookingDetails);
         },
       ), (route) => false);
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Select the Time Slots")));
-    }
+    // }
   }
 
   Future<void> fetchTimeSlots(String date) async {
@@ -122,6 +180,7 @@ class _BookingScreenState extends State<BookingScreen> {
         date.text = DateFormat('dd-MM-yyyy').format(picker).toString();
         selectedSlots.clear();
       });
+      dev.log(getWeekNumber(date.text),name: "Dateeeeeee");
       await fetchTimeSlots(picker.toString().split(" ")[0]);
     }
   }
@@ -144,7 +203,7 @@ class _BookingScreenState extends State<BookingScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/background/bg1.jpg"),
+            image: AssetImage("assets/background/check2.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -157,8 +216,14 @@ class _BookingScreenState extends State<BookingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const SizedBox(
-                      height: 70,
+                      height: 40,
                     ),
+                    BuildTextForm(
+                        controller: ticketId,
+                        label: "Ticket Id",
+                        readOnly: true,
+                        prefixIcon: const Icon(Icons.confirmation_number_outlined)),
+                    const SizedBox(height: 10.0),
                     BuildTextForm(
                         controller: tokenNumber,
                         label: "Token Number",

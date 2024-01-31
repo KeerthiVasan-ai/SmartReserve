@@ -4,7 +4,7 @@ import "dart:developer" as dev;
 class InsertBookingDetails {
   static Future<void> addIndividualBookingDetails({
     required String uid,
-    required String tokenNumber,
+    required String ticketId,
     required Map<String, dynamic> bookingData,
   }) async {
     try {
@@ -12,7 +12,7 @@ class InsertBookingDetails {
           .collection('bookingUserDetails')
           .doc(uid)
           .collection('bookings')
-          .doc(tokenNumber)
+          .doc(ticketId)
           .set(bookingData);
       dev.log('Data added to Firestore successfully!', name: "Success");
     } catch (error) {
@@ -21,12 +21,14 @@ class InsertBookingDetails {
   }
 
   static Future<void> addBookingDetails(
-      {required String tokenNumber, required Map<String, dynamic> bookingData,
+      {required String date,required String ticketId, required Map<String, dynamic> bookingData,
       }) async {
     try {
       await FirebaseFirestore.instance
           .collection('bookingDetails')
-          .doc(tokenNumber)
+          .doc(date)
+          .collection('booking')
+          .doc(ticketId)
           .set(bookingData);
       dev.log('Data added to Firestore successfully!', name: "Success");
     } catch (error){

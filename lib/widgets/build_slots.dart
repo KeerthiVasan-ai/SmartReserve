@@ -23,7 +23,7 @@ class BuildSlots extends StatelessWidget {
       },
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(buttonColor)),
-      child: Text(slot),
+      child: Text(slot,style: const TextStyle(color: Colors.white),),
     );
   }
 
