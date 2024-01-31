@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:smart_reserve/services/validation.dart';
 
 class FetchUserBooking {
   static Stream<QuerySnapshot> fetchBookingDetails(String userUid) {
@@ -8,9 +7,5 @@ class FetchUserBooking {
         .doc(userUid)
         .collection('bookings')
         .snapshots();
-  }
-
-  static void validate(String userUid) {
-
   }
 }
