@@ -24,15 +24,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFDCF2F1),
+      ),
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Smart Class Room Booking"),
-              Text("v1.0.0"),
-            ],
+        child: Container(
+          color: const Color(0xFFDCF2F1),
+
+          child: const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Smart Class Room Booking",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24.0),),
+                Text("v1.0.0"),
+              ],
+            ),
           ),
         ),
       ),

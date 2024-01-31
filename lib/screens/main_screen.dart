@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
         child: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/background/bg1.jpg"),
+                image: AssetImage("assets/background/check2.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -98,8 +98,9 @@ class _MainScreenState extends State<MainScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("${data['tokenNumber']}"),
+                                Text("${data['ticketId']}"),
                                 Text("${data['courseCode']}"),
+                                Text("${data['date']}"),
                                 Text("Slots: ${data['slots'].join(', ')}"),
                               ],
                             ),
