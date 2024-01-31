@@ -33,7 +33,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
         child: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/background/bg1.jpg"),
+              image: AssetImage("assets/background/check2.jpg"),
               fit: BoxFit.cover,
             ),
           ),
