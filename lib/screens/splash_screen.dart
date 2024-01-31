@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("Smart Class Room Booking",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24.0),),
-                Text("v1.0.0"),
+                Text("v1.0.0 - STABLE"),
               ],
             ),
           ),
