@@ -1,5 +1,3 @@
-import "package:flutter/material.dart";
-
 class BookingDetails{
   late String ticketId;
   late String tokenNumber;
