@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 class BookingDetails{
+  late String ticketId;
   late String tokenNumber;
   late String name;
   late String courseCode;
@@ -8,6 +9,7 @@ class BookingDetails{
   late List<String> slots;
 
   BookingDetails({
+    required this.ticketId,
     required this.tokenNumber,
     required this.name,
     required this.courseCode,
@@ -17,6 +19,7 @@ class BookingDetails{
 
   Map<String, dynamic> getBookingDetails() {
     return {
+      'ticketId':ticketId,
       'tokenNumber': tokenNumber,
       'name': name,
       'courseCode': courseCode,
