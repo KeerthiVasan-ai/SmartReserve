@@ -29,86 +29,88 @@ class _VerifyScreenState extends State<VerifyScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: buildAppBar("Congratulation"),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/background/bg1.jpg"),
-            fit: BoxFit.cover,
+      body: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/background/bg1.jpg"),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "SmartReserve",
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w200,
-                    color: Colors.white),
-              ),
-              const SizedBox(height: 10.0),
-              const Text(
-                "Your Booking is Confirmed",
-                style: TextStyle(
-                    fontSize: 16,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white),
-              ),
-              const SizedBox(height: 20.0),
-              TicketWidget(
-                width: 350,
-                height: 550,
-                isCornerRounded: true,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //  TODO: ADD PARTY PNG
-                    const Text(
-                      "Congratulations",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Text(
-                      "Report for the Booking !",
-                      style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    BuildReportDetails(
-                        title: "Token Number",
-                        data: widget.bookingDetails.tokenNumber),
-                    BuildReportDetails(
-                        title: "Name", data: widget.bookingDetails.name),
-                    BuildReportDetails(
-                        title: "Course Code",
-                        data: widget.bookingDetails.courseCode),
-                    BuildReportDetails(
-                        title: "Date", data: widget.bookingDetails.date),
-                    BuildReportDetails(
-                        title: "Time Slots",
-                        data: widget.bookingDetails.slots.toString()),
-                  ],
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 10.0),
+                const Text(
+                  "SmartReserve",
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w200,
+                      color: Colors.black),
                 ),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
-              BuildElevatedButton(actionOnButton: backToHome, buttonText: "Home"),
-              const SizedBox(
-                height: 10.0,
-              ),
-            ],
+                const SizedBox(height: 5.0),
+                const Text(
+                  "Your Booking is Confirmed",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black),
+                ),
+                const SizedBox(height: 15.0),
+                TicketWidget(
+                  width: 350,
+                  height: 550,
+                  isCornerRounded: true,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Congratulations",
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Text(
+                        "Report for the Booking !",
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      BuildReportDetails(
+                          title: "Token Number",
+                          data: widget.bookingDetails.tokenNumber),
+                      BuildReportDetails(
+                          title: "Name", data: widget.bookingDetails.name),
+                      BuildReportDetails(
+                          title: "Course Code",
+                          data: widget.bookingDetails.courseCode),
+                      BuildReportDetails(
+                          title: "Date", data: widget.bookingDetails.date),
+                      BuildReportDetails(
+                          title: "Time Slots",
+                          data: widget.bookingDetails.slots.toString()),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                BuildElevatedButton(actionOnButton: backToHome, buttonText: "Home"),
+                const SizedBox(
+                  height: 10.0,
+                ),
+              ],
+            ),
           ),
         ),
       ),
