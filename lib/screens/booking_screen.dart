@@ -32,7 +32,8 @@ class _BookingScreenState extends State<BookingScreen> {
   late TextEditingController tokenNumber;
   late TextEditingController name;
   late TextEditingController courseCode;
-  late TextEditingController ticketId;
+  String ticketId = "";
+  // late TextEditingController ticketId;
   late Map<String, bool> timeSlots = <String, bool>{};
   TextEditingController date = TextEditingController();
   List<String> selectedSlots = [];
@@ -41,13 +42,14 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   void initState() {
     super.initState();
-    ticketId = TextEditingController();
+    // ticketId = TextEditingController();
     tokenNumber = TextEditingController();
     name = TextEditingController();
     courseCode = TextEditingController();
-    setState(() {
-      ticketId.text = generateToken();
-    });
+    ticketId = generateToken();
+    dev.log(ticketId,name:"Ticket");
+    // setState(() {
+    // });
     _displayDetails();
   }
 
@@ -114,7 +116,7 @@ class _BookingScreenState extends State<BookingScreen> {
             );
           });
       BookingDetails bookingDetails = BookingDetails(
-          ticketId: ticketId.text,
+          ticketId: ticketId,
           tokenNumber: tokenNumber.text,
           name: name.text,
           week: getWeekNumber(date.text),
@@ -125,8 +127,8 @@ class _BookingScreenState extends State<BookingScreen> {
       final String uid = FirebaseAuth.instance.currentUser!.uid;
       Map<String, dynamic> bookingData = bookingDetails.getBookingDetails();
 
-      InsertBookingDetails.addIndividualBookingDetails(uid: uid, bookingData: bookingData, ticketId: ticketId.text);
-      InsertBookingDetails.addBookingDetails(date:date.text,ticketId: ticketId.text, bookingData: bookingData);
+      InsertBookingDetails.addIndividualBookingDetails(uid: uid, bookingData: bookingData, ticketId: ticketId);
+      InsertBookingDetails.addBookingDetails(date:date.text,ticketId: ticketId, bookingData: bookingData);
       DateTime myDate = DateFormat("dd-MM-yyyy").parse(date.text);
       updateTimeSlots(DateFormat('yyyy-MM-dd').format(myDate), selectedSlots);
 
@@ -218,12 +220,6 @@ class _BookingScreenState extends State<BookingScreen> {
                     const SizedBox(
                       height: 40,
                     ),
-                    BuildTextForm(
-                        controller: ticketId,
-                        label: "Ticket Id",
-                        readOnly: true,
-                        prefixIcon: const Icon(Icons.confirmation_number_outlined)),
-                    const SizedBox(height: 10.0),
                     BuildTextForm(
                         controller: tokenNumber,
                         label: "Token Number",

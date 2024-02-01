@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       title: "Smart Reserve",
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }
