@@ -1,8 +1,11 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
+import "package:smart_reserve/services/delete_user_booking.dart";
+import "dart:developer" as dev;
 
 import "../services/fetch_user_booking.dart";
+import "../services/update_time_slots.dart";
 import "booking_screen.dart";
 
 class MainScreen extends StatefulWidget {
@@ -24,6 +27,13 @@ class _MainScreenState extends State<MainScreen> {
     FirebaseAuth.instance.signOut();
   }
 
+  Future<void> deleteDetails(String uid,String ticketId, String date,List<dynamic> selectedSlots) async {
+    dev.log(selectedSlots.first,name: "Slots From Call");
+    await DeleteUserBooking.deleteUserBooking(uid, ticketId);
+    await DeleteUserBooking.deleteBooking(date, ticketId);
+    await UpdateTimeSlots.deleteSlot(date, selectedSlots,true);
+  }
+
   void bookSlotRoute() {
     Navigator.push(
       context,
@@ -33,6 +43,11 @@ class _MainScreenState extends State<MainScreen> {
         },
       ),
     );
+  }
+
+  void deleteBooking(String uid, String ticketId,String date,List<dynamic> selectedSlots) {
+      dev.log(selectedSlots.first,name: "Slots");
+      deleteDetails(uid,ticketId,date,selectedSlots);
   }
 
   @override
@@ -51,12 +66,12 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: SafeArea(
         child: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/background/check2.jpg"),
-                fit: BoxFit.cover,
-              ),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/background/check2.jpg"),
+              fit: BoxFit.cover,
             ),
+          ),
           child: StreamBuilder(
             stream: FetchUserBooking.fetchBookingDetails(uid),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -98,11 +113,19 @@ class _MainScreenState extends State<MainScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("${data['ticketId']}"),
+                                Text("${data['tokenNumber']}"),
                                 Text("${data['courseCode']}"),
                                 Text("${data['date']}"),
                                 Text("Slots: ${data['slots'].join(', ')}"),
                               ],
+                            ),
+                            const Spacer(),
+                            // Add this spacer to push the delete button to the end
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                deleteBooking(uid,data['ticketId'],data['date'],data['slots']);
+                              },
                             ),
                           ],
                         ),
