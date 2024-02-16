@@ -154,7 +154,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Future<void> updateTimeSlots(String date, List<String> selectedSlots) async {
-    await UpdateTimeSlots.updateData(date, selectedSlots);
+    await UpdateTimeSlots.insertSlots(date, selectedSlots,false);
   }
 
   void _selectSlots(String slot) {
