@@ -182,7 +182,7 @@ class _BookingScreenState extends State<BookingScreen> {
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(const Duration(days: 13)));
+        lastDate: DateTime.now().add(const Duration(days: 20)));
 
     if (picker != null) {
       setState(() {
