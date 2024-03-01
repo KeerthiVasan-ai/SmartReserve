@@ -119,14 +119,14 @@ class _MainScreenState extends State<MainScreen> {
                                 Text("Slots: ${data['slots'].join(', ')}"),
                               ],
                             ),
-                            const Spacer(),
-                            // Add this spacer to push the delete button to the end
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                deleteBooking(uid,data['ticketId'],data['date'],data['slots']);
-                              },
-                            ),
+                            // const Spacer(),
+                            // // Add this spacer to push the delete button to the end
+                            // IconButton(
+                            //   icon: const Icon(Icons.delete),
+                            //   onPressed: () {
+                            //     deleteBooking(uid,data['ticketId'],data['date'],data['slots']);
+                            //   },
+                            // ),
                           ],
                         ),
                       ),
