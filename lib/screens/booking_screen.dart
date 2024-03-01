@@ -3,6 +3,7 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:smart_reserve/screens/verify_screen.dart";
+import "package:smart_reserve/services/fetch_alloted_slots.dart";
 import "package:smart_reserve/services/fetch_user_booking.dart";
 import "package:smart_reserve/services/update_time_slots.dart";
 import "package:smart_reserve/view_models/generate_token.dart";
@@ -32,8 +33,8 @@ class _BookingScreenState extends State<BookingScreen> {
   late TextEditingController tokenNumber;
   late TextEditingController name;
   late TextEditingController courseCode;
+  late int slotCount;
   String ticketId = "";
-  // late TextEditingController ticketId;
   late Map<String, bool> timeSlots = <String, bool>{};
   TextEditingController date = TextEditingController();
   List<String> selectedSlots = [];
@@ -42,14 +43,15 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   void initState() {
     super.initState();
-    // ticketId = TextEditingController();
+    slotCount = 0;
     tokenNumber = TextEditingController();
     name = TextEditingController();
     courseCode = TextEditingController();
     ticketId = generateToken();
     dev.log(ticketId,name:"Ticket");
-    // setState(() {
-    // });
+
+    // ESSENTIALS
+    _getSlots(uid).then((value) => slotCount = value);
     _displayDetails();
   }
 
@@ -74,29 +76,35 @@ class _BookingScreenState extends State<BookingScreen> {
       } else {
 
         String currentWeek = getWeekNumber(date.text);
+        List<QueryDocumentSnapshot> filteredSnapshots = snapshot.docs.where((doc) => doc['week'] == currentWeek).toList();
 
-        List<QueryDocumentSnapshot> filteredSnapshots =
-        snapshot.docs.where((doc) => doc['week'] == currentWeek).toList();
+        dev.log(slotCount.toString(),name:"Slots");
+
         if(filteredSnapshots.isEmpty){
           performSubmission();
-        } else if (filteredSnapshots.length == 1) {
-          int slotsLength = filteredSnapshots[0]['slots'].length;
-
-          if (slotsLength == 1) {
-            if (selectedSlots.length == 2) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text("Already Booked 1 slot for this Week")));
-            } else {
-              dev.log("SUBMITTING");
+        } else if (filteredSnapshots.length == slotCount) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text("Limit Reached For this Week")));
+        } else {
+          int bookedSlots = filteredSnapshots.length;
+          int slotCounter = 0;
+          for(int i=0;i<bookedSlots;i++){
+            int slotsLength = filteredSnapshots[i]['slots'].length;
+            slotCounter += slotsLength;
+          }
+          dev.log(slotCounter.toString(),name:"From Counter");
+          if(slotCounter <= slotCount){
+            dev.log(selectedSlots.length.toString(),name: "SLOT LENGTH FROM FINAL");
+            if(((slotCount - slotCounter) >= selectedSlots.length)) {
               performSubmission();
+            } else {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("Remaining Slots available for this week is ${slotCount - slotCounter}")));
             }
-          } else if (slotsLength == 2) {
+          } else {
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text("Limit Reached For this Week")));
           }
-        } else {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("Limit Reached For this Week")));
         }
       }
     } else {
@@ -142,7 +150,6 @@ class _BookingScreenState extends State<BookingScreen> {
           return VerifyScreen(bookingDetails: bookingDetails);
         },
       ), (route) => false);
-    // }
   }
 
   Future<void> fetchTimeSlots(String date) async {
@@ -182,7 +189,7 @@ class _BookingScreenState extends State<BookingScreen> {
         date.text = DateFormat('dd-MM-yyyy').format(picker).toString();
         selectedSlots.clear();
       });
-      dev.log(getWeekNumber(date.text),name: "Dateeeeeee");
+      dev.log(getWeekNumber(date.text),name: "Date");
       await fetchTimeSlots(picker.toString().split(" ")[0]);
     }
   }
@@ -196,6 +203,11 @@ class _BookingScreenState extends State<BookingScreen> {
         tokenNumber.text = token;
       });
     }
+  }
+
+  Future<int> _getSlots(String uid) async{
+    int slots = await FetchAllottedSlots.getAllottedSlots(uid);
+    return slots;
   }
 
   @override
