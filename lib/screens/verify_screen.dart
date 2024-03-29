@@ -42,7 +42,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
               const SizedBox(height: 10),
               Text("Your Booking was Confirmed",style: GoogleFonts.ebGaramond(fontWeight:FontWeight.bold,fontSize:20),),
               const SizedBox(height: 10),
-              TicketUI(bookingDetails: widget.bookingDetails)
+              TicketUI(bookingDetails: widget.bookingDetails),
+              BuildElevatedButton(actionOnButton: backToHome, buttonText: "Home")
             ],
           ),
         ),
