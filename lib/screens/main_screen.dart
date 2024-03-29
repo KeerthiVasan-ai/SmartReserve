@@ -1,7 +1,12 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
+import "package:google_fonts/google_fonts.dart";
+import "package:intl/intl.dart";
+import "package:smart_reserve/screens/previous_booking.dart";
 import "package:smart_reserve/services/delete_user_booking.dart";
+import "package:smart_reserve/widgets/build_list_builder.dart";
+import "package:smart_reserve/widgets/ui/background_shapes.dart";
 import "dart:developer" as dev;
 
 import "../services/fetch_user_booking.dart";
@@ -27,11 +32,12 @@ class _MainScreenState extends State<MainScreen> {
     FirebaseAuth.instance.signOut();
   }
 
-  Future<void> deleteDetails(String uid,String ticketId, String date,List<dynamic> selectedSlots) async {
-    dev.log(selectedSlots.first,name: "Slots From Call");
+  Future<void> deleteDetails(String uid, String ticketId, String date,
+      List<dynamic> selectedSlots) async {
+    dev.log(selectedSlots.first, name: "Slots From Call");
     await DeleteUserBooking.deleteUserBooking(uid, ticketId);
     await DeleteUserBooking.deleteBooking(date, ticketId);
-    await UpdateTimeSlots.deleteSlot(date, selectedSlots,true);
+    await UpdateTimeSlots.deleteSlot(date, selectedSlots, true);
   }
 
   void bookSlotRoute() {
@@ -45,33 +51,49 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  void deleteBooking(String uid, String ticketId,String date,List<dynamic> selectedSlots) {
-      dev.log(selectedSlots.first,name: "Slots");
-      deleteDetails(uid,ticketId,date,selectedSlots);
+  void deleteBooking(
+      String uid, String ticketId, String date, List<dynamic> selectedSlots) {
+    dev.log(selectedSlots.first, name: "Slots");
+    deleteDetails(uid, ticketId, date, selectedSlots);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: bookSlotRoute,
-        child: const Icon(Icons.add),
-      ),
-      appBar: AppBar(
-        title: const Text("Smart Reserve"),
-        centerTitle: true,
-        actions: [
-          IconButton(onPressed: _signOut, icon: const Icon(Icons.logout))
-        ],
-      ),
-      body: SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/background/check2.jpg"),
-              fit: BoxFit.cover,
+    return BackgroundShapes(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        floatingActionButton: FloatingActionButton(
+          onPressed: bookSlotRoute,
+          child: const Icon(Icons.add),
+        ),
+        appBar: AppBar(
+          title: Text(
+            "Smart Reserve",
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
           ),
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const OlderBookingScreen()));
+                },
+                icon: const Icon(Icons.history, color: Colors.black)),
+            IconButton(
+                onPressed: _signOut,
+                icon: const Icon(
+                  Icons.logout,
+                  color: Colors.black,
+                ))
+          ],
+        ),
+        body: SafeArea(
           child: StreamBuilder(
             stream: FetchUserBooking.fetchBookingDetails(uid),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -93,47 +115,32 @@ class _MainScreenState extends State<MainScreen> {
                 );
               }
 
-              return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
-                itemBuilder: (context, index) {
-                  var data =
-                      snapshot.data!.docs[index].data() as Map<String, dynamic>;
+              var sortedDocs = snapshot.data!.docs.toList()
+                ..sort((a, b) {
+                  var aDate = DateFormat("dd-MM-yyyy")
+                      .parse((a.data() as Map<String, dynamic>)['date']);
+                  var bDate = DateFormat("dd-MM-yyyy")
+                      .parse((b.data() as Map<String, dynamic>)['date']);
+                  return aDate.compareTo(bDate);
+                });
 
-                  return Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.bookmark),
-                            const SizedBox(width: 20),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("${data['tokenNumber']}"),
-                                Text("${data['courseCode']}"),
-                                Text("${data['date']}"),
-                                Text("Slots: ${data['slots'].join(', ')}"),
-                              ],
-                            ),
-                            // const Spacer(),
-                            // // Add this spacer to push the delete button to the end
-                            // IconButton(
-                            //   icon: const Icon(Icons.delete),
-                            //   onPressed: () {
-                            //     deleteBooking(uid,data['ticketId'],data['date'],data['slots']);
-                            //   },
-                            // ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
+              List<DocumentSnapshot> bookings = [];
+              DateTime today = DateTime.now();
+              dev.log(today.toString());
+
+              for (var doc in sortedDocs) {
+                DateTime bookingDate =
+                    DateFormat("dd-MM-yyyy").parse(doc['date']);
+                if ((bookingDate.year == today.year &&
+                        bookingDate.month == today.month &&
+                        bookingDate.day == today.day) ||
+                    bookingDate.isAfter(today)) {
+                  bookings.add(doc);
+                }
+              }
+              dev.log(bookings.length.toString());
+
+              return BuildListBuilder(bookings: bookings);
             },
           ),
         ),

@@ -8,6 +8,7 @@ import "package:smart_reserve/services/fetch_user_booking.dart";
 import "package:smart_reserve/services/update_time_slots.dart";
 import "package:smart_reserve/view_models/generate_token.dart";
 import "package:smart_reserve/view_models/generate_week.dart";
+import "package:smart_reserve/widgets/ui/background_shapes.dart";
 import "dart:developer" as dev;
 
 import "../models/booking_model.dart";
@@ -212,16 +213,11 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar("Book your Slot"),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/background/check2.jpg"),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: ListView(
+    return BackgroundShapes(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: buildAppBar("Book your Slot"),
+        body: ListView(
           children: [
             Center(
               child: Form(
@@ -282,7 +278,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     const SizedBox(height: 20.0),
                     BuildElevatedButton(
                       actionOnButton: () => _verifyDetails(),
-                      buttonText: "Verify",
+                      buttonText: "PROCEED TO BOOK",
                     )
                   ],
                 ),

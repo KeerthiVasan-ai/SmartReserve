@@ -24,14 +24,15 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
       dev.log("Mail Sent", name: "Success");
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Mail Sent")));
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const LoginScreen()), (route) => false);
-
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (route) => false);
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Check your Email")));
       dev.log(e.toString(), name: "Error");
     }
-
   }
 
   @override
@@ -66,6 +67,7 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
                     label: "UserName",
                     readOnly: false,
                     obscureText: false,
+                    isPassword: false,
                   ),
                   const SizedBox(height: 10.0),
                   BuildElevatedButton(
