@@ -32,14 +32,6 @@ class _MainScreenState extends State<MainScreen> {
     FirebaseAuth.instance.signOut();
   }
 
-  Future<void> deleteDetails(String uid, String ticketId, String date,
-      List<dynamic> selectedSlots) async {
-    dev.log(selectedSlots.first, name: "Slots From Call");
-    await DeleteUserBooking.deleteUserBooking(uid, ticketId);
-    await DeleteUserBooking.deleteBooking(date, ticketId);
-    await UpdateTimeSlots.deleteSlot(date, selectedSlots, true);
-  }
-
   void bookSlotRoute() {
     Navigator.push(
       context,
@@ -49,12 +41,6 @@ class _MainScreenState extends State<MainScreen> {
         },
       ),
     );
-  }
-
-  void deleteBooking(
-      String uid, String ticketId, String date, List<dynamic> selectedSlots) {
-    dev.log(selectedSlots.first, name: "Slots");
-    deleteDetails(uid, ticketId, date, selectedSlots);
   }
 
   @override
@@ -117,8 +103,7 @@ class _MainScreenState extends State<MainScreen> {
 
               var sortedDocs = snapshot.data!.docs.toList()
                 ..sort((a, b) {
-                  var aDate = DateFormat("dd-MM-yyyy")
-                      .parse((a.data() as Map<String, dynamic>)['date']);
+                  var aDate = DateFormat("dd-MM-yyyy").parse((a.data() as Map<String, dynamic>)['date']);
                   var bDate = DateFormat("dd-MM-yyyy")
                       .parse((b.data() as Map<String, dynamic>)['date']);
                   return aDate.compareTo(bDate);
@@ -140,7 +125,7 @@ class _MainScreenState extends State<MainScreen> {
               }
               dev.log(bookings.length.toString());
 
-              return BuildListBuilder(bookings: bookings);
+              return BuildListBuilder(bookings: bookings,isDelete: false,uid: uid,);
             },
           ),
         ),

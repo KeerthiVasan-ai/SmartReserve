@@ -1,6 +1,8 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
+import "package:google_fonts/google_fonts.dart";
+import "package:smart_reserve/widgets/ui/background_shapes.dart";
 
 import "../services/auth.dart";
 
@@ -12,32 +14,35 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
-
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3),
-        ()=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const Auth()))
-    );
+    Timer(
+        const Duration(seconds: 10),
+        () => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const Auth())));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFDCF2F1),
-      ),
-      body: SafeArea(
-        child: Container(
-          color: const Color(0xFFDCF2F1),
-
-          child: const Center(
+    return BackgroundShapes(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Smart Reserve",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24.0),),
-                Text("v1.1.0"),
+                Text(
+                  "Smart Reserve",
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold, fontSize: 24.0),
+                ),
+                Text(
+                  "v1.1.0",
+                  style: GoogleFonts.firaSans(
+                      fontWeight: FontWeight.bold, fontSize: 12.0),
+                ),
               ],
             ),
           ),

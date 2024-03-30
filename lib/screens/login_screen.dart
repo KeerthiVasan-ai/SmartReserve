@@ -66,7 +66,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 0.0,horizontal: 30.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0.0, horizontal: 30.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,

@@ -73,7 +73,7 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
               }
               dev.log(previousBooking.length.toString());
 
-              return BuildListBuilder(bookings: previousBooking);
+              return BuildListBuilder(bookings: previousBooking,isDelete: false,uid: uid);
             },
           ),
         ),

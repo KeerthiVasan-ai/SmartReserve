@@ -264,7 +264,8 @@ class _BookingScreenState extends State<BookingScreen> {
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.blueGrey),
+                                color: Color(0xFF124076),
+                            ),
                           ),
                         ],
                       ),
