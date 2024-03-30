@@ -4,13 +4,11 @@ import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:intl/intl.dart";
 import "package:smart_reserve/screens/previous_booking.dart";
-import "package:smart_reserve/services/delete_user_booking.dart";
 import "package:smart_reserve/widgets/build_list_builder.dart";
 import "package:smart_reserve/widgets/ui/background_shapes.dart";
 import "dart:developer" as dev;
 
 import "../services/fetch_user_booking.dart";
-import "../services/update_time_slots.dart";
 import "booking_screen.dart";
 
 class MainScreen extends StatefulWidget {
