@@ -33,14 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
             email: userName.text.trim(), password: password.text);
         Navigator.pop(context);
       } on FirebaseAuthException catch (e) {
-        print(e.code.toString());
         Navigator.pop(context);
-        if (e.code == 'invalid-email') {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Invalid Email")));
-        } else if (e.code == 'invalid-credential') {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Check your Credentials")));
+        if (e.code == 'invalid-credential') {
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
         }
       } catch (e) {
         print(e.toString());
