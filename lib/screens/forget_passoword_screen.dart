@@ -1,9 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "dart:developer" as dev;
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
 import "package:smart_reserve/screens/login_screen.dart";
-import "package:smart_reserve/widgets/ui/background_shapes.dart";
 
 import "../widgets/build_app_bar.dart";
 import "/widgets/build_elevated_button.dart";
@@ -31,20 +29,24 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
           MaterialPageRoute(builder: (context) => const LoginScreen()),
           (route) => false);
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'invalid-email'){
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Invalid Email")));
-      }
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Check your Email")));
+      dev.log(e.toString(), name: "Error");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BackgroundShapes(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: buildAppBar("Forget Password"),
-        body: SafeArea(
+    return Scaffold(
+      appBar: buildAppBar("Login"),
+      body: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/background/check2.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Center(
             child: Form(
               key: _forgetPasswordFormKey,
@@ -52,27 +54,17 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 0.0, horizontal: 30.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Get Back your Account!",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ],
+                  const Text(
+                    "Get Back your Account!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
                     ),
                   ),
                   const SizedBox(height: 50.0),
                   BuildLoginTextForm(
                     controller: mail,
-                    label: "Email",
+                    label: "UserName",
                     readOnly: false,
                     obscureText: false,
                     isPassword: false,
@@ -80,8 +72,9 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
                   const SizedBox(height: 10.0),
                   BuildElevatedButton(
                     actionOnButton: _sendMail,
-                    buttonText: "Get Password Reset Link",
+                    buttonText: "Send Mail",
                   )
+                  // buildElevatedButton(onClick, "Login"),
                 ],
               ),
             ),
