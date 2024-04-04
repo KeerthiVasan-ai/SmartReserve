@@ -5,7 +5,7 @@ class FetchUserBooking {
     return FirebaseFirestore.instance
         .collection('bookingUserDetails')
         .doc(userUid)
-        .collection('bookings')
+        .collection('bookings').orderBy("slotKey")
         .snapshots();
   }
 }

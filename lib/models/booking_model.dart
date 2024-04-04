@@ -6,6 +6,7 @@ class BookingDetails{
   late String courseCode;
   late String date;
   late List<String> slots;
+  late String slotKey;
 
   BookingDetails({
     required this.ticketId,
@@ -15,6 +16,7 @@ class BookingDetails{
     required this.courseCode,
     required this.date,
     required this.slots,
+    required this.slotKey
   });
 
   Map<String, dynamic> getBookingDetails() {
@@ -26,6 +28,7 @@ class BookingDetails{
       'courseCode': courseCode,
       'date': date,
       'slots': slots,
+      'slotKey': slotKey
     };
   }
 }
