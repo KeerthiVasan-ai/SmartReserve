@@ -6,6 +6,7 @@ import "package:smart_reserve/screens/verify_screen.dart";
 import "package:smart_reserve/services/fetch_alloted_slots.dart";
 import "package:smart_reserve/services/fetch_user_booking.dart";
 import "package:smart_reserve/services/update_time_slots.dart";
+import "package:smart_reserve/view_models/generate_time_key.dart";
 import "package:smart_reserve/view_models/generate_token.dart";
 import "package:smart_reserve/view_models/generate_week.dart";
 import "package:smart_reserve/widgets/ui/background_shapes.dart";
@@ -29,7 +30,6 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-
   final String uid = FirebaseAuth.instance.currentUser!.uid;
   late TextEditingController tokenNumber;
   late TextEditingController name;
@@ -49,7 +49,7 @@ class _BookingScreenState extends State<BookingScreen> {
     name = TextEditingController();
     courseCode = TextEditingController();
     ticketId = generateToken();
-    dev.log(ticketId,name:"Ticket");
+    dev.log(ticketId, name: "Ticket");
 
     // ESSENTIALS
     _getSlots(uid).then((value) => slotCount = value);
@@ -63,10 +63,11 @@ class _BookingScreenState extends State<BookingScreen> {
     dev.log(selectedSlots.toString(), name: "Slots");
     dev.log(date.text, name: "Date");
 
+    dev.log(TimeKey.returnTimeKey(selectedSlots[0])!,name: "Slot Key");
+
     FetchUserBooking.fetchBookingDetails(uid).listen((snapshot) {
       checkConditions(snapshot);
     });
-
   }
 
   void checkConditions(QuerySnapshot snapshot) {
@@ -75,82 +76,87 @@ class _BookingScreenState extends State<BookingScreen> {
         dev.log("SUBMITTING");
         performSubmission();
       } else {
-
         String currentWeek = getWeekNumber(date.text);
-        List<QueryDocumentSnapshot> filteredSnapshots = snapshot.docs.where((doc) => doc['week'] == currentWeek).toList();
+        List<QueryDocumentSnapshot> filteredSnapshots =
+            snapshot.docs.where((doc) => doc['week'] == currentWeek).toList();
 
-        dev.log(slotCount.toString(),name:"Slots");
+        dev.log(slotCount.toString(), name: "Slots");
 
-        if(filteredSnapshots.isEmpty){
+        if (filteredSnapshots.isEmpty) {
           performSubmission();
         } else if (filteredSnapshots.length == slotCount) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text("Limit Reached For this Week")));
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Limit Reached For this Week")));
         } else {
           int bookedSlots = filteredSnapshots.length;
           int slotCounter = 0;
-          for(int i=0;i<bookedSlots;i++){
+          for (int i = 0; i < bookedSlots; i++) {
             int slotsLength = filteredSnapshots[i]['slots'].length;
             slotCounter += slotsLength;
           }
-          dev.log(slotCounter.toString(),name:"From Counter");
-          if(slotCounter <= slotCount){
-            dev.log(selectedSlots.length.toString(),name: "SLOT LENGTH FROM FINAL");
-            if(((slotCount - slotCounter) >= selectedSlots.length)) {
+          dev.log(slotCounter.toString(), name: "From Counter");
+          if (slotCounter <= slotCount) {
+            dev.log(selectedSlots.length.toString(),
+                name: "SLOT LENGTH FROM FINAL");
+            if (((slotCount - slotCounter) >= selectedSlots.length)) {
               performSubmission();
             } else {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text("Remaining Slots available for this week is ${slotCount - slotCounter}")));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                      "Remaining Slots available for this week is ${slotCount - slotCounter}")));
             }
           } else {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text("Limit Reached For this Week")));
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Limit Reached For this Week")));
           }
         }
       }
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(
-          const SnackBar(content: Text("Select the Time Slots")));
+          .showSnackBar(const SnackBar(content: Text("Select the Time Slots")));
     }
   }
 
-
   void performSubmission() {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          });
-      BookingDetails bookingDetails = BookingDetails(
-          ticketId: ticketId,
-          tokenNumber: tokenNumber.text,
-          name: name.text,
-          week: getWeekNumber(date.text),
-          courseCode: courseCode.text,
-          date: date.text,
-          slots: selectedSlots);
-
-      final String uid = FirebaseAuth.instance.currentUser!.uid;
-      Map<String, dynamic> bookingData = bookingDetails.getBookingDetails();
-
-      InsertBookingDetails.addIndividualBookingDetails(uid: uid, bookingData: bookingData, ticketId: ticketId);
-      InsertBookingDetails.addBookingDetails(date:date.text,ticketId: ticketId, bookingData: bookingData);
-      DateTime myDate = DateFormat("dd-MM-yyyy").parse(date.text);
-      updateTimeSlots(DateFormat('yyyy-MM-dd').format(myDate), selectedSlots);
-
-      Navigator.pop(context);
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Booked Successfully")));
-
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+    showDialog(
+        context: context,
         builder: (context) {
-          return VerifyScreen(bookingDetails: bookingDetails);
-        },
-      ), (route) => false);
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+    BookingDetails bookingDetails = BookingDetails(
+      ticketId: ticketId,
+      tokenNumber: tokenNumber.text,
+      name: name.text,
+      week: getWeekNumber(date.text),
+      courseCode: courseCode.text,
+      date: date.text,
+      slots: selectedSlots,
+      slotKey: TimeKey.returnTimeKey(selectedSlots[0])!,
+    );
+
+    final String uid = FirebaseAuth.instance.currentUser!.uid;
+    Map<String, dynamic> bookingData = bookingDetails.getBookingDetails();
+
+    InsertBookingDetails.addIndividualBookingDetails(
+        uid: uid, bookingData: bookingData, ticketId: ticketId);
+    InsertBookingDetails.addBookingDetails(
+        date: date.text, ticketId: ticketId, bookingData: bookingData);
+
+    DateTime myDate = DateFormat("dd-MM-yyyy").parse(date.text);
+    updateTimeSlots(DateFormat('yyyy-MM-dd').format(myDate), selectedSlots);
+
+    Navigator.pop(context);
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text("Booked Successfully")));
+
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+      builder: (context) {
+        return VerifyScreen(bookingDetails: bookingDetails);
+      },
+    ), (route) => false);
   }
 
   Future<void> fetchTimeSlots(String date) async {
@@ -162,7 +168,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Future<void> updateTimeSlots(String date, List<String> selectedSlots) async {
-    await UpdateTimeSlots.insertSlots(date, selectedSlots,false);
+    await UpdateTimeSlots.insertSlots(date, selectedSlots, false);
   }
 
   void _selectSlots(String slot) {
@@ -190,14 +196,14 @@ class _BookingScreenState extends State<BookingScreen> {
         date.text = DateFormat('dd-MM-yyyy').format(picker).toString();
         selectedSlots.clear();
       });
-      dev.log(getWeekNumber(date.text),name: "Date");
+      dev.log(getWeekNumber(date.text), name: "Date");
       await fetchTimeSlots(picker.toString().split(" ")[0]);
     }
   }
 
   Future<void> _displayDetails() async {
     String? userName = await FetchName.fetchName();
-    String? token  = await FetchToken.fetchToken();
+    String? token = await FetchToken.fetchToken();
     if (userName != null && token != null) {
       setState(() {
         name.text = userName;
@@ -206,7 +212,7 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
-  Future<int> _getSlots(String uid) async{
+  Future<int> _getSlots(String uid) async {
     int slots = await FetchAllottedSlots.getAllottedSlots(uid);
     return slots;
   }
@@ -262,9 +268,9 @@ class _BookingScreenState extends State<BookingScreen> {
                           Text(
                             "Select the Slots",
                             style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF124076),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF124076),
                             ),
                           ),
                         ],
