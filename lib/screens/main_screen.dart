@@ -123,7 +123,7 @@ class _MainScreenState extends State<MainScreen> {
               }
               dev.log(bookings.length.toString());
 
-              return BuildListBuilder(bookings: bookings,isDelete: true,uid: uid,);
+              return BuildListBuilder(bookings: bookings,isDelete: false,uid: uid,);
             },
           ),
         ),
