@@ -42,12 +42,6 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
                 );
               }
 
-              if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
-                return const Center(
-                  child: Text('No Booking available.'),
-                );
-              }
-
               var sortedDocs = snapshot.data!.docs.toList()
                 ..sort((a, b) {
                   var aDate = DateFormat("dd-MM-yyyy")
@@ -72,6 +66,12 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
                 }
               }
               dev.log(previousBooking.length.toString());
+
+              if (previousBooking.isEmpty) {
+                return const Center(
+                  child: Text('No Booking available.'),
+                );
+              }
 
               return BuildListBuilder(bookings: previousBooking,isDelete: false,uid: uid);
             },

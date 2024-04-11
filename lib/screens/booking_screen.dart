@@ -63,8 +63,6 @@ class _BookingScreenState extends State<BookingScreen> {
     dev.log(selectedSlots.toString(), name: "Slots");
     dev.log(date.text, name: "Date");
 
-    dev.log(TimeKey.returnTimeKey(selectedSlots[0])!,name: "Slot Key");
-
     FetchUserBooking.fetchBookingDetails(uid).listen((snapshot) {
       checkConditions(snapshot);
     });

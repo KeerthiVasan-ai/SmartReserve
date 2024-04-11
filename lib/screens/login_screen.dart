@@ -58,7 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return BackgroundShapes(
       child: Scaffold(
           backgroundColor: Colors.transparent,
-          // appBar: buildAppBar("Login"),
           body: SafeArea(
             child: Center(
               child: Form(
