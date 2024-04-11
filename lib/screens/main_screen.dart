@@ -93,11 +93,11 @@ class _MainScreenState extends State<MainScreen> {
                 );
               }
 
-              if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
-                return const Center(
-                  child: Text('No Booking available.'),
-                );
-              }
+              // if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
+              //   return const Center(
+              //     child: Text('No Booking available.'),
+              //   );
+              // }
 
               var sortedDocs = snapshot.data!.docs.toList()
                 ..sort((a, b) {
@@ -122,6 +122,12 @@ class _MainScreenState extends State<MainScreen> {
                 }
               }
               dev.log(bookings.length.toString());
+
+              if (bookings.isEmpty) {
+                return const Center(
+                  child: Text('No Booking available.'),
+                );
+              }
 
               return BuildListBuilder(bookings: bookings,isDelete: false,uid: uid,);
             },
