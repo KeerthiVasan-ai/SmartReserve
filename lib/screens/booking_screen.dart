@@ -258,28 +258,45 @@ class _BookingScreenState extends State<BookingScreen> {
                       onTap: _selectDate,
                     ),
                     const SizedBox(height: 10.0),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Select the Slots",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF124076),
+
+                    /// Only render the slots if the date is selected.
+
+                    ...(date.text.isNotEmpty
+                        ? [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 25.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Select the Slots",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF124076),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    BuildSlots(
-                      timeSlots: timeSlots,
-                      onSlotsSelected: _selectSlots,
-                      selectedSlots: selectedSlots,
-                    ),
+                            const SizedBox(height: 10.0),
+                            BuildSlots(
+                              timeSlots: timeSlots,
+                              onSlotsSelected: _selectSlots,
+                              selectedSlots: selectedSlots,
+                            ),
+                          ]
+                        : [
+                            const SizedBox(height: 20.0),
+                            Text(
+                              "Slots will be available once date is selected.",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF124076),
+                              ),
+                            ),
+                          ]),
                     const SizedBox(height: 20.0),
                     BuildElevatedButton(
                       actionOnButton: () => _verifyDetails(),
