@@ -1,15 +1,20 @@
-import "dart:math";
+import 'dart:math';
+import 'package:intl/intl.dart';
 
 String generateToken() {
-  const int length = 10;
+
+  const int randomPartLength = 10;
   const String chars = 'ABCDEFGHIJKLMNOPRSTUVWXYZ0123456789';
-
   Random random = Random();
-  String token = '';
 
-  for(int i=0;i<length;i++) {
-    token += chars[random.nextInt(chars.length)];
-  }
+  String randomPart = List.generate(
+    randomPartLength,
+        (_) => chars[random.nextInt(chars.length)],
+  ).join();
 
-  return token;
+  String month = DateFormat('MMM').format(DateTime.now()).toUpperCase();
+
+  String year = DateFormat('yyyy').format(DateTime.now());
+
+  return '$month$year$randomPart';
 }
