@@ -41,10 +41,18 @@ class _BuildSlotsState extends State<BuildSlots> {
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all<Color>(buttonColor),
       ),
-      child: Text(
-        slot,
-        style: const TextStyle(color: Colors.white),
+      /// To make a widget to fit - Need to code review.
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          slot,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16, // or whatever size you want
+          ),
+        ),
       ),
+
     );
   }
 
