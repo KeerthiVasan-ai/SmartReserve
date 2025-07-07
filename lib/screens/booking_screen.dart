@@ -4,9 +4,9 @@ import "package:flutter/material.dart";
 import "package:intl/intl.dart";
 import "package:smart_reserve/screens/verify_screen.dart";
 import "package:smart_reserve/services/fetch_alloted_slots.dart";
+import "package:smart_reserve/services/fetch_times.dart";
 import "package:smart_reserve/services/fetch_user_booking.dart";
 import "package:smart_reserve/services/update_time_slots.dart";
-import "package:smart_reserve/view_models/generate_time_key.dart";
 import "package:smart_reserve/view_models/generate_token.dart";
 import "package:smart_reserve/view_models/generate_week.dart";
 import "package:smart_reserve/widgets/ui/background_shapes.dart";
@@ -39,6 +39,7 @@ class _BookingScreenState extends State<BookingScreen> {
   late Map<String, bool> timeSlots = <String, bool>{};
   TextEditingController date = TextEditingController();
   List<String> selectedSlots = [];
+  late Map<String, String> _timeKey;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -54,6 +55,14 @@ class _BookingScreenState extends State<BookingScreen> {
     // ESSENTIALS
     _getSlots(uid).then((value) => slotCount = value);
     _displayDetails();
+    _fetchTimeKey();
+  }
+
+  void _fetchTimeKey() async {
+    final timeKeys = await FetchTimes.fetchTimeKey();
+    setState(() {
+      _timeKey = timeKeys;
+    });
   }
 
   void _verifyDetails() {
@@ -131,7 +140,7 @@ class _BookingScreenState extends State<BookingScreen> {
       courseCode: courseCode.text,
       date: date.text,
       slots: selectedSlots,
-      slotKey: TimeKey.returnTimeKey(selectedSlots[0])!,
+      slotKey: _timeKey[selectedSlots[0]]!,
     );
 
     final String uid = FirebaseAuth.instance.currentUser!.uid;
