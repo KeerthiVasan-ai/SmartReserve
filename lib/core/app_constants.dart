@@ -1,5 +1,5 @@
 class AppConstants {
-  static final APP_VERSION = '1.3.3';
+  static final APP_VERSION = '1.4.0';
 
   static final UNDER_MAINTENANCE =
       "The App is Currently Under Maintenance. \n Sorry for the Inconvenience";
