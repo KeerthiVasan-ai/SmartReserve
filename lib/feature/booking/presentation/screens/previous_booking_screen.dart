@@ -25,7 +25,7 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
     return BackgroundShapes(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: buildAppBar("Previous Bookings"),
+        appBar: const CustomAppBar(title: "Previous Bookings"),
         body: SafeArea(
           child: StreamBuilder(
             stream: FetchUserBooking.fetchBookingDetails(uid),

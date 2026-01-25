@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:smart_reserve/feature/about/presentation/screens/about_screen.dart';
 import 'package:smart_reserve/feature/auth/presentation/screens/verify_screen.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -103,10 +104,23 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         date.text = details.date;
     }
     
+
+
     return BackgroundShapes(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: buildAppBar("Book your Slot"),
+        appBar: CustomAppBar(
+          title: "Book your Slot",
+          leading: IconButton(
+            icon: const Icon(Icons.info_outline, color: Color(0xFF124076)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
+              );
+            },
+          ),
+        ),
         body: bookingState.isLoading 
              ? const Center(child: CircularProgressIndicator()) 
              : Stack(

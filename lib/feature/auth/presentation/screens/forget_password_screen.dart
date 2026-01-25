@@ -43,7 +43,7 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
     return BackgroundShapes(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: buildAppBar("Forget Password"),
+        appBar: const CustomAppBar(title: "Forget Password"),
         body: SafeArea(
           child: Center(
             child: Form(

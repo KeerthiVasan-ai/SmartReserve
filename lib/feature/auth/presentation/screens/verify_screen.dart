@@ -33,7 +33,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     return BackgroundShapes(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: buildAppBar("Congratulations"),
+        appBar: const CustomAppBar(title: "Congratulations"),
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
