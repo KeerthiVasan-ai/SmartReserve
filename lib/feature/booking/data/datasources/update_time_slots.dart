@@ -1,6 +1,7 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import 'dart:developer' as dev;
 import 'package:intl/intl.dart';
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 
 class UpdateTimeSlots {
@@ -21,8 +22,10 @@ class UpdateTimeSlots {
 
       await documentReference.update(data);
       dev.log("Success",name:"Message");
+      GCPLog.info('Time slots inserted: $selectedSlots on $date (available=$available)');
     } catch (e){
       dev.log(e.toString(),name:"Error");
+      GCPLog.error('Failed to insert time slots', error: e);
     }
   }
 
@@ -48,8 +51,10 @@ class UpdateTimeSlots {
 
       await documentReference.update(data);
       dev.log("Success",name:"Message");
+      GCPLog.info('Time slots deleted: $selectedSlots on $date (available=$available)');
     } catch (e){
       dev.log(e.toString(),name:"Error");
+      GCPLog.error('Failed to delete time slots', error: e);
     }
   }
 }

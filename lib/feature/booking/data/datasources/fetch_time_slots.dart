@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:developer" as dev;
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 class FetchTimeSlots {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -16,6 +17,7 @@ class FetchTimeSlots {
       timeSlots = Map<String,bool>.from(documentSnapshot.data() as Map);
     } else {
       dev.log("No Slots Found",name:"Error");
+      GCPLog.warning('No time slots found for date: $date');
     }
     return timeSlots;
   }

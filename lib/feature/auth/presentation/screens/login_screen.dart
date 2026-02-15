@@ -1,6 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import 'package:smart_reserve/core/theme/app_fonts.dart';
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 import 'package:smart_reserve/feature/auth/presentation/screens/forget_password_screen.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 
@@ -32,8 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: userName.text.trim(), password: password.text);
         Navigator.pop(context);
+        GCPLog.info('User logged in successfully');
       } on FirebaseAuthException catch (e) {
-        print(e.code.toString());
+        GCPLog.error('Login auth error: ${e.code}', error: e);
         Navigator.pop(context);
         if (e.code == 'invalid-email') {
           ScaffoldMessenger.of(context)
@@ -43,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
               .showSnackBar(SnackBar(content: Text("Check your Credentials")));
         }
       } catch (e) {
-        print(e.toString());
+        GCPLog.error('Login unexpected error', error: e);
       }
     }
   }

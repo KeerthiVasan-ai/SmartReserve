@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer' as dev;
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 class FetchSlotBooker {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -21,6 +22,7 @@ class FetchSlotBooker {
       if (querySnapshot.docs.isEmpty) {
         dev.log('No booker found for slot $slot on $date',
             name: 'FetchSlotBooker');
+        GCPLog.warning('No booker found for slot $slot on $date');
         return null;
       }
 
@@ -32,6 +34,7 @@ class FetchSlotBooker {
       };
     } catch (e) {
       dev.log('Failed to fetch slot booker: $e', name: 'FetchSlotBooker');
+      GCPLog.error('Failed to fetch slot booker', error: e);
       return null;
     }
   }

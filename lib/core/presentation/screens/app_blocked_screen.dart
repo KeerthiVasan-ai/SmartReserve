@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smart_reserve/core/theme/app_fonts.dart';
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 import 'package:smart_reserve/core/constants/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
@@ -84,6 +85,7 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
                             AppConstants.APP_URL + (widget.version ?? '');
                         final uri = Uri.parse(rawUrl);
                         print(uri);
+                        GCPLog.info('Attempting to launch URL: $uri');
 
                         try {
                           final canLaunchExternal = await canLaunchUrl(uri);

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:developer" as dev;
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 class UpdateBookingSlots {
   /// Swaps a single slot in an existing booking document.
@@ -39,8 +40,10 @@ class UpdateBookingSlots {
       });
 
       dev.log('Slot swapped successfully in user booking!', name: "Success");
+      GCPLog.info('User booking slot swapped: $oldSlot → $newSlot (ticket: $ticketId)');
     } catch (error) {
       dev.log(error.toString(), name: "Error");
+      GCPLog.error('Failed to swap slot in user booking', error: error);
       rethrow;
     }
   }
@@ -63,6 +66,7 @@ class UpdateBookingSlots {
       final docSnapshot = await bookingRef.get();
       if (!docSnapshot.exists) {
         dev.log('Global booking doc not found at $date/$ticketId, skipping global swap.', name: "Warning");
+        GCPLog.warning('Global booking doc not found: $date/$ticketId');
         return;
       }
 
@@ -82,8 +86,10 @@ class UpdateBookingSlots {
       });
 
       dev.log('Slot swapped successfully in global booking!', name: "Success");
+      GCPLog.info('Global booking slot swapped: $oldSlot → $newSlot (ticket: $ticketId)');
     } catch (error) {
       dev.log(error.toString(), name: "Error");
+      GCPLog.error('Failed to swap slot in global booking', error: error);
       rethrow;
     }
   }
@@ -147,6 +153,7 @@ class UpdateBookingSlots {
         }
       } else {
         dev.log('Global booking doc not found at $oldDate/$ticketId, skipping.', name: "Warning");
+        GCPLog.warning('Global booking doc not found for move: $oldDate/$ticketId');
       }
 
       // 3. Create new booking entry for the new date
@@ -158,8 +165,10 @@ class UpdateBookingSlots {
       );
 
       dev.log('Slot moved to new date successfully!', name: "Success");
+      GCPLog.info('Slot moved: $oldSlot@$oldDate → $newSlot@$newDate (ticket: $ticketId)');
     } catch (error) {
       dev.log(error.toString(), name: "Error");
+      GCPLog.error('Failed to move slot to new date', error: error);
       rethrow;
     }
   }

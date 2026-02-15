@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer' as dev;
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 import 'package:smart_reserve/core/models/server_details.dart';
 
@@ -19,6 +20,7 @@ class FetchServerDetails {
       return ServerDetails.fromJson(data);
     } catch (error) {
       dev.log("Failed to fetch server details: $error", name: "FetchServerDetails");
+      GCPLog.error('Failed to fetch server details', error: error);
 
       return const ServerDetails(
         isAppUnderMaintenance: false,

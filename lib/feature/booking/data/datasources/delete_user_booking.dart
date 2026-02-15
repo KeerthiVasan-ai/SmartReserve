@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:developer" as dev;
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 
 class DeleteUserBooking {
@@ -25,12 +26,15 @@ class DeleteUserBooking {
         if (currentSlots.isEmpty) {
           await bookingReference.delete();
           dev.log('Document deleted as no slots remain!', name: "Info");
+          GCPLog.info('User booking document deleted (no slots): $bookingId');
         }
       }
 
       dev.log('Slots removed successfully!', name: "Success");
+      GCPLog.info('User booking slots removed: $bookingId, slots: $slotsToRemove');
     } catch (error) {
       dev.log(error.toString(), name: "Error");
+      GCPLog.error('Failed to delete user booking slots', error: error);
     }
   }
 
@@ -55,12 +59,15 @@ class DeleteUserBooking {
         if (currentSlots.isEmpty) {
           await bookingReference.delete();
           dev.log('Document deleted as no slots remain!', name: "Info");
+          GCPLog.info('Global booking document deleted (no slots): $bookingId on $date');
         }
       }
 
       dev.log('Slots removed successfully!', name: "Success");
+      GCPLog.info('Global booking slots removed: $bookingId on $date');
     } catch (error) {
       dev.log(error.toString(), name: "Error");
+      GCPLog.error('Failed to delete global booking slots', error: error);
     }
   }
 }

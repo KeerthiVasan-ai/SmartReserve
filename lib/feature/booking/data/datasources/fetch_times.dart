@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer' as dev;
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 class FetchTimes {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -14,6 +15,7 @@ class FetchTimes {
       return timeSlots;
     } catch (e) {
       dev.log("Failed to fetch time slots: $e", name: "FetchTimes");
+      GCPLog.error('Failed to fetch time slots', error: e);
       return [];
     }
   }
@@ -34,6 +36,7 @@ class FetchTimes {
       return timeSlots;
     } catch (e) {
       dev.log("Failed to fetch time slots: $e", name: "FetchTimes");
+      GCPLog.error('Failed to fetch time keys', error: e);
       return {};
     }
   }
