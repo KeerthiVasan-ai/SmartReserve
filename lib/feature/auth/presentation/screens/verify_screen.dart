@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/ticket_widget.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 import "package:ticket_widget/ticket_widget.dart";
@@ -49,13 +49,13 @@ class _VerifyScreenState extends State<VerifyScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Smart Reserve", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 20)),
+              Text("Smart Reserve", style: AppFonts.poppins(fontWeight: FontWeight.bold, fontSize: 20)),
               const SizedBox(height: 10),
               Text(
                 widget.isEditing
                     ? "Your Booking was Updated Successfully"
                     : "Your Booking was Confirmed",
-                style: GoogleFonts.ebGaramond(fontWeight: FontWeight.bold, fontSize: 20),
+                style: AppFonts.ebGaramond(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               const SizedBox(height: 10),
               TicketUI(

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/core/constants/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
@@ -61,7 +61,7 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
                   Text(
                     title,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 22.0,
                       color: Colors.black87,
@@ -71,7 +71,7 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
                   Text(
                     subtitle,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.poppins(
                       fontSize: 14.0,
                       color: Colors.black54,
                     ),
@@ -136,7 +136,7 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
                   const SizedBox(height: 10),
                   Text(
                     "v${AppConstants.APP_VERSION}",
-                    style: GoogleFonts.firaSans(
+                    style: AppFonts.firaSans(
                       fontWeight: FontWeight.w500,
                       fontSize: 12.0,
                       color: Colors.black38,

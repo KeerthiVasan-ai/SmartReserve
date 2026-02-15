@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "dart:developer" as dev;
-import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_reserve/core/presentation/widgets/frosted_glass.dart';
 import 'package:smart_reserve/feature/booking/presentation/providers/booking_provider.dart';
@@ -254,19 +254,19 @@ class BuildListBuilder extends ConsumerWidget {
                   children: [
                     Text(
                       "${data['tokenNumber']}",
-                      style: GoogleFonts.ebGaramond(
+                      style: AppFonts.ebGaramond(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(
                       "${data['courseCode']}",
-                      style: GoogleFonts.ebGaramond(
+                      style: AppFonts.ebGaramond(
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text("${data['date']}",
-                        style: GoogleFonts.ebGaramond(
+                        style: AppFonts.ebGaramond(
                             fontWeight: FontWeight.bold, fontSize: 16)),
                     Text("Slots: ${data['slots'].join(', ')}",
-                        style: GoogleFonts.ebGaramond(
+                        style: AppFonts.ebGaramond(
                             fontWeight: FontWeight.bold, fontSize: 16)),
                   ],
                 ),

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
@@ -26,7 +26,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
       title: Text(
         widget.title,
-        style: GoogleFonts.poppins(
+        style: AppFonts.poppins(
           fontWeight: FontWeight.bold,
           fontSize: 18,
         ),

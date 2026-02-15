@@ -1,6 +1,6 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/feature/auth/presentation/screens/forget_password_screen.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 
@@ -75,14 +75,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Text(
                             "Hello,",
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.poppins(
                               fontWeight: FontWeight.bold,
                               fontSize: 40,
                             ),
                           ),
                           Text(
                             "Welcome Back!",
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.poppins(
                               fontWeight: FontWeight.bold,
                               fontSize: 24,
                             ),
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             Text(
                               "Forget Password?",
-                              style: GoogleFonts.firaSans(
+                              style: AppFonts.firaSans(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),

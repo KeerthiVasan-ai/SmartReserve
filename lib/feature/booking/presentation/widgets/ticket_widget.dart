@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/ticket_painter.dart';
 
@@ -39,14 +39,14 @@ class TicketUI extends StatelessWidget {
                 children: [
                   Text(
                     isEditing ? 'Update Summary' : 'Summary : Dates and Slots',
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   Text(
                     bookingDetails.tokenNumber,
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.poppins(
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
                     ),
@@ -60,7 +60,7 @@ class TicketUI extends StatelessWidget {
                   children: [
                     Text(
                       oldDate!,
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
                         decoration: TextDecoration.lineThrough,
@@ -69,14 +69,14 @@ class TicketUI extends StatelessWidget {
                     ),
                     Text(
                       '  →  ',
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
                       bookingDetails.date,
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Colors.green.shade700,
@@ -91,7 +91,7 @@ class TicketUI extends StatelessWidget {
                   children: [
                     Text(
                       bookingDetails.date,
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.poppins(
                         fontSize: 24,
                         fontWeight: FontWeight.w400,
                       ),
@@ -107,7 +107,7 @@ class TicketUI extends StatelessWidget {
                       children: [
                         Text(
                           'From: ',
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             color: Colors.red.shade700,
@@ -115,7 +115,7 @@ class TicketUI extends StatelessWidget {
                         ),
                         Text(
                           oldSlot!,
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             decoration: TextDecoration.lineThrough,
@@ -130,7 +130,7 @@ class TicketUI extends StatelessWidget {
                       children: [
                         Text(
                           'To: ',
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             color: Colors.green.shade700,
@@ -138,7 +138,7 @@ class TicketUI extends StatelessWidget {
                         ),
                         Text(
                           bookingDetails.slots.toString(),
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.green.shade700,
@@ -154,7 +154,7 @@ class TicketUI extends StatelessWidget {
                   children: [
                     Text(
                       bookingDetails.slots.toString(),
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
@@ -167,7 +167,7 @@ class TicketUI extends StatelessWidget {
                 children: [
                   Text(
                     bookingDetails.name,
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -187,7 +187,7 @@ class TicketUI extends StatelessWidget {
                       ),
                       child: Text(
                         'CSE - AU',
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),

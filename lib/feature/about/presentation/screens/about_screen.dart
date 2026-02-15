@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_app_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,7 +30,7 @@ class AboutScreen extends StatelessWidget {
                 child: Text(
                   "Smart Reserve is your go-to application for booking slots efficiently. "
                   "Manage your reservations with ease and convenience.",
-                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
+                  style: AppFonts.poppins(fontSize: 14, color: Colors.black87),
                 ),
               ),
               const SizedBox(height: 30),
@@ -40,12 +40,12 @@ class AboutScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildDeveloperField("Name", "Keerthi Vasan"), // Updated based on path
+                    _buildDeveloperField("Name", "Keerthivasan S"), // Updated based on path
                     const Divider(),
-                    _buildDeveloperField("Designation", "Flutter Developer"),
+                    _buildDeveloperField("Designation", "Mobile App Developer - Alumnus(2025 - B.E CSE (AI & ML))"),
                     const Divider(),
                     InkWell(
-                      onTap: () => _launchUrl("https://www.linkedin.com/in/keerthi-vasan-553637228/"),
+                      onTap: () => _launchUrl("https://www.linkedin.com/in/KeerthiVasan-ai/"),
                       child: Padding(
                          padding: const EdgeInsets.symmetric(vertical: 8.0),
                          child: Row(
@@ -54,7 +54,7 @@ class AboutScreen extends StatelessWidget {
                              const SizedBox(width: 10),
                              Text(
                                "LinkedIn Profile",
-                               style: GoogleFonts.poppins(
+                               style: AppFonts.poppins(
                                  fontSize: 16,
                                  color: Colors.blue.shade700,
                                  fontWeight: FontWeight.w500,
@@ -78,7 +78,7 @@ class AboutScreen extends StatelessWidget {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: GoogleFonts.poppins(
+      style: AppFonts.poppins(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: const Color(0xFF124076),
@@ -113,7 +113,7 @@ class AboutScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: AppFonts.poppins(
               fontSize: 12,
               color: Colors.grey.shade600,
             ),
@@ -121,7 +121,7 @@ class AboutScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: GoogleFonts.poppins(
+            style: AppFonts.poppins(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Colors.black87,

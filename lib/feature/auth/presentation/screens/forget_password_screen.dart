@@ -1,7 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "dart:developer" as dev;
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/feature/auth/presentation/screens/login_screen.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 
@@ -61,7 +61,7 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
                       children: [
                         Text(
                           "Get Back your Account!",
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.poppins(
                             fontWeight: FontWeight.bold,
                             fontSize: 24,
                           ),

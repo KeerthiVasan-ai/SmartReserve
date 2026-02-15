@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:ui';
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/feature/about/presentation/screens/about_screen.dart';
 import 'package:smart_reserve/feature/auth/presentation/screens/verify_screen.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
@@ -92,95 +93,106 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
     showDialog(
       context: context,
-      builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFF0F4FF),
-                Color(0xFFE8EEFF),
-              ],
+      barrierColor: Colors.black.withOpacity(0.3),
+      builder: (ctx) => Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.85,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white.withOpacity(0.70)),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withOpacity(0.40),
+                    Colors.white.withOpacity(0.15),
+                  ],
+                ),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Header icon
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF124076).withOpacity(0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.person_rounded,
+                        color: Color(0xFF124076),
+                        size: 32,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Slot Booked By',
+                      style: AppFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF124076),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        slot,
+                        style: AppFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.red.shade700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Info rows
+                    _buildInfoRow(Icons.person_outline, 'Name', bookerInfo['name']!),
+                    const SizedBox(height: 10),
+                    _buildInfoRow(Icons.badge_outlined, 'Staff ID', bookerInfo['tokenNumber']!),
+                    const SizedBox(height: 10),
+                    _buildInfoRow(Icons.subject_rounded, 'Course Code', bookerInfo['courseCode']!),
+                    const SizedBox(height: 24),
+                    // Close button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.of(ctx).pop(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF124076),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          'Close',
+                          style: AppFonts.poppins(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header icon
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF124076).withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.person_rounded,
-                  color: Color(0xFF124076),
-                  size: 32,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Slot Booked By',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF124076),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.red.shade200),
-                ),
-                child: Text(
-                  slot,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.red.shade700,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Info rows
-              _buildInfoRow(Icons.person_outline, 'Name', bookerInfo['name']!),
-              const SizedBox(height: 12),
-              _buildInfoRow(Icons.badge_outlined, 'Staff ID', bookerInfo['tokenNumber']!),
-              const SizedBox(height: 12),
-              _buildInfoRow(Icons.subject_rounded, 'Course Code', bookerInfo['courseCode']!),
-              const SizedBox(height: 24),
-              // Close button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF124076),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: Text(
-                    'Close',
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
           ),
         ),
       ),
@@ -191,15 +203,9 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: Colors.white.withOpacity(0.6)),
       ),
       child: Row(
         children: [
@@ -207,17 +213,17 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
           const SizedBox(width: 12),
           Text(
             '$label:',
-            style: GoogleFonts.poppins(
+            style: AppFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: Colors.grey.shade600,
+              color: Colors.grey.shade700,
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               value,
-              style: GoogleFonts.poppins(
+              style: AppFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: const Color(0xFF124076),
@@ -301,13 +307,8 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         appBar: CustomAppBar(
           title: bookingState.isEditing ? "Edit Booking" : "Book your Slot",
           leading: IconButton(
-            icon: const Icon(Icons.info_outline, color: Color(0xFF124076)),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AboutScreen()),
-              );
-            },
+            icon: const Icon(Icons.arrow_back, color: Color(0xFF124076)),
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ),
         body: bookingState.isLoading 

@@ -1,15 +1,16 @@
+import "dart:developer" as dev;
+
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import "package:intl/intl.dart";
-import 'package:smart_reserve/feature/booking/presentation/screens/previous_booking_screen.dart';
-import 'package:smart_reserve/core/presentation/widgets/custom_list_builder.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
-import "dart:developer" as dev;
-
+import 'package:smart_reserve/core/presentation/widgets/custom_list_builder.dart';
+import 'package:smart_reserve/feature/about/presentation/screens/about_screen.dart';
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_user_booking.dart';
 import 'package:smart_reserve/feature/booking/presentation/screens/booking_screen.dart';
+import 'package:smart_reserve/feature/booking/presentation/screens/previous_booking_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -51,9 +52,18 @@ class _MainScreenState extends State<MainScreen> {
           child: const Icon(Icons.add),
         ),
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
+              );
+            },
+            icon: const Icon(Icons.info_outline, color: Colors.black),
+          ),
           title: Text(
             "Smart Reserve",
-            style: GoogleFonts.poppins(
+            style: AppFonts.poppins(
               fontWeight: FontWeight.bold,
               fontSize: 18,
             ),
@@ -62,19 +72,20 @@ class _MainScreenState extends State<MainScreen> {
           centerTitle: true,
           actions: [
             IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const OlderBookingScreen()));
-                },
-                icon: const Icon(Icons.history, color: Colors.black)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OlderBookingScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.history, color: Colors.black),
+            ),
             IconButton(
-                onPressed: _signOut,
-                icon: const Icon(
-                  Icons.logout,
-                  color: Colors.black,
-                ))
+              onPressed: _signOut,
+              icon: const Icon(Icons.logout, color: Colors.black),
+            ),
           ],
         ),
         body: SafeArea(
@@ -82,15 +93,11 @@ class _MainScreenState extends State<MainScreen> {
             stream: FetchUserBooking.fetchBookingDetails(uid),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
 
               if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
+                return Center(child: Text('Error: ${snapshot.error}'));
               }
 
               // if (snapshot.hasData && snapshot.data!.docs.isEmpty) {
@@ -101,9 +108,12 @@ class _MainScreenState extends State<MainScreen> {
 
               var sortedDocs = snapshot.data!.docs.toList()
                 ..sort((a, b) {
-                  var aDate = DateFormat("dd-MM-yyyy").parse((a.data() as Map<String, dynamic>)['date']);
-                  var bDate = DateFormat("dd-MM-yyyy")
-                      .parse((b.data() as Map<String, dynamic>)['date']);
+                  var aDate = DateFormat(
+                    "dd-MM-yyyy",
+                  ).parse((a.data() as Map<String, dynamic>)['date']);
+                  var bDate = DateFormat(
+                    "dd-MM-yyyy",
+                  ).parse((b.data() as Map<String, dynamic>)['date']);
                   return aDate.compareTo(bDate);
                 });
 
@@ -112,8 +122,9 @@ class _MainScreenState extends State<MainScreen> {
               dev.log(today.toString());
 
               for (var doc in sortedDocs) {
-                DateTime bookingDate =
-                    DateFormat("dd-MM-yyyy").parse(doc['date']);
+                DateTime bookingDate = DateFormat(
+                  "dd-MM-yyyy",
+                ).parse(doc['date']);
                 if ((bookingDate.year == today.year &&
                         bookingDate.month == today.month &&
                         bookingDate.day == today.day) ||
@@ -124,12 +135,14 @@ class _MainScreenState extends State<MainScreen> {
               dev.log(bookings.length.toString());
 
               if (bookings.isEmpty) {
-                return const Center(
-                  child: Text('No Booking available.'),
-                );
+                return const Center(child: Text('No Booking available.'));
               }
 
-              return BuildListBuilder(bookings: bookings,isDelete: true,uid: uid,);
+              return BuildListBuilder(
+                bookings: bookings,
+                isDelete: true,
+                uid: uid,
+              );
             },
           ),
         ),

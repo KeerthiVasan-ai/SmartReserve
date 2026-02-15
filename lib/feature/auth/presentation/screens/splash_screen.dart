@@ -1,7 +1,7 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/core/constants/app_constants.dart';
 import 'package:smart_reserve/core/presentation/screens/app_blocked_screen.dart';
 import 'package:smart_reserve/core/services/server_service.dart';
@@ -75,12 +75,12 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 Text(
                   "Smart Reserve",
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.poppins(
                       fontWeight: FontWeight.bold, fontSize: 24.0),
                 ),
                 Text(
                   "v1.4.0-Stable",
-                  style: GoogleFonts.firaSans(
+                  style: AppFonts.firaSans(
                       fontWeight: FontWeight.bold, fontSize: 12.0),
                 ),
               ],
