@@ -4,12 +4,14 @@ import 'package:smart_reserve/feature/booking/data/datasources/fetch_times.dart'
 class BuildSlots extends StatefulWidget {
   final Map<String, bool> timeSlots;
   final Function(String) onSlotsSelected;
+  final Function(String)? onSlotLongPress;
   final List<String> selectedSlots;
   final List<String> currentlyBookedSlots;
 
   const BuildSlots({
     required this.timeSlots,
     required this.onSlotsSelected,
+    this.onSlotLongPress,
     required this.selectedSlots,
     this.currentlyBookedSlots = const [],
     super.key,
@@ -46,22 +48,29 @@ class _BuildSlotsState extends State<BuildSlots> {
       buttonColor = Colors.red;
     }
 
-    return ElevatedButton(
-      onPressed: () {
-        if (isAvailable) {
-          widget.onSlotsSelected(slot);
-        }
-      },
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all<Color>(buttonColor),
-      ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(
-          slot,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
+    final bool isBooked = !isAvailable && !isSelected && !isCurrentlyBooked;
+
+    return GestureDetector(
+      onLongPress: isBooked && widget.onSlotLongPress != null
+          ? () => widget.onSlotLongPress!(slot)
+          : null,
+      child: ElevatedButton(
+        onPressed: () {
+          if (isAvailable) {
+            widget.onSlotsSelected(slot);
+          }
+        },
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.all<Color>(buttonColor),
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            slot,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
           ),
         ),
       ),

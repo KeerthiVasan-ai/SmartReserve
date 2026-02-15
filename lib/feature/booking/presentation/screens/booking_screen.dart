@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:google_fonts/google_fonts.dart';
 import 'package:smart_reserve/feature/about/presentation/screens/about_screen.dart';
 import 'package:smart_reserve/feature/auth/presentation/screens/verify_screen.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
@@ -10,7 +11,8 @@ import 'package:smart_reserve/core/presentation/widgets/custom_button.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/slots_widget.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_text_field.dart';
 
-import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart'; // Add import
+import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
+import 'package:smart_reserve/feature/booking/data/datasources/fetch_slot_booker.dart';
 
 class BookingScreen extends ConsumerStatefulWidget {
   final BookingDetails? existingBooking;
@@ -64,6 +66,168 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     courseCode.dispose();
     date.dispose();
     super.dispose();
+  }
+
+  void _showSlotBookerDialog(BuildContext context, String date, String slot) async {
+    // Show loading dialog first
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+
+    final bookerInfo = await FetchSlotBooker.fetchBooker(date, slot);
+
+    // Pop loading
+    if (context.mounted) Navigator.of(context).pop();
+
+    if (!context.mounted) return;
+
+    if (bookerInfo == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not find booking info for this slot.')),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (ctx) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFFF0F4FF),
+                Color(0xFFE8EEFF),
+              ],
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header icon
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF124076).withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.person_rounded,
+                  color: Color(0xFF124076),
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Slot Booked By',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF124076),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.red.shade200),
+                ),
+                child: Text(
+                  slot,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.red.shade700,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // Info rows
+              _buildInfoRow(Icons.person_outline, 'Name', bookerInfo['name']!),
+              const SizedBox(height: 12),
+              _buildInfoRow(Icons.badge_outlined, 'Staff ID', bookerInfo['tokenNumber']!),
+              const SizedBox(height: 12),
+              _buildInfoRow(Icons.subject_rounded, 'Course Code', bookerInfo['courseCode']!),
+              const SizedBox(height: 24),
+              // Close button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF124076),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    'Close',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF124076), size: 20),
+          const SizedBox(width: 12),
+          Text(
+            '$label:',
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF124076),
+              ),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _selectDate() async {
@@ -244,6 +408,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                             BuildSlots(
                               timeSlots: bookingState.timeSlots,
                               onSlotsSelected: (slot) => ref.read(bookingProvider.notifier).toggleSlot(slot),
+                              onSlotLongPress: (slot) => _showSlotBookerDialog(context, details.date, slot),
                               selectedSlots: details.slots,
                               currentlyBookedSlots: () {
                                 if (!bookingState.isEditing) return <String>[];
