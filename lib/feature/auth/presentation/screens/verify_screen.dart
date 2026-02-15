@@ -13,8 +13,17 @@ import 'package:smart_reserve/feature/home/presentation/screens/main_screen.dart
 
 class VerifyScreen extends StatefulWidget {
   final BookingDetails bookingDetails;
+  final bool isEditing;
+  final String? oldSlot;
+  final String? oldDate;
 
-  const VerifyScreen({required this.bookingDetails, super.key});
+  const VerifyScreen({
+    required this.bookingDetails,
+    this.isEditing = false,
+    this.oldSlot,
+    this.oldDate,
+    super.key,
+  });
 
   @override
   State<VerifyScreen> createState() => _VerifyScreenState();
@@ -33,16 +42,28 @@ class _VerifyScreenState extends State<VerifyScreen> {
     return BackgroundShapes(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: const CustomAppBar(title: "Congratulations"),
+        appBar: CustomAppBar(
+          title: widget.isEditing ? "Update Summary" : "Congratulations",
+        ),
         body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Smart Reserve",style: GoogleFonts.poppins(fontWeight:FontWeight.bold,fontSize:20),),
+              Text("Smart Reserve", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 20)),
               const SizedBox(height: 10),
-              Text("Your Booking was Confirmed",style: GoogleFonts.ebGaramond(fontWeight:FontWeight.bold,fontSize:20),),
+              Text(
+                widget.isEditing
+                    ? "Your Booking was Updated Successfully"
+                    : "Your Booking was Confirmed",
+                style: GoogleFonts.ebGaramond(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
               const SizedBox(height: 10),
-              TicketUI(bookingDetails: widget.bookingDetails),
+              TicketUI(
+                bookingDetails: widget.bookingDetails,
+                isEditing: widget.isEditing,
+                oldSlot: widget.oldSlot,
+                oldDate: widget.oldDate,
+              ),
               BuildElevatedButton(actionOnButton: backToHome, buttonText: "Home")
             ],
           ),

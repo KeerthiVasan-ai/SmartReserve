@@ -4,7 +4,8 @@ import "dart:developer" as dev;
 
 class DeleteUserBooking {
 
-  static Future<void> deleteUserBooking(String userId, String bookingId) async {
+  static Future<void> deleteUserBookingSlots(
+      String userId, String bookingId, List<dynamic> slotsToRemove) async {
     try {
       DocumentReference bookingReference = FirebaseFirestore.instance
           .collection('bookingUserDetails')
@@ -12,15 +13,29 @@ class DeleteUserBooking {
           .collection('bookings')
           .doc(bookingId);
 
-      await bookingReference.delete();
+      await bookingReference.update({
+        'slots': FieldValue.arrayRemove(slotsToRemove),
+      });
 
-      dev.log('Document deleted successfully!', name: "Success");
+      // Check if slots are empty, if so, delete the document
+      DocumentSnapshot snapshot = await bookingReference.get();
+      if (snapshot.exists) {
+        List<dynamic> currentSlots =
+            (snapshot.data() as Map<String, dynamic>)['slots'] ?? [];
+        if (currentSlots.isEmpty) {
+          await bookingReference.delete();
+          dev.log('Document deleted as no slots remain!', name: "Info");
+        }
+      }
+
+      dev.log('Slots removed successfully!', name: "Success");
     } catch (error) {
       dev.log(error.toString(), name: "Error");
     }
   }
 
-  static Future<void> deleteBooking(String date, String bookingId) async {
+  static Future<void> deleteBookingSlots(
+      String date, String bookingId, List<dynamic> slotsToRemove) async {
     try {
       DocumentReference bookingReference = FirebaseFirestore.instance
           .collection('bookingDetails')
@@ -28,9 +43,22 @@ class DeleteUserBooking {
           .collection('booking')
           .doc(bookingId);
 
-      await bookingReference.delete();
+      await bookingReference.update({
+        'slots': FieldValue.arrayRemove(slotsToRemove),
+      });
 
-      dev.log('Document deleted successfully!', name: "Success");
+      // Check if slots are empty, if so, delete the document
+      DocumentSnapshot snapshot = await bookingReference.get();
+      if (snapshot.exists) {
+        List<dynamic> currentSlots =
+            (snapshot.data() as Map<String, dynamic>)['slots'] ?? [];
+        if (currentSlots.isEmpty) {
+          await bookingReference.delete();
+          dev.log('Document deleted as no slots remain!', name: "Info");
+        }
+      }
+
+      dev.log('Slots removed successfully!', name: "Success");
     } catch (error) {
       dev.log(error.toString(), name: "Error");
     }

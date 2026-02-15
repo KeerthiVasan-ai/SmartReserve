@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BookingState {
 
- BookingDetails get bookingDetails; Map<String, bool> get timeSlots; Map<String, String> get timeKeys; int get slotCount; bool get isLoading; bool get isSubmitting; String? get errorMessage; String? get successMessage; String? get courseCodeError; String? get dateError;
+ BookingDetails get bookingDetails; Map<String, bool> get timeSlots; Map<String, String> get timeKeys; int get slotCount; bool get isLoading; bool get isSubmitting; String? get errorMessage; String? get successMessage; String? get courseCodeError; String? get dateError; bool get isEditing; BookingDetails? get originalBooking; String? get editingSlot;
 /// Create a copy of BookingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $BookingStateCopyWith<BookingState> get copyWith => _$BookingStateCopyWithImpl<B
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookingState&&(identical(other.bookingDetails, bookingDetails) || other.bookingDetails == bookingDetails)&&const DeepCollectionEquality().equals(other.timeSlots, timeSlots)&&const DeepCollectionEquality().equals(other.timeKeys, timeKeys)&&(identical(other.slotCount, slotCount) || other.slotCount == slotCount)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage)&&(identical(other.courseCodeError, courseCodeError) || other.courseCodeError == courseCodeError)&&(identical(other.dateError, dateError) || other.dateError == dateError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookingState&&(identical(other.bookingDetails, bookingDetails) || other.bookingDetails == bookingDetails)&&const DeepCollectionEquality().equals(other.timeSlots, timeSlots)&&const DeepCollectionEquality().equals(other.timeKeys, timeKeys)&&(identical(other.slotCount, slotCount) || other.slotCount == slotCount)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage)&&(identical(other.courseCodeError, courseCodeError) || other.courseCodeError == courseCodeError)&&(identical(other.dateError, dateError) || other.dateError == dateError)&&(identical(other.isEditing, isEditing) || other.isEditing == isEditing)&&(identical(other.originalBooking, originalBooking) || other.originalBooking == originalBooking)&&(identical(other.editingSlot, editingSlot) || other.editingSlot == editingSlot));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookingDetails,const DeepCollectionEquality().hash(timeSlots),const DeepCollectionEquality().hash(timeKeys),slotCount,isLoading,isSubmitting,errorMessage,successMessage,courseCodeError,dateError);
+int get hashCode => Object.hash(runtimeType,bookingDetails,const DeepCollectionEquality().hash(timeSlots),const DeepCollectionEquality().hash(timeKeys),slotCount,isLoading,isSubmitting,errorMessage,successMessage,courseCodeError,dateError,isEditing,originalBooking,editingSlot);
 
 @override
 String toString() {
-  return 'BookingState(bookingDetails: $bookingDetails, timeSlots: $timeSlots, timeKeys: $timeKeys, slotCount: $slotCount, isLoading: $isLoading, isSubmitting: $isSubmitting, errorMessage: $errorMessage, successMessage: $successMessage, courseCodeError: $courseCodeError, dateError: $dateError)';
+  return 'BookingState(bookingDetails: $bookingDetails, timeSlots: $timeSlots, timeKeys: $timeKeys, slotCount: $slotCount, isLoading: $isLoading, isSubmitting: $isSubmitting, errorMessage: $errorMessage, successMessage: $successMessage, courseCodeError: $courseCodeError, dateError: $dateError, isEditing: $isEditing, originalBooking: $originalBooking, editingSlot: $editingSlot)';
 }
 
 
@@ -45,11 +45,11 @@ abstract mixin class $BookingStateCopyWith<$Res>  {
   factory $BookingStateCopyWith(BookingState value, $Res Function(BookingState) _then) = _$BookingStateCopyWithImpl;
 @useResult
 $Res call({
- BookingDetails bookingDetails, Map<String, bool> timeSlots, Map<String, String> timeKeys, int slotCount, bool isLoading, bool isSubmitting, String? errorMessage, String? successMessage, String? courseCodeError, String? dateError
+ BookingDetails bookingDetails, Map<String, bool> timeSlots, Map<String, String> timeKeys, int slotCount, bool isLoading, bool isSubmitting, String? errorMessage, String? successMessage, String? courseCodeError, String? dateError, bool isEditing, BookingDetails? originalBooking, String? editingSlot
 });
 
 
-$BookingDetailsCopyWith<$Res> get bookingDetails;
+$BookingDetailsCopyWith<$Res> get bookingDetails;$BookingDetailsCopyWith<$Res>? get originalBooking;
 
 }
 /// @nodoc
@@ -62,7 +62,7 @@ class _$BookingStateCopyWithImpl<$Res>
 
 /// Create a copy of BookingState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? bookingDetails = null,Object? timeSlots = null,Object? timeKeys = null,Object? slotCount = null,Object? isLoading = null,Object? isSubmitting = null,Object? errorMessage = freezed,Object? successMessage = freezed,Object? courseCodeError = freezed,Object? dateError = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? bookingDetails = null,Object? timeSlots = null,Object? timeKeys = null,Object? slotCount = null,Object? isLoading = null,Object? isSubmitting = null,Object? errorMessage = freezed,Object? successMessage = freezed,Object? courseCodeError = freezed,Object? dateError = freezed,Object? isEditing = null,Object? originalBooking = freezed,Object? editingSlot = freezed,}) {
   return _then(_self.copyWith(
 bookingDetails: null == bookingDetails ? _self.bookingDetails : bookingDetails // ignore: cast_nullable_to_non_nullable
 as BookingDetails,timeSlots: null == timeSlots ? _self.timeSlots : timeSlots // ignore: cast_nullable_to_non_nullable
@@ -74,6 +74,9 @@ as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessag
 as String?,successMessage: freezed == successMessage ? _self.successMessage : successMessage // ignore: cast_nullable_to_non_nullable
 as String?,courseCodeError: freezed == courseCodeError ? _self.courseCodeError : courseCodeError // ignore: cast_nullable_to_non_nullable
 as String?,dateError: freezed == dateError ? _self.dateError : dateError // ignore: cast_nullable_to_non_nullable
+as String?,isEditing: null == isEditing ? _self.isEditing : isEditing // ignore: cast_nullable_to_non_nullable
+as bool,originalBooking: freezed == originalBooking ? _self.originalBooking : originalBooking // ignore: cast_nullable_to_non_nullable
+as BookingDetails?,editingSlot: freezed == editingSlot ? _self.editingSlot : editingSlot // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -85,6 +88,18 @@ $BookingDetailsCopyWith<$Res> get bookingDetails {
   
   return $BookingDetailsCopyWith<$Res>(_self.bookingDetails, (value) {
     return _then(_self.copyWith(bookingDetails: value));
+  });
+}/// Create a copy of BookingState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BookingDetailsCopyWith<$Res>? get originalBooking {
+    if (_self.originalBooking == null) {
+    return null;
+  }
+
+  return $BookingDetailsCopyWith<$Res>(_self.originalBooking!, (value) {
+    return _then(_self.copyWith(originalBooking: value));
   });
 }
 }
@@ -168,10 +183,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BookingState() when $default != null:
-return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError);case _:
+return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot);case _:
   return orElse();
 
 }
@@ -189,10 +204,10 @@ return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot)  $default,) {final _that = this;
 switch (_that) {
 case _BookingState():
-return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError);case _:
+return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +224,10 @@ return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot)?  $default,) {final _that = this;
 switch (_that) {
 case _BookingState() when $default != null:
-return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError);case _:
+return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot);case _:
   return null;
 
 }
@@ -224,7 +239,7 @@ return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCo
 
 
 class _BookingState implements BookingState {
-  const _BookingState({this.bookingDetails = const BookingDetails(), final  Map<String, bool> timeSlots = const {}, final  Map<String, String> timeKeys = const {}, this.slotCount = 0, this.isLoading = true, this.isSubmitting = false, this.errorMessage, this.successMessage, this.courseCodeError, this.dateError}): _timeSlots = timeSlots,_timeKeys = timeKeys;
+  const _BookingState({this.bookingDetails = const BookingDetails(), final  Map<String, bool> timeSlots = const {}, final  Map<String, String> timeKeys = const {}, this.slotCount = 0, this.isLoading = true, this.isSubmitting = false, this.errorMessage, this.successMessage, this.courseCodeError, this.dateError, this.isEditing = false, this.originalBooking, this.editingSlot}): _timeSlots = timeSlots,_timeKeys = timeKeys;
   
 
 @override@JsonKey() final  BookingDetails bookingDetails;
@@ -249,6 +264,9 @@ class _BookingState implements BookingState {
 @override final  String? successMessage;
 @override final  String? courseCodeError;
 @override final  String? dateError;
+@override@JsonKey() final  bool isEditing;
+@override final  BookingDetails? originalBooking;
+@override final  String? editingSlot;
 
 /// Create a copy of BookingState
 /// with the given fields replaced by the non-null parameter values.
@@ -260,16 +278,16 @@ _$BookingStateCopyWith<_BookingState> get copyWith => __$BookingStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookingState&&(identical(other.bookingDetails, bookingDetails) || other.bookingDetails == bookingDetails)&&const DeepCollectionEquality().equals(other._timeSlots, _timeSlots)&&const DeepCollectionEquality().equals(other._timeKeys, _timeKeys)&&(identical(other.slotCount, slotCount) || other.slotCount == slotCount)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage)&&(identical(other.courseCodeError, courseCodeError) || other.courseCodeError == courseCodeError)&&(identical(other.dateError, dateError) || other.dateError == dateError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookingState&&(identical(other.bookingDetails, bookingDetails) || other.bookingDetails == bookingDetails)&&const DeepCollectionEquality().equals(other._timeSlots, _timeSlots)&&const DeepCollectionEquality().equals(other._timeKeys, _timeKeys)&&(identical(other.slotCount, slotCount) || other.slotCount == slotCount)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage)&&(identical(other.courseCodeError, courseCodeError) || other.courseCodeError == courseCodeError)&&(identical(other.dateError, dateError) || other.dateError == dateError)&&(identical(other.isEditing, isEditing) || other.isEditing == isEditing)&&(identical(other.originalBooking, originalBooking) || other.originalBooking == originalBooking)&&(identical(other.editingSlot, editingSlot) || other.editingSlot == editingSlot));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookingDetails,const DeepCollectionEquality().hash(_timeSlots),const DeepCollectionEquality().hash(_timeKeys),slotCount,isLoading,isSubmitting,errorMessage,successMessage,courseCodeError,dateError);
+int get hashCode => Object.hash(runtimeType,bookingDetails,const DeepCollectionEquality().hash(_timeSlots),const DeepCollectionEquality().hash(_timeKeys),slotCount,isLoading,isSubmitting,errorMessage,successMessage,courseCodeError,dateError,isEditing,originalBooking,editingSlot);
 
 @override
 String toString() {
-  return 'BookingState(bookingDetails: $bookingDetails, timeSlots: $timeSlots, timeKeys: $timeKeys, slotCount: $slotCount, isLoading: $isLoading, isSubmitting: $isSubmitting, errorMessage: $errorMessage, successMessage: $successMessage, courseCodeError: $courseCodeError, dateError: $dateError)';
+  return 'BookingState(bookingDetails: $bookingDetails, timeSlots: $timeSlots, timeKeys: $timeKeys, slotCount: $slotCount, isLoading: $isLoading, isSubmitting: $isSubmitting, errorMessage: $errorMessage, successMessage: $successMessage, courseCodeError: $courseCodeError, dateError: $dateError, isEditing: $isEditing, originalBooking: $originalBooking, editingSlot: $editingSlot)';
 }
 
 
@@ -280,11 +298,11 @@ abstract mixin class _$BookingStateCopyWith<$Res> implements $BookingStateCopyWi
   factory _$BookingStateCopyWith(_BookingState value, $Res Function(_BookingState) _then) = __$BookingStateCopyWithImpl;
 @override @useResult
 $Res call({
- BookingDetails bookingDetails, Map<String, bool> timeSlots, Map<String, String> timeKeys, int slotCount, bool isLoading, bool isSubmitting, String? errorMessage, String? successMessage, String? courseCodeError, String? dateError
+ BookingDetails bookingDetails, Map<String, bool> timeSlots, Map<String, String> timeKeys, int slotCount, bool isLoading, bool isSubmitting, String? errorMessage, String? successMessage, String? courseCodeError, String? dateError, bool isEditing, BookingDetails? originalBooking, String? editingSlot
 });
 
 
-@override $BookingDetailsCopyWith<$Res> get bookingDetails;
+@override $BookingDetailsCopyWith<$Res> get bookingDetails;@override $BookingDetailsCopyWith<$Res>? get originalBooking;
 
 }
 /// @nodoc
@@ -297,7 +315,7 @@ class __$BookingStateCopyWithImpl<$Res>
 
 /// Create a copy of BookingState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? bookingDetails = null,Object? timeSlots = null,Object? timeKeys = null,Object? slotCount = null,Object? isLoading = null,Object? isSubmitting = null,Object? errorMessage = freezed,Object? successMessage = freezed,Object? courseCodeError = freezed,Object? dateError = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? bookingDetails = null,Object? timeSlots = null,Object? timeKeys = null,Object? slotCount = null,Object? isLoading = null,Object? isSubmitting = null,Object? errorMessage = freezed,Object? successMessage = freezed,Object? courseCodeError = freezed,Object? dateError = freezed,Object? isEditing = null,Object? originalBooking = freezed,Object? editingSlot = freezed,}) {
   return _then(_BookingState(
 bookingDetails: null == bookingDetails ? _self.bookingDetails : bookingDetails // ignore: cast_nullable_to_non_nullable
 as BookingDetails,timeSlots: null == timeSlots ? _self._timeSlots : timeSlots // ignore: cast_nullable_to_non_nullable
@@ -309,6 +327,9 @@ as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessag
 as String?,successMessage: freezed == successMessage ? _self.successMessage : successMessage // ignore: cast_nullable_to_non_nullable
 as String?,courseCodeError: freezed == courseCodeError ? _self.courseCodeError : courseCodeError // ignore: cast_nullable_to_non_nullable
 as String?,dateError: freezed == dateError ? _self.dateError : dateError // ignore: cast_nullable_to_non_nullable
+as String?,isEditing: null == isEditing ? _self.isEditing : isEditing // ignore: cast_nullable_to_non_nullable
+as bool,originalBooking: freezed == originalBooking ? _self.originalBooking : originalBooking // ignore: cast_nullable_to_non_nullable
+as BookingDetails?,editingSlot: freezed == editingSlot ? _self.editingSlot : editingSlot // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -321,6 +342,18 @@ $BookingDetailsCopyWith<$Res> get bookingDetails {
   
   return $BookingDetailsCopyWith<$Res>(_self.bookingDetails, (value) {
     return _then(_self.copyWith(bookingDetails: value));
+  });
+}/// Create a copy of BookingState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$BookingDetailsCopyWith<$Res>? get originalBooking {
+    if (_self.originalBooking == null) {
+    return null;
+  }
+
+  return $BookingDetailsCopyWith<$Res>(_self.originalBooking!, (value) {
+    return _then(_self.copyWith(originalBooking: value));
   });
 }
 }

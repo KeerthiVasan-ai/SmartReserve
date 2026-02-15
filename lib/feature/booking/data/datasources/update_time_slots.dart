@@ -30,7 +30,7 @@ class UpdateTimeSlots {
 
     try {
 
-      DateTime myDate = DateFormat("dd-MM-yyyy").parse(dateFromActivity);
+      DateTime myDate = DateFormat("yyyy-MM-dd").parse(dateFromActivity);
       String date = DateFormat('yyyy-MM-dd').format(myDate);
       dev.log(date,name: "Date");
 

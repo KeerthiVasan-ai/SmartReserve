@@ -10,8 +10,13 @@ import 'package:smart_reserve/core/presentation/widgets/custom_button.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/slots_widget.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_text_field.dart';
 
+import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart'; // Add import
+
 class BookingScreen extends ConsumerStatefulWidget {
-  const BookingScreen({Key? key}) : super(key: key);
+  final BookingDetails? existingBooking;
+  final String? editingSlot;
+
+  const BookingScreen({Key? key, this.existingBooking, this.editingSlot}) : super(key: key);
 
   @override
   ConsumerState<BookingScreen> createState() => _BookingScreenState();
@@ -25,6 +30,10 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   late TextEditingController courseCode;
   late TextEditingController date;
   
+  void _onCourseCodeChanged() {
+    ref.read(bookingProvider.notifier).updateCourseCode(courseCode.text);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -35,12 +44,17 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     
     // Initialize provider data
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(bookingProvider.notifier).initialize();
+      if (widget.existingBooking != null) {
+        ref.read(bookingProvider.notifier).initializeForEdit(
+          widget.existingBooking!,
+          editingSlot: widget.editingSlot,
+        );
+      } else {
+        ref.read(bookingProvider.notifier).initialize();
+      }
     });
     
-    courseCode.addListener(() {
-        ref.read(bookingProvider.notifier).updateCourseCode(courseCode.text);
-    });
+    courseCode.addListener(_onCourseCodeChanged);
   }
 
   @override
@@ -82,7 +96,13 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
             builder: (context) {
-                return VerifyScreen(bookingDetails: next.bookingDetails);
+                return VerifyScreen(
+                  bookingDetails: next.bookingDetails,
+                  isEditing: next.isEditing,
+                  oldSlot: next.editingSlot ??
+                      (next.isEditing ? next.originalBooking?.slots.firstOrNull : null),
+                  oldDate: next.isEditing ? next.originalBooking?.date : null,
+                );
             },
          ), (route) => false);
          
@@ -103,6 +123,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     if (details.date.isNotEmpty && date.text != details.date) {
         date.text = details.date;
     }
+    if (details.courseCode.isNotEmpty && courseCode.text != details.courseCode) {
+        courseCode.removeListener(_onCourseCodeChanged);
+        courseCode.text = details.courseCode;
+        courseCode.addListener(_onCourseCodeChanged);
+    }
     
 
 
@@ -110,7 +135,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: CustomAppBar(
-          title: "Book your Slot",
+          title: bookingState.isEditing ? "Edit Booking" : "Book your Slot",
           leading: IconButton(
             icon: const Icon(Icons.info_outline, color: Color(0xFF124076)),
             onPressed: () {
@@ -179,17 +204,62 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                               ),
                             ),
                             const SizedBox(height: 10.0),
+                            // Show hint when editing and date changed
+                            if (bookingState.isEditing &&
+                                bookingState.originalBooking != null &&
+                                details.date.isNotEmpty &&
+                                details.date != bookingState.originalBooking!.date)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber.shade50,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.amber.shade300),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.info_outline, color: Colors.amber.shade700, size: 18),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          "Editing: ${bookingState.editingSlot ?? bookingState.originalBooking!.slots.join(', ')} on ${bookingState.originalBooking!.date}",
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.amber.shade900,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            if (bookingState.isEditing &&
+                                bookingState.originalBooking != null &&
+                                details.date.isNotEmpty &&
+                                details.date != bookingState.originalBooking!.date)
+                              const SizedBox(height: 10.0),
                             BuildSlots(
                               timeSlots: bookingState.timeSlots,
                               onSlotsSelected: (slot) => ref.read(bookingProvider.notifier).toggleSlot(slot),
                               selectedSlots: details.slots,
+                              currentlyBookedSlots: () {
+                                if (!bookingState.isEditing) return <String>[];
+                                // Only show amber on the SAME date as original booking
+                                final isSameDate = details.date == bookingState.originalBooking?.date;
+                                if (!isSameDate) return <String>[];
+                                if (bookingState.editingSlot != null) return [bookingState.editingSlot!];
+                                return bookingState.originalBooking?.slots ?? <String>[];
+                              }(),
                             ),
                             const SizedBox(height: 20.0),
                             BuildElevatedButton(
                               actionOnButton: () {
                                 ref.read(bookingProvider.notifier).verifyAndSubmit();
                               },
-                              buttonText: "PROCEED TO BOOK",
+                              buttonText: bookingState.isEditing ? "UPDATE BOOKING" : "PROCEED TO BOOK",
                             )
                           ],
                         ),

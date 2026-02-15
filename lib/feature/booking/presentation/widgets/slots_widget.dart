@@ -5,11 +5,13 @@ class BuildSlots extends StatefulWidget {
   final Map<String, bool> timeSlots;
   final Function(String) onSlotsSelected;
   final List<String> selectedSlots;
+  final List<String> currentlyBookedSlots;
 
   const BuildSlots({
     required this.timeSlots,
     required this.onSlotsSelected,
     required this.selectedSlots,
+    this.currentlyBookedSlots = const [],
     super.key,
   });
 
@@ -29,8 +31,20 @@ class _BuildSlotsState extends State<BuildSlots> {
   Widget _buildSlot(String slot) {
     bool isAvailable = widget.timeSlots[slot] ?? false;
     bool isSelected = widget.selectedSlots.contains(slot);
-    Color buttonColor =
-    isAvailable ? (isSelected ? Colors.grey : Colors.green) : Colors.red;
+    bool isCurrentlyBooked = widget.currentlyBookedSlots.contains(slot);
+
+    Color buttonColor;
+    if (isSelected && isCurrentlyBooked) {
+      buttonColor = Colors.amber.shade700; // Keep amber when editing slot is selected
+    } else if (isSelected) {
+      buttonColor = Colors.grey;
+    } else if (isCurrentlyBooked) {
+      buttonColor = Colors.amber.shade700;
+    } else if (isAvailable) {
+      buttonColor = Colors.green;
+    } else {
+      buttonColor = Colors.red;
+    }
 
     return ElevatedButton(
       onPressed: () {
@@ -41,18 +55,16 @@ class _BuildSlotsState extends State<BuildSlots> {
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all<Color>(buttonColor),
       ),
-      /// To make a widget to fit - Need to code review.
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Text(
           slot,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 16, // or whatever size you want
+            fontSize: 16,
           ),
         ),
       ),
-
     );
   }
 

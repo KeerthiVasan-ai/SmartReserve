@@ -129,7 +129,7 @@ class _MainScreenState extends State<MainScreen> {
                 );
               }
 
-              return BuildListBuilder(bookings: bookings,isDelete: false,uid: uid,);
+              return BuildListBuilder(bookings: bookings,isDelete: true,uid: uid,);
             },
           ),
         ),

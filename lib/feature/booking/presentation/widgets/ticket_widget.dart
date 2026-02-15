@@ -6,13 +6,23 @@ import 'package:smart_reserve/feature/booking/presentation/widgets/ticket_painte
 class TicketUI extends StatelessWidget {
 
   final BookingDetails bookingDetails;
+  final bool isEditing;
+  final String? oldSlot;
+  final String? oldDate;
 
-  const TicketUI({required this.bookingDetails,super.key});
+  const TicketUI({
+    required this.bookingDetails,
+    this.isEditing = false,
+    this.oldSlot,
+    this.oldDate,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final bool dateChanged = isEditing && oldDate != null && oldDate != bookingDetails.date;
     return Container(
-      height: 220,
+      height: isEditing ? 260 : 220,
       margin: const EdgeInsets.all(16),
       width: MediaQuery.of(context).size.width,
       child: CustomPaint(
@@ -28,7 +38,7 @@ class TicketUI extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Summary : Dates and Slots',
+                    isEditing ? 'Update Summary' : 'Summary : Dates and Slots',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -44,32 +54,113 @@ class TicketUI extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    bookingDetails.date,
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
+              if (dateChanged)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      oldDate!,
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                        decoration: TextDecoration.lineThrough,
+                        color: Colors.red.shade700,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    Text(
+                      '  →  ',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      bookingDetails.date,
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.green.shade700,
+                      ),
+                    ),
+                  ],
+                )
+              else
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      bookingDetails.date,
+                      style: GoogleFonts.poppins(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
               const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    bookingDetails.slots.toString(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+              if (isEditing && oldSlot != null)
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'From: ',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.red.shade700,
+                          ),
+                        ),
+                        Text(
+                          oldSlot!,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.red.shade700,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'To: ',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.green.shade700,
+                          ),
+                        ),
+                        Text(
+                          bookingDetails.slots.toString(),
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green.shade700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              else
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      bookingDetails.slots.toString(),
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
