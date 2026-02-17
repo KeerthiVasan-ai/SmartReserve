@@ -6,20 +6,14 @@ import 'package:smart_reserve/core/constants/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 
-enum AppBlockState {
-  underMaintenance,
-  updateRequired,
-}
+enum AppBlockState { underMaintenance, updateRequired }
 
 class AppBlockedScreen extends StatefulWidget {
   final AppBlockState state;
 
   String? version = null;
-  AppBlockedScreen({
-    Key? key,
-    required this.state,
-    this.version,
-  }) : super(key: key);
+  AppBlockedScreen({Key? key, required this.state, this.version})
+    : super(key: key);
 
   @override
   State<AppBlockedScreen> createState() => _AppBlockedScreenState();
@@ -44,8 +38,9 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
         ? Colors.orangeAccent.shade700
         : Colors.blueAccent;
 
-    final String? actionText =
-        widget.state == AppBlockState.updateRequired ? "Update Now" : null;
+    final String? actionText = widget.state == AppBlockState.updateRequired
+        ? "Update Now"
+        : null;
 
     return BackgroundShapes(
       child: Scaffold(
@@ -108,8 +103,9 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
                             if (!browserLaunchSuccess && context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content:
-                                      Text('Could not open URL in browser'),
+                                  content: Text(
+                                    'Could not open URL in browser',
+                                  ),
                                 ),
                               );
                             }
@@ -117,7 +113,8 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text('Failed to launch URL')),
+                                  content: Text('Failed to launch URL'),
+                                ),
                               );
                             }
                           }
@@ -129,7 +126,9 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
                         backgroundColor: iconColor,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 24),
+                          vertical: 12,
+                          horizontal: 24,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

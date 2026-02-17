@@ -23,9 +23,11 @@ class InsertBookingDetails {
     }
   }
 
-  static Future<void> addBookingDetails(
-      {required String date,required String ticketId, required Map<String, dynamic> bookingData,
-      }) async {
+  static Future<void> addBookingDetails({
+    required String date,
+    required String ticketId,
+    required Map<String, dynamic> bookingData,
+  }) async {
     try {
       await FirebaseFirestore.instance
           .collection('bookingDetails')
@@ -35,7 +37,7 @@ class InsertBookingDetails {
           .set(bookingData);
       dev.log('Data added to Firestore successfully!', name: "Success");
       GCPLog.info('Global booking added: $ticketId on $date');
-    } catch (error){
+    } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to add global booking', error: error);
     }

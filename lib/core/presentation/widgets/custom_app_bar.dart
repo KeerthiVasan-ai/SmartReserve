@@ -26,10 +26,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return AppBar(
       title: Text(
         widget.title,
-        style: AppFonts.poppins(
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
-        ),
+        style: AppFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18),
       ),
       backgroundColor: Colors.transparent,
       centerTitle: true,

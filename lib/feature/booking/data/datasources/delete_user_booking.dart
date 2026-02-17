@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:developer" as dev;
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
-
 class DeleteUserBooking {
-
   static Future<void> deleteUserBookingSlots(
-      String userId, String bookingId, List<dynamic> slotsToRemove) async {
+    String userId,
+    String bookingId,
+    List<dynamic> slotsToRemove,
+  ) async {
     try {
       DocumentReference bookingReference = FirebaseFirestore.instance
           .collection('bookingUserDetails')
@@ -31,7 +32,9 @@ class DeleteUserBooking {
       }
 
       dev.log('Slots removed successfully!', name: "Success");
-      GCPLog.info('User booking slots removed: $bookingId, slots: $slotsToRemove');
+      GCPLog.info(
+        'User booking slots removed: $bookingId, slots: $slotsToRemove',
+      );
     } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to delete user booking slots', error: error);
@@ -39,7 +42,10 @@ class DeleteUserBooking {
   }
 
   static Future<void> deleteBookingSlots(
-      String date, String bookingId, List<dynamic> slotsToRemove) async {
+    String date,
+    String bookingId,
+    List<dynamic> slotsToRemove,
+  ) async {
     try {
       DocumentReference bookingReference = FirebaseFirestore.instance
           .collection('bookingDetails')
@@ -59,7 +65,9 @@ class DeleteUserBooking {
         if (currentSlots.isEmpty) {
           await bookingReference.delete();
           dev.log('Document deleted as no slots remain!', name: "Info");
-          GCPLog.info('Global booking document deleted (no slots): $bookingId on $date');
+          GCPLog.info(
+            'Global booking document deleted (no slots): $bookingId on $date',
+          );
         }
       }
 

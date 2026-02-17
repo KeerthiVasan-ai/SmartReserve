@@ -14,18 +14,20 @@ class BuildListBuilder extends ConsumerWidget {
   final bool isDelete;
   final String uid;
 
-  const BuildListBuilder(
-      {required this.bookings,
-      required this.isDelete,
-      required this.uid,
-      super.key});
+  const BuildListBuilder({
+    required this.bookings,
+    required this.isDelete,
+    required this.uid,
+    super.key,
+  });
 
   Future<void> _showDeleteDialog(
-      BuildContext context,
-      WidgetRef ref,
-      String ticketId,
-      String dateStr,
-      List<dynamic> allSlots) async {
+    BuildContext context,
+    WidgetRef ref,
+    String ticketId,
+    String dateStr,
+    List<dynamic> allSlots,
+  ) async {
     List<String> selectedSlots = [];
     final DateTime now = DateTime.now();
     final DateTime bookingDate = DateFormat("dd-MM-yyyy").parse(dateStr);
@@ -37,14 +39,14 @@ class BuildListBuilder extends ConsumerWidget {
     // Filter valid slots for deletion
     final validSlots = allSlots.where((slot) {
       if (!isToday) return true; // Future date, all slots valid
-      
+
       // Parse slot time (e.g., "09:00 - 10:00")
       try {
         final startTimeStr = slot.toString().split("-")[0].trim(); // "09:00"
         final startTimeParts = startTimeStr.split(":");
         final startHour = int.parse(startTimeParts[0]);
         final startMinute = int.parse(startTimeParts[1]);
-        
+
         final slotStartTime = DateTime(
           now.year,
           now.month,
@@ -54,7 +56,9 @@ class BuildListBuilder extends ConsumerWidget {
         );
 
         // Check if current time is more than 15 minutes before slot start
-        return now.isBefore(slotStartTime.subtract(const Duration(minutes: 15)));
+        return now.isBefore(
+          slotStartTime.subtract(const Duration(minutes: 15)),
+        );
       } catch (e) {
         dev.log("Error parsing slot time: $slot", name: "Error");
         return false;
@@ -63,7 +67,11 @@ class BuildListBuilder extends ConsumerWidget {
 
     if (validSlots.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No slots available for cancellation (less than 15 mins remaining).")),
+        const SnackBar(
+          content: Text(
+            "No slots available for cancellation (less than 15 mins remaining).",
+          ),
+        ),
       );
       return;
     }
@@ -74,7 +82,9 @@ class BuildListBuilder extends ConsumerWidget {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text("Cancel Booking"),
-          content: Text("Are you sure you want to cancel the booking for ${allSlots.first}?"),
+          content: Text(
+            "Are you sure you want to cancel the booking for ${allSlots.first}?",
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -83,7 +93,9 @@ class BuildListBuilder extends ConsumerWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                ref.read(bookingProvider.notifier).deleteBooking(uid, ticketId, dateStr, allSlots);
+                ref
+                    .read(bookingProvider.notifier)
+                    .deleteBooking(uid, ticketId, dateStr, allSlots);
               },
               child: const Text("Yes"),
             ),
@@ -103,25 +115,29 @@ class BuildListBuilder extends ConsumerWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: allSlots.map((slot) {
-                       final isValid = validSlots.contains(slot);
-                       return CheckboxListTile(
+                      final isValid = validSlots.contains(slot);
+                      return CheckboxListTile(
                         title: Text(
-                          slot.toString(), 
+                          slot.toString(),
                           style: TextStyle(
                             color: isValid ? Colors.black : Colors.grey,
-                            decoration: isValid ? null : TextDecoration.lineThrough,
+                            decoration: isValid
+                                ? null
+                                : TextDecoration.lineThrough,
                           ),
                         ),
                         value: selectedSlots.contains(slot),
-                        onChanged: isValid ? (bool? value) {
-                          setState(() {
-                            if (value == true) {
-                              selectedSlots.add(slot.toString());
-                            } else {
-                              selectedSlots.remove(slot.toString());
-                            }
-                          });
-                        } : null, // Disable if not valid
+                        onChanged: isValid
+                            ? (bool? value) {
+                                setState(() {
+                                  if (value == true) {
+                                    selectedSlots.add(slot.toString());
+                                  } else {
+                                    selectedSlots.remove(slot.toString());
+                                  }
+                                });
+                              }
+                            : null, // Disable if not valid
                       );
                     }).toList(),
                   ),
@@ -132,15 +148,24 @@ class BuildListBuilder extends ConsumerWidget {
                     child: const Text("Cancel"),
                   ),
                   TextButton(
-                    onPressed: selectedSlots.isEmpty ? null : () {
-                      Navigator.pop(context);
-                      ref.read(bookingProvider.notifier).deleteBooking(uid, ticketId, dateStr, selectedSlots);
-                    },
+                    onPressed: selectedSlots.isEmpty
+                        ? null
+                        : () {
+                            Navigator.pop(context);
+                            ref
+                                .read(bookingProvider.notifier)
+                                .deleteBooking(
+                                  uid,
+                                  ticketId,
+                                  dateStr,
+                                  selectedSlots,
+                                );
+                          },
                     child: const Text("Delete Selected"),
                   ),
                 ],
               );
-            }
+            },
           );
         },
       );
@@ -148,9 +173,10 @@ class BuildListBuilder extends ConsumerWidget {
   }
 
   void _showEditDialog(
-      BuildContext context,
-      Map<String, dynamic> data,
-      List<dynamic> allSlots) {
+    BuildContext context,
+    Map<String, dynamic> data,
+    List<dynamic> allSlots,
+  ) {
     final DateTime now = DateTime.now();
     final String dateStr = data['date'];
     final DateTime bookingDate = DateFormat("dd-MM-yyyy").parse(dateStr);
@@ -168,9 +194,15 @@ class BuildListBuilder extends ConsumerWidget {
         final startHour = int.parse(startTimeParts[0]);
         final startMinute = int.parse(startTimeParts[1]);
         final slotStartTime = DateTime(
-          now.year, now.month, now.day, startHour, startMinute,
+          now.year,
+          now.month,
+          now.day,
+          startHour,
+          startMinute,
         );
-        return now.isBefore(slotStartTime.subtract(const Duration(minutes: 15)));
+        return now.isBefore(
+          slotStartTime.subtract(const Duration(minutes: 15)),
+        );
       } catch (e) {
         dev.log("Error parsing slot time: $slot", name: "Error");
         return false;
@@ -179,7 +211,11 @@ class BuildListBuilder extends ConsumerWidget {
 
     if (validSlots.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No slots available for editing (less than 15 mins remaining).")),
+        const SnackBar(
+          content: Text(
+            "No slots available for editing (less than 15 mins remaining).",
+          ),
+        ),
       );
       return;
     }
@@ -203,20 +239,23 @@ class BuildListBuilder extends ConsumerWidget {
                     ),
                   ),
                   enabled: isValid,
-                  onTap: isValid ? () {
-                    Navigator.pop(context);
-                    final booking = BookingDetails.fromJson(data)
-                        .copyWith(ticketId: data['ticketId']);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BookingScreen(
-                          existingBooking: booking,
-                          editingSlot: slot.toString(),
-                        ),
-                      ),
-                    );
-                  } : null,
+                  onTap: isValid
+                      ? () {
+                          Navigator.pop(context);
+                          final booking = BookingDetails.fromJson(
+                            data,
+                          ).copyWith(ticketId: data['ticketId']);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookingScreen(
+                                existingBooking: booking,
+                                editingSlot: slot.toString(),
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
                 );
               }).toList(),
             ),
@@ -255,19 +294,31 @@ class BuildListBuilder extends ConsumerWidget {
                     Text(
                       "${data['tokenNumber']}",
                       style: AppFonts.ebGaramond(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     Text(
                       "${data['courseCode']}",
                       style: AppFonts.ebGaramond(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                    Text("${data['date']}",
-                        style: AppFonts.ebGaramond(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    Text("Slots: ${data['slots'].join(', ')}",
-                        style: AppFonts.ebGaramond(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(
+                      "${data['date']}",
+                      style: AppFonts.ebGaramond(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      "Slots: ${data['slots'].join(', ')}",
+                      style: AppFonts.ebGaramond(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ],
                 ),
                 if (isDelete) const Spacer(),
@@ -280,12 +331,14 @@ class BuildListBuilder extends ConsumerWidget {
                           final slots = data['slots'] as List<dynamic>;
                           if (slots.length == 1) {
                             // Single slot — navigate directly
-                            final booking = BookingDetails.fromJson(data)
-                                .copyWith(ticketId: data['ticketId']);
+                            final booking = BookingDetails.fromJson(
+                              data,
+                            ).copyWith(ticketId: data['ticketId']);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BookingScreen(existingBooking: booking),
+                                builder: (context) =>
+                                    BookingScreen(existingBooking: booking),
                               ),
                             );
                           } else {
@@ -307,7 +360,7 @@ class BuildListBuilder extends ConsumerWidget {
                         },
                       ),
                     ],
-                  )
+                  ),
               ],
             ),
           ),

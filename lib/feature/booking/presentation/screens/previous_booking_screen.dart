@@ -10,7 +10,6 @@ import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_user_booking.dart';
 
 class OlderBookingScreen extends StatefulWidget {
-
   const OlderBookingScreen({super.key});
 
   @override
@@ -31,23 +30,21 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
             stream: FetchUserBooking.fetchBookingDetails(uid),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
 
               if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
+                return Center(child: Text('Error: ${snapshot.error}'));
               }
 
               var sortedDocs = snapshot.data!.docs.toList()
                 ..sort((a, b) {
-                  var aDate = DateFormat("dd-MM-yyyy")
-                      .parse((a.data() as Map<String, dynamic>)['date']);
-                  var bDate = DateFormat("dd-MM-yyyy")
-                      .parse((b.data() as Map<String, dynamic>)['date']);
+                  var aDate = DateFormat(
+                    "dd-MM-yyyy",
+                  ).parse((a.data() as Map<String, dynamic>)['date']);
+                  var bDate = DateFormat(
+                    "dd-MM-yyyy",
+                  ).parse((b.data() as Map<String, dynamic>)['date']);
                   return aDate.compareTo(bDate);
                 });
 
@@ -56,11 +53,12 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
               dev.log(today.toString());
 
               for (var doc in sortedDocs) {
-                DateTime bookingDate =
-                DateFormat("dd-MM-yyyy").parse(doc['date']);
+                DateTime bookingDate = DateFormat(
+                  "dd-MM-yyyy",
+                ).parse(doc['date']);
                 if (!(bookingDate.year == today.year &&
-                    bookingDate.month == today.month &&
-                    bookingDate.day == today.day) &&
+                        bookingDate.month == today.month &&
+                        bookingDate.day == today.day) &&
                     !bookingDate.isAfter(today)) {
                   previousBooking.add(doc);
                 }
@@ -68,12 +66,14 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
               dev.log(previousBooking.length.toString());
 
               if (previousBooking.isEmpty) {
-                return const Center(
-                  child: Text('No Booking available.'),
-                );
+                return const Center(child: Text('No Booking available.'));
               }
 
-              return BuildListBuilder(bookings: previousBooking,isDelete: false,uid: uid);
+              return BuildListBuilder(
+                bookings: previousBooking,
+                isDelete: false,
+                uid: uid,
+              );
             },
           ),
         ),

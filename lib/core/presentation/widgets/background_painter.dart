@@ -15,10 +15,7 @@ class BackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
-    paint.maskFilter = const MaskFilter.blur(
-      BlurStyle.normal,
-      30,
-    );
+    paint.maskFilter = const MaskFilter.blur(BlurStyle.normal, 30);
     drawShape1(canvas, size, paint, const Color(0xFF15F5BA));
     drawShape2(canvas, size, paint, const Color(0xFFFFFB73));
     drawShape3(canvas, size, paint, const Color(0xFFE6A4B4));
@@ -29,12 +26,7 @@ class BackgroundPainter extends CustomPainter {
     return oldDelegate != this;
   }
 
-  void drawShape1(
-      Canvas canvas,
-      Size size,
-      Paint paint,
-      Color color,
-      ) {
+  void drawShape1(Canvas canvas, Size size, Paint paint, Color color) {
     paint.color = color;
     Path path = Path();
 
@@ -50,12 +42,7 @@ class BackgroundPainter extends CustomPainter {
     canvas.drawCircle(offset, 150, paint);
   }
 
-  void drawShape2(
-      Canvas canvas,
-      Size size,
-      Paint paint,
-      Color color,
-      ) {
+  void drawShape2(Canvas canvas, Size size, Paint paint, Color color) {
     paint.color = color;
     Path path = Path();
 
@@ -71,22 +58,12 @@ class BackgroundPainter extends CustomPainter {
     canvas.drawCircle(offset, 250, paint);
   }
 
-  void drawShape3(
-      Canvas canvas,
-      Size size,
-      Paint paint,
-      Color color,
-      ) {
+  void drawShape3(Canvas canvas, Size size, Paint paint, Color color) {
     paint.color = color;
     Path path = Path();
 
     path.moveTo(0, 0);
-    path.quadraticBezierTo(
-      0,
-      size.height,
-      size.width / 3,
-      size.height / 3,
-    );
+    path.quadraticBezierTo(0, size.height, size.width / 3, size.height / 3);
 
     final offset = getOffset(path);
     canvas.drawCircle(offset, 250, paint);

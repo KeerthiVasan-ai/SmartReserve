@@ -4,8 +4,11 @@ class BuildElevatedButton extends StatelessWidget {
   final Function() actionOnButton;
   final String buttonText;
 
-  const BuildElevatedButton(
-      {super.key, required this.actionOnButton, required this.buttonText});
+  const BuildElevatedButton({
+    super.key,
+    required this.actionOnButton,
+    required this.buttonText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,9 @@ class BuildElevatedButton extends StatelessWidget {
         child: Text(
           buttonText.toUpperCase(),
           style: const TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.blueGrey),
+            fontWeight: FontWeight.bold,
+            color: Colors.blueGrey,
+          ),
         ),
       ),
     );

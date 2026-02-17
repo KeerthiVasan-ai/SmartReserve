@@ -9,8 +9,10 @@ class FetchServerDetails {
 
   static Future<ServerDetails> checkIsAppUnderMaintenance() async {
     try {
-      DocumentSnapshot<Map<String, dynamic>> snapshot =
-      await _firestore.collection("constants").doc("server").get();
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await _firestore
+          .collection("constants")
+          .doc("server")
+          .get();
 
       final data = snapshot.data();
       if (data == null) {
@@ -19,7 +21,10 @@ class FetchServerDetails {
 
       return ServerDetails.fromJson(data);
     } catch (error) {
-      dev.log("Failed to fetch server details: $error", name: "FetchServerDetails");
+      dev.log(
+        "Failed to fetch server details: $error",
+        name: "FetchServerDetails",
+      );
       GCPLog.error('Failed to fetch server details', error: error);
 
       return const ServerDetails(

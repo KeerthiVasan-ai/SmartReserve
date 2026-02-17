@@ -26,16 +26,19 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: mail.text);
       dev.log("Mail Sent", name: "Success");
       GCPLog.info('Password reset email sent to ${mail.text}');
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Mail Sent")));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Mail Sent")));
       Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (route) => false);
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (route) => false,
+      );
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'invalid-email'){
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Invalid Email")));
+      if (e.code == 'invalid-email') {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Invalid Email")));
       }
     }
   }
@@ -56,7 +59,9 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 0.0, horizontal: 30.0),
+                      vertical: 0.0,
+                      horizontal: 30.0,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +88,7 @@ class _ForgetPasswordScreen extends State<ForgetPasswordScreen> {
                   BuildElevatedButton(
                     actionOnButton: _sendMail,
                     buttonText: "Get Password Reset Link",
-                  )
+                  ),
                 ],
               ),
             ),

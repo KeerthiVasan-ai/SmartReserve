@@ -6,11 +6,12 @@ class FrostedGlassUI extends StatelessWidget {
   final double theHeight;
   final Widget theChild;
 
-  const FrostedGlassUI(
-      {required this.theWidth,
-      required this.theHeight,
-      required this.theChild,
-      super.key});
+  const FrostedGlassUI({
+    required this.theWidth,
+    required this.theHeight,
+    required this.theChild,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +34,16 @@ class FrostedGlassUI extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: Colors.white.withOpacity(0.70)),
                   gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withOpacity(0.30),
-                        Colors.white.withOpacity(0.10)
-                      ]),
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white.withOpacity(0.30),
+                      Colors.white.withOpacity(0.10),
+                    ],
+                  ),
                 ),
               ),
-              Center(
-                child: theChild,
-              )
+              Center(child: theChild),
             ],
           ),
         ),

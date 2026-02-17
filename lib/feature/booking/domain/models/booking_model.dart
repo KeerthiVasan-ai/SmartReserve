@@ -14,6 +14,9 @@ sealed class BookingDetails with _$BookingDetails {
     @Default('') String date,
     @Default([]) List<String> slots,
     @Default('') String slotKey,
+    @Default('2216-Hall') String hall,
+    @Default('') String startTime,
+    @Default('') String endTime,
   }) = _BookingDetails;
 
   factory BookingDetails.fromJson(Map<String, dynamic> json) =>

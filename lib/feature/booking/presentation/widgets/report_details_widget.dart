@@ -1,7 +1,11 @@
 import "package:flutter/material.dart";
 
 class BuildReportDetails extends StatelessWidget {
-  const BuildReportDetails({super.key,required this.title,required this.data});
+  const BuildReportDetails({
+    super.key,
+    required this.title,
+    required this.data,
+  });
 
   final String title;
   final String data;
@@ -28,7 +32,7 @@ class BuildReportDetails extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
             child: Padding(
-              padding: const EdgeInsets.all( 8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Text(
                 data,
                 style: const TextStyle(
@@ -39,7 +43,7 @@ class BuildReportDetails extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

@@ -55,9 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
         const Duration(seconds: 10),
         () => Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => const Auth(),
-          ),
+          MaterialPageRoute(builder: (context) => const Auth()),
         ),
       );
     }
@@ -76,12 +74,16 @@ class _SplashScreenState extends State<SplashScreen> {
                 Text(
                   "Smart Reserve",
                   style: AppFonts.poppins(
-                      fontWeight: FontWeight.bold, fontSize: 24.0),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
                 ),
                 Text(
                   "v1.4.0-Stable",
                   style: AppFonts.firaSans(
-                      fontWeight: FontWeight.bold, fontSize: 12.0),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12.0,
+                  ),
                 ),
               ],
             ),

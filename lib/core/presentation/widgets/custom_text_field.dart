@@ -8,19 +8,20 @@ class BuildTextForm extends StatelessWidget {
   final Function()? onTap;
   final String? errorText;
 
-  const BuildTextForm(
-      {super.key,
-        required this.controller,
-        required this.label,
-        required this.readOnly,
-        required this.prefixIcon,
-        this.onTap,
-        this.errorText});
+  const BuildTextForm({
+    super.key,
+    required this.controller,
+    required this.label,
+    required this.readOnly,
+    required this.prefixIcon,
+    this.onTap,
+    this.errorText,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 4.0),
       child: TextFormField(
         // validator: (value){
         //   if (errorText != null) return errorText;
@@ -39,12 +40,12 @@ class BuildTextForm extends StatelessWidget {
           prefixIcon: prefixIcon,
           errorText: errorText, // Pass error text directly
           border: const OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF124076))
+            borderSide: BorderSide(color: Color(0xFF124076)),
           ),
           focusedBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black)
+            borderSide: BorderSide(color: Colors.black),
           ),
-          labelStyle: const TextStyle(color: Color(0xFF124076))
+          labelStyle: const TextStyle(color: Color(0xFF124076)),
         ),
       ),
     );

@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 import 'package:smart_reserve/feature/auth/presentation/screens/login_screen.dart';
 import 'package:smart_reserve/feature/home/presentation/screens/main_screen.dart';
 
-
 class Auth extends StatelessWidget {
   const Auth({Key? key}) : super(key: key);
 
@@ -12,14 +11,14 @@ class Auth extends StatelessWidget {
     return Scaffold(
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context,snapshot){
-          if(snapshot.hasData){
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
             return const MainScreen();
-          } else{
+          } else {
             return const LoginScreen();
           }
         },
-      )
+      ),
     );
   }
 }

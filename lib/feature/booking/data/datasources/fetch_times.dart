@@ -9,8 +9,9 @@ class FetchTimes {
     try {
       QuerySnapshot querySnapshot = await _firestore.collection("time").get();
 
-      List<String> timeSlots =
-          querySnapshot.docs.map((doc) => doc["slot"].toString()).toList();
+      List<String> timeSlots = querySnapshot.docs
+          .map((doc) => doc["slot"].toString())
+          .toList();
 
       return timeSlots;
     } catch (e) {

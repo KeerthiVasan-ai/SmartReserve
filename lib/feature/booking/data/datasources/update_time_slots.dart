@@ -3,57 +3,68 @@ import 'dart:developer' as dev;
 import 'package:intl/intl.dart';
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
-
 class UpdateTimeSlots {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  static Future<void> insertSlots(String date,List<String> selectedSlots,bool available) async {
+  static Future<void> insertSlots(
+    String date,
+    List<String> selectedSlots,
+    bool available,
+  ) async {
     try {
-      DocumentReference documentReference = _firestore.collection("timeSlots")
+      DocumentReference documentReference = _firestore
+          .collection("timeSlots")
           .doc(date)
           .collection("availability")
           .doc("slots");
       DocumentSnapshot snapshot = await documentReference.get();
-      Map<String,dynamic> data = snapshot.data() as Map<String,dynamic>;
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-      for(String slots in selectedSlots){
+      for (String slots in selectedSlots) {
         data[slots] = available;
       }
 
       await documentReference.update(data);
-      dev.log("Success",name:"Message");
-      GCPLog.info('Time slots inserted: $selectedSlots on $date (available=$available)');
-    } catch (e){
-      dev.log(e.toString(),name:"Error");
+      dev.log("Success", name: "Message");
+      GCPLog.info(
+        'Time slots inserted: $selectedSlots on $date (available=$available)',
+      );
+    } catch (e) {
+      dev.log(e.toString(), name: "Error");
       GCPLog.error('Failed to insert time slots', error: e);
     }
   }
 
-  static Future<void> deleteSlot(String dateFromActivity,List<dynamic> selectedSlots,bool available) async {
-
+  static Future<void> deleteSlot(
+    String dateFromActivity,
+    List<dynamic> selectedSlots,
+    bool available,
+  ) async {
     try {
-
       DateTime myDate = DateFormat("yyyy-MM-dd").parse(dateFromActivity);
       String date = DateFormat('yyyy-MM-dd').format(myDate);
-      dev.log(date,name: "Date");
+      dev.log(date, name: "Date");
 
-      DocumentReference documentReference = _firestore.collection("timeSlots")
+      DocumentReference documentReference = _firestore
+          .collection("timeSlots")
           .doc(date)
           .collection("availability")
           .doc("slots");
 
       DocumentSnapshot snapshot = await documentReference.get();
-      Map<String,dynamic> data = snapshot.data() as Map<String,dynamic>;
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-      for(String slots in selectedSlots){
+      for (String slots in selectedSlots) {
         data[slots] = available;
       }
 
       await documentReference.update(data);
-      dev.log("Success",name:"Message");
-      GCPLog.info('Time slots deleted: $selectedSlots on $date (available=$available)');
-    } catch (e){
-      dev.log(e.toString(),name:"Error");
+      dev.log("Success", name: "Message");
+      GCPLog.info(
+        'Time slots deleted: $selectedSlots on $date (available=$available)',
+      );
+    } catch (e) {
+      dev.log(e.toString(), name: "Error");
       GCPLog.error('Failed to delete time slots', error: e);
     }
   }

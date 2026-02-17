@@ -8,14 +8,15 @@ class BuildLoginTextForm extends StatefulWidget {
   final bool isPassword;
   final Function()? onTap;
 
-  BuildLoginTextForm(
-      {super.key,
-      required this.controller,
-      required this.label,
-      required this.readOnly,
-      required this.obscureText,
-      required this.isPassword,
-      this.onTap});
+  BuildLoginTextForm({
+    super.key,
+    required this.controller,
+    required this.label,
+    required this.readOnly,
+    required this.obscureText,
+    required this.isPassword,
+    this.onTap,
+  });
 
   @override
   State<BuildLoginTextForm> createState() => _BuildLoginTextFormState();

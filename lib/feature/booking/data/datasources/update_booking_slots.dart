@@ -40,7 +40,9 @@ class UpdateBookingSlots {
       });
 
       dev.log('Slot swapped successfully in user booking!', name: "Success");
-      GCPLog.info('User booking slot swapped: $oldSlot → $newSlot (ticket: $ticketId)');
+      GCPLog.info(
+        'User booking slot swapped: $oldSlot → $newSlot (ticket: $ticketId)',
+      );
     } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to swap slot in user booking', error: error);
@@ -65,7 +67,10 @@ class UpdateBookingSlots {
 
       final docSnapshot = await bookingRef.get();
       if (!docSnapshot.exists) {
-        dev.log('Global booking doc not found at $date/$ticketId, skipping global swap.', name: "Warning");
+        dev.log(
+          'Global booking doc not found at $date/$ticketId, skipping global swap.',
+          name: "Warning",
+        );
         GCPLog.warning('Global booking doc not found: $date/$ticketId');
         return;
       }
@@ -86,7 +91,9 @@ class UpdateBookingSlots {
       });
 
       dev.log('Slot swapped successfully in global booking!', name: "Success");
-      GCPLog.info('Global booking slot swapped: $oldSlot → $newSlot (ticket: $ticketId)');
+      GCPLog.info(
+        'Global booking slot swapped: $oldSlot → $newSlot (ticket: $ticketId)',
+      );
     } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to swap slot in global booking', error: error);
@@ -123,7 +130,8 @@ class UpdateBookingSlots {
       final userSnapshot = await userBookingRef.get();
       if (userSnapshot.exists) {
         final remainingSlots =
-            (userSnapshot.data() as Map<String, dynamic>)['slots'] as List? ?? [];
+            (userSnapshot.data() as Map<String, dynamic>)['slots'] as List? ??
+            [];
         if (remainingSlots.isEmpty) {
           await userBookingRef.delete();
         }
@@ -146,26 +154,36 @@ class UpdateBookingSlots {
         final globalSnapshot = await oldGlobalRef.get();
         if (globalSnapshot.exists) {
           final remainingSlots =
-              (globalSnapshot.data() as Map<String, dynamic>)['slots'] as List? ?? [];
+              (globalSnapshot.data() as Map<String, dynamic>)['slots']
+                  as List? ??
+              [];
           if (remainingSlots.isEmpty) {
             await oldGlobalRef.delete();
           }
         }
       } else {
-        dev.log('Global booking doc not found at $oldDate/$ticketId, skipping.', name: "Warning");
-        GCPLog.warning('Global booking doc not found for move: $oldDate/$ticketId');
+        dev.log(
+          'Global booking doc not found at $oldDate/$ticketId, skipping.',
+          name: "Warning",
+        );
+        GCPLog.warning(
+          'Global booking doc not found for move: $oldDate/$ticketId',
+        );
       }
 
       // 3. Create new booking entry for the new date
       await InsertNewSlotBooking.addSlotBooking(
         uid: userId,
         date: newDate,
-        ticketId: '${ticketId}_${newSlot.replaceAll(' ', '').replaceAll(':', '')}',
+        ticketId:
+            '${ticketId}_${newSlot.replaceAll(' ', '').replaceAll(':', '')}',
         bookingData: fullBookingData,
       );
 
       dev.log('Slot moved to new date successfully!', name: "Success");
-      GCPLog.info('Slot moved: $oldSlot@$oldDate → $newSlot@$newDate (ticket: $ticketId)');
+      GCPLog.info(
+        'Slot moved: $oldSlot@$oldDate → $newSlot@$newDate (ticket: $ticketId)',
+      );
     } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to move slot to new date', error: error);

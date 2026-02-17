@@ -8,15 +8,18 @@ class FetchToken {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   static Future<String?> fetchToken() async {
-    try{
+    try {
       String uid = _auth.currentUser!.uid;
-      DocumentSnapshot<Map<String,dynamic>> snapshot = await _firestore.collection("tokenNumber").doc(uid).get();
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await _firestore
+          .collection("tokenNumber")
+          .doc(uid)
+          .get();
       String? name = snapshot.data()?['token'];
-      dev.log(name!,name: "TokenNumber");
+      dev.log(name!, name: "TokenNumber");
       GCPLog.info('Token fetched successfully');
       return name;
-    } catch(error){
-      dev.log(error.toString(),name:"Error");
+    } catch (error) {
+      dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to fetch token', error: error);
       return null;
     }

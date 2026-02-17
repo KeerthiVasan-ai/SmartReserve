@@ -63,10 +63,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           title: Text(
             "Smart Reserve",
-            style: AppFonts.poppins(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
+            style: AppFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           backgroundColor: Colors.transparent,
           centerTitle: true,

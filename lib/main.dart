@@ -20,8 +20,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          floatingActionButtonTheme: const FloatingActionButtonThemeData(
-              backgroundColor: Colors.white),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.white,
+        ),
       ),
       debugShowCheckedModeBanner: false,
       title: "Smart Reserve",

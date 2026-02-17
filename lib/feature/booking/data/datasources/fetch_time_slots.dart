@@ -12,11 +12,11 @@ class FetchTimeSlots {
         .collection("availability")
         .doc("slots")
         .get();
-    Map<String,bool> timeSlots = {};
-    if(documentSnapshot.exists) {
-      timeSlots = Map<String,bool>.from(documentSnapshot.data() as Map);
+    Map<String, bool> timeSlots = {};
+    if (documentSnapshot.exists) {
+      timeSlots = Map<String, bool>.from(documentSnapshot.data() as Map);
     } else {
-      dev.log("No Slots Found",name:"Error");
+      dev.log("No Slots Found", name: "Error");
       GCPLog.warning('No time slots found for date: $date');
     }
     return timeSlots;

@@ -9,7 +9,9 @@ class FetchSlotBooker {
   /// Returns a map with 'name', 'tokenNumber', and 'courseCode' if found,
   /// or null if no booking exists for that slot.
   static Future<Map<String, String>?> fetchBooker(
-      String date, String slot) async {
+    String date,
+    String slot,
+  ) async {
     try {
       final querySnapshot = await _firestore
           .collection('bookingDetails')
@@ -20,8 +22,10 @@ class FetchSlotBooker {
           .get();
 
       if (querySnapshot.docs.isEmpty) {
-        dev.log('No booker found for slot $slot on $date',
-            name: 'FetchSlotBooker');
+        dev.log(
+          'No booker found for slot $slot on $date',
+          name: 'FetchSlotBooker',
+        );
         GCPLog.warning('No booker found for slot $slot on $date');
         return null;
       }

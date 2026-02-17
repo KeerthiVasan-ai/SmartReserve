@@ -32,9 +32,10 @@ class VerifyScreen extends StatefulWidget {
 class _VerifyScreenState extends State<VerifyScreen> {
   void backToHome() {
     Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-        (route) => false);
+      context,
+      MaterialPageRoute(builder: (context) => const MainScreen()),
+      (route) => false,
+    );
   }
 
   @override
@@ -49,13 +50,22 @@ class _VerifyScreenState extends State<VerifyScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Smart Reserve", style: AppFonts.poppins(fontWeight: FontWeight.bold, fontSize: 20)),
+              Text(
+                "Smart Reserve",
+                style: AppFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
               const SizedBox(height: 10),
               Text(
                 widget.isEditing
                     ? "Your Booking was Updated Successfully"
                     : "Your Booking was Confirmed",
-                style: AppFonts.ebGaramond(fontWeight: FontWeight.bold, fontSize: 20),
+                style: AppFonts.ebGaramond(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
               const SizedBox(height: 10),
               TicketUI(
@@ -64,7 +74,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 oldSlot: widget.oldSlot,
                 oldDate: widget.oldDate,
               ),
-              BuildElevatedButton(actionOnButton: backToHome, buttonText: "Home")
+              BuildElevatedButton(
+                actionOnButton: backToHome,
+                buttonText: "Home",
+              ),
             ],
           ),
         ),

@@ -18,6 +18,9 @@ _BookingDetails _$BookingDetailsFromJson(Map<String, dynamic> json) =>
           (json['slots'] as List<dynamic>?)?.map((e) => e as String).toList() ??
           const [],
       slotKey: json['slotKey'] as String? ?? '',
+      hall: json['hall'] as String? ?? '2216-Hall',
+      startTime: json['startTime'] as String? ?? '',
+      endTime: json['endTime'] as String? ?? '',
     );
 
 Map<String, dynamic> _$BookingDetailsToJson(_BookingDetails instance) =>
@@ -30,4 +33,7 @@ Map<String, dynamic> _$BookingDetailsToJson(_BookingDetails instance) =>
       'date': instance.date,
       'slots': instance.slots,
       'slotKey': instance.slotKey,
+      'hall': instance.hall,
+      'startTime': instance.startTime,
+      'endTime': instance.endTime,
     };

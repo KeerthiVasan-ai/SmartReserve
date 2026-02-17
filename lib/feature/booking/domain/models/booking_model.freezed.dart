@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BookingDetails {
 
- String get ticketId; String get tokenNumber; String get name; String get week; String get courseCode; String get date; List<String> get slots; String get slotKey;
+ String get ticketId; String get tokenNumber; String get name; String get week; String get courseCode; String get date; List<String> get slots; String get slotKey; String get hall; String get startTime; String get endTime;
 /// Create a copy of BookingDetails
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $BookingDetailsCopyWith<BookingDetails> get copyWith => _$BookingDetailsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookingDetails&&(identical(other.ticketId, ticketId) || other.ticketId == ticketId)&&(identical(other.tokenNumber, tokenNumber) || other.tokenNumber == tokenNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.week, week) || other.week == week)&&(identical(other.courseCode, courseCode) || other.courseCode == courseCode)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other.slots, slots)&&(identical(other.slotKey, slotKey) || other.slotKey == slotKey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookingDetails&&(identical(other.ticketId, ticketId) || other.ticketId == ticketId)&&(identical(other.tokenNumber, tokenNumber) || other.tokenNumber == tokenNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.week, week) || other.week == week)&&(identical(other.courseCode, courseCode) || other.courseCode == courseCode)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other.slots, slots)&&(identical(other.slotKey, slotKey) || other.slotKey == slotKey)&&(identical(other.hall, hall) || other.hall == hall)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticketId,tokenNumber,name,week,courseCode,date,const DeepCollectionEquality().hash(slots),slotKey);
+int get hashCode => Object.hash(runtimeType,ticketId,tokenNumber,name,week,courseCode,date,const DeepCollectionEquality().hash(slots),slotKey,hall,startTime,endTime);
 
 @override
 String toString() {
-  return 'BookingDetails(ticketId: $ticketId, tokenNumber: $tokenNumber, name: $name, week: $week, courseCode: $courseCode, date: $date, slots: $slots, slotKey: $slotKey)';
+  return 'BookingDetails(ticketId: $ticketId, tokenNumber: $tokenNumber, name: $name, week: $week, courseCode: $courseCode, date: $date, slots: $slots, slotKey: $slotKey, hall: $hall, startTime: $startTime, endTime: $endTime)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $BookingDetailsCopyWith<$Res>  {
   factory $BookingDetailsCopyWith(BookingDetails value, $Res Function(BookingDetails) _then) = _$BookingDetailsCopyWithImpl;
 @useResult
 $Res call({
- String ticketId, String tokenNumber, String name, String week, String courseCode, String date, List<String> slots, String slotKey
+ String ticketId, String tokenNumber, String name, String week, String courseCode, String date, List<String> slots, String slotKey, String hall, String startTime, String endTime
 });
 
 
@@ -65,7 +65,7 @@ class _$BookingDetailsCopyWithImpl<$Res>
 
 /// Create a copy of BookingDetails
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ticketId = null,Object? tokenNumber = null,Object? name = null,Object? week = null,Object? courseCode = null,Object? date = null,Object? slots = null,Object? slotKey = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ticketId = null,Object? tokenNumber = null,Object? name = null,Object? week = null,Object? courseCode = null,Object? date = null,Object? slots = null,Object? slotKey = null,Object? hall = null,Object? startTime = null,Object? endTime = null,}) {
   return _then(_self.copyWith(
 ticketId: null == ticketId ? _self.ticketId : ticketId // ignore: cast_nullable_to_non_nullable
 as String,tokenNumber: null == tokenNumber ? _self.tokenNumber : tokenNumber // ignore: cast_nullable_to_non_nullable
@@ -75,6 +75,9 @@ as String,courseCode: null == courseCode ? _self.courseCode : courseCode // igno
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,slots: null == slots ? _self.slots : slots // ignore: cast_nullable_to_non_nullable
 as List<String>,slotKey: null == slotKey ? _self.slotKey : slotKey // ignore: cast_nullable_to_non_nullable
+as String,hall: null == hall ? _self.hall : hall // ignore: cast_nullable_to_non_nullable
+as String,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
+as String,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -157,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticketId,  String tokenNumber,  String name,  String week,  String courseCode,  String date,  List<String> slots,  String slotKey)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String ticketId,  String tokenNumber,  String name,  String week,  String courseCode,  String date,  List<String> slots,  String slotKey,  String hall,  String startTime,  String endTime)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BookingDetails() when $default != null:
-return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.courseCode,_that.date,_that.slots,_that.slotKey);case _:
+return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.courseCode,_that.date,_that.slots,_that.slotKey,_that.hall,_that.startTime,_that.endTime);case _:
   return orElse();
 
 }
@@ -178,10 +181,10 @@ return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.cou
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticketId,  String tokenNumber,  String name,  String week,  String courseCode,  String date,  List<String> slots,  String slotKey)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String ticketId,  String tokenNumber,  String name,  String week,  String courseCode,  String date,  List<String> slots,  String slotKey,  String hall,  String startTime,  String endTime)  $default,) {final _that = this;
 switch (_that) {
 case _BookingDetails():
-return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.courseCode,_that.date,_that.slots,_that.slotKey);}
+return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.courseCode,_that.date,_that.slots,_that.slotKey,_that.hall,_that.startTime,_that.endTime);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -195,10 +198,10 @@ return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.cou
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticketId,  String tokenNumber,  String name,  String week,  String courseCode,  String date,  List<String> slots,  String slotKey)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String ticketId,  String tokenNumber,  String name,  String week,  String courseCode,  String date,  List<String> slots,  String slotKey,  String hall,  String startTime,  String endTime)?  $default,) {final _that = this;
 switch (_that) {
 case _BookingDetails() when $default != null:
-return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.courseCode,_that.date,_that.slots,_that.slotKey);case _:
+return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.courseCode,_that.date,_that.slots,_that.slotKey,_that.hall,_that.startTime,_that.endTime);case _:
   return null;
 
 }
@@ -210,7 +213,7 @@ return $default(_that.ticketId,_that.tokenNumber,_that.name,_that.week,_that.cou
 @JsonSerializable()
 
 class _BookingDetails implements BookingDetails {
-  const _BookingDetails({this.ticketId = '', this.tokenNumber = '', this.name = '', this.week = '', this.courseCode = '', this.date = '', final  List<String> slots = const [], this.slotKey = ''}): _slots = slots;
+  const _BookingDetails({this.ticketId = '', this.tokenNumber = '', this.name = '', this.week = '', this.courseCode = '', this.date = '', final  List<String> slots = const [], this.slotKey = '', this.hall = '2216-Hall', this.startTime = '', this.endTime = ''}): _slots = slots;
   factory _BookingDetails.fromJson(Map<String, dynamic> json) => _$BookingDetailsFromJson(json);
 
 @override@JsonKey() final  String ticketId;
@@ -227,6 +230,9 @@ class _BookingDetails implements BookingDetails {
 }
 
 @override@JsonKey() final  String slotKey;
+@override@JsonKey() final  String hall;
+@override@JsonKey() final  String startTime;
+@override@JsonKey() final  String endTime;
 
 /// Create a copy of BookingDetails
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookingDetails&&(identical(other.ticketId, ticketId) || other.ticketId == ticketId)&&(identical(other.tokenNumber, tokenNumber) || other.tokenNumber == tokenNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.week, week) || other.week == week)&&(identical(other.courseCode, courseCode) || other.courseCode == courseCode)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other._slots, _slots)&&(identical(other.slotKey, slotKey) || other.slotKey == slotKey));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookingDetails&&(identical(other.ticketId, ticketId) || other.ticketId == ticketId)&&(identical(other.tokenNumber, tokenNumber) || other.tokenNumber == tokenNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.week, week) || other.week == week)&&(identical(other.courseCode, courseCode) || other.courseCode == courseCode)&&(identical(other.date, date) || other.date == date)&&const DeepCollectionEquality().equals(other._slots, _slots)&&(identical(other.slotKey, slotKey) || other.slotKey == slotKey)&&(identical(other.hall, hall) || other.hall == hall)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ticketId,tokenNumber,name,week,courseCode,date,const DeepCollectionEquality().hash(_slots),slotKey);
+int get hashCode => Object.hash(runtimeType,ticketId,tokenNumber,name,week,courseCode,date,const DeepCollectionEquality().hash(_slots),slotKey,hall,startTime,endTime);
 
 @override
 String toString() {
-  return 'BookingDetails(ticketId: $ticketId, tokenNumber: $tokenNumber, name: $name, week: $week, courseCode: $courseCode, date: $date, slots: $slots, slotKey: $slotKey)';
+  return 'BookingDetails(ticketId: $ticketId, tokenNumber: $tokenNumber, name: $name, week: $week, courseCode: $courseCode, date: $date, slots: $slots, slotKey: $slotKey, hall: $hall, startTime: $startTime, endTime: $endTime)';
 }
 
 
@@ -261,7 +267,7 @@ abstract mixin class _$BookingDetailsCopyWith<$Res> implements $BookingDetailsCo
   factory _$BookingDetailsCopyWith(_BookingDetails value, $Res Function(_BookingDetails) _then) = __$BookingDetailsCopyWithImpl;
 @override @useResult
 $Res call({
- String ticketId, String tokenNumber, String name, String week, String courseCode, String date, List<String> slots, String slotKey
+ String ticketId, String tokenNumber, String name, String week, String courseCode, String date, List<String> slots, String slotKey, String hall, String startTime, String endTime
 });
 
 
@@ -278,7 +284,7 @@ class __$BookingDetailsCopyWithImpl<$Res>
 
 /// Create a copy of BookingDetails
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ticketId = null,Object? tokenNumber = null,Object? name = null,Object? week = null,Object? courseCode = null,Object? date = null,Object? slots = null,Object? slotKey = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ticketId = null,Object? tokenNumber = null,Object? name = null,Object? week = null,Object? courseCode = null,Object? date = null,Object? slots = null,Object? slotKey = null,Object? hall = null,Object? startTime = null,Object? endTime = null,}) {
   return _then(_BookingDetails(
 ticketId: null == ticketId ? _self.ticketId : ticketId // ignore: cast_nullable_to_non_nullable
 as String,tokenNumber: null == tokenNumber ? _self.tokenNumber : tokenNumber // ignore: cast_nullable_to_non_nullable
@@ -288,6 +294,9 @@ as String,courseCode: null == courseCode ? _self.courseCode : courseCode // igno
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as String,slots: null == slots ? _self._slots : slots // ignore: cast_nullable_to_non_nullable
 as List<String>,slotKey: null == slotKey ? _self.slotKey : slotKey // ignore: cast_nullable_to_non_nullable
+as String,hall: null == hall ? _self.hall : hall // ignore: cast_nullable_to_non_nullable
+as String,startTime: null == startTime ? _self.startTime : startTime // ignore: cast_nullable_to_non_nullable
+as String,endTime: null == endTime ? _self.endTime : endTime // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

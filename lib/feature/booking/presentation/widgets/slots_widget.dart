@@ -37,7 +37,8 @@ class _BuildSlotsState extends State<BuildSlots> {
 
     Color buttonColor;
     if (isSelected && isCurrentlyBooked) {
-      buttonColor = Colors.amber.shade700; // Keep amber when editing slot is selected
+      buttonColor =
+          Colors.amber.shade700; // Keep amber when editing slot is selected
     } else if (isSelected) {
       buttonColor = Colors.grey;
     } else if (isCurrentlyBooked) {
@@ -67,10 +68,7 @@ class _BuildSlotsState extends State<BuildSlots> {
           fit: BoxFit.scaleDown,
           child: Text(
             slot,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 16),
           ),
         ),
       ),

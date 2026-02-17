@@ -8,15 +8,18 @@ class FetchName {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   static Future<String?> fetchName() async {
-    try{
+    try {
       String uid = _auth.currentUser!.uid;
-      DocumentSnapshot<Map<String,dynamic>> snapshot = await _firestore.collection("userName").doc(uid).get();
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await _firestore
+          .collection("userName")
+          .doc(uid)
+          .get();
       String? name = snapshot.data()?['name'];
-      dev.log(name!,name: "UserName");
+      dev.log(name!, name: "UserName");
       GCPLog.info('User name fetched: $name');
       return name;
-    } catch(error){
-      dev.log(error.toString(),name:"Error");
+    } catch (error) {
+      dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to fetch user name', error: error);
       return null;
     }

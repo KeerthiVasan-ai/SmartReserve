@@ -40,29 +40,37 @@ class AboutScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildDeveloperField("Name", "Keerthivasan S"), // Updated based on path
+                    _buildDeveloperField(
+                      "Name",
+                      "Keerthivasan S",
+                    ), // Updated based on path
                     const Divider(),
-                    _buildDeveloperField("Designation", "Mobile App Developer - Alumnus(2025 - B.E CSE (AI & ML))"),
+                    _buildDeveloperField(
+                      "Designation",
+                      "Mobile App Developer - Alumnus(2025 - B.E CSE (AI & ML))",
+                    ),
                     const Divider(),
                     InkWell(
-                      onTap: () => _launchUrl("https://www.linkedin.com/in/KeerthiVasan-ai/"),
+                      onTap: () => _launchUrl(
+                        "https://www.linkedin.com/in/KeerthiVasan-ai/",
+                      ),
                       child: Padding(
-                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                         child: Row(
-                           children: [
-                             Icon(Icons.link, color: Colors.blue.shade700),
-                             const SizedBox(width: 10),
-                             Text(
-                               "LinkedIn Profile",
-                               style: AppFonts.poppins(
-                                 fontSize: 16,
-                                 color: Colors.blue.shade700,
-                                 fontWeight: FontWeight.w500,
-                                 decoration: TextDecoration.underline,
-                               ),
-                             ),
-                           ],
-                         ),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.link, color: Colors.blue.shade700),
+                            const SizedBox(width: 10),
+                            Text(
+                              "LinkedIn Profile",
+                              style: AppFonts.poppins(
+                                fontSize: 16,
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w500,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -113,10 +121,7 @@ class AboutScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: AppFonts.poppins(
-              fontSize: 12,
-              color: Colors.grey.shade600,
-            ),
+            style: AppFonts.poppins(fontSize: 12, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 4),
           Text(

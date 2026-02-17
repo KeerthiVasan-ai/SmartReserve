@@ -4,7 +4,6 @@ import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/ticket_painter.dart';
 
 class TicketUI extends StatelessWidget {
-
   final BookingDetails bookingDetails;
   final bool isEditing;
   final String? oldSlot;
@@ -20,7 +19,8 @@ class TicketUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool dateChanged = isEditing && oldDate != null && oldDate != bookingDetails.date;
+    final bool dateChanged =
+        isEditing && oldDate != null && oldDate != bookingDetails.date;
     return Container(
       height: isEditing ? 260 : 220,
       margin: const EdgeInsets.all(16),
@@ -176,9 +176,7 @@ class TicketUI extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.black.withOpacity(0.2),
-                      border: Border.all(
-                        color: Colors.black.withOpacity(0.5),
-                      ),
+                      border: Border.all(color: Colors.black.withOpacity(0.5)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
