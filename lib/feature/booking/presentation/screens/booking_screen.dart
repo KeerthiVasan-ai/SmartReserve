@@ -442,7 +442,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                     ],
                                   ),
                                 ),
-                              const SizedBox(height: 10.0),
+                              // const SizedBox(height: 10.0),
                               // Show hint when editing and date changed
                               if (bookingState.isEditing &&
                                   bookingState.originalBooking != null &&

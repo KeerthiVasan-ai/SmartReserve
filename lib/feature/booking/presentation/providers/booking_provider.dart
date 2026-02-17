@@ -174,7 +174,8 @@ class BookingNotifier extends _$BookingNotifier {
     );
   }
 
-  Future<void> initializeForEdit(BookingDetails existingBooking, {
+  Future<void> initializeForEdit(
+    BookingDetails existingBooking, {
     String? editingSlot,
   }) async {
     state = state.copyWith(isLoading: true);
@@ -222,7 +223,7 @@ class BookingNotifier extends _$BookingNotifier {
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
       final details = state.bookingDetails;
-      final newSlot = details.slots[0];
+      final newSlot = details.slots.isNotEmpty ? details.slots[0] : '';
       final newSlotKey = state.timeKeys[newSlot] ?? '';
       final week = getWeekNumber(details.date);
 
@@ -398,10 +399,12 @@ class BookingNotifier extends _$BookingNotifier {
     state = state.copyWith(errorMessage: null, successMessage: null);
   }
 
-  Future<void> deleteBooking(String uid,
-      String ticketId,
-      String date,
-      List<dynamic> slotsToRemove,) async {
+  Future<void> deleteBooking(
+    String uid,
+    String ticketId,
+    String date,
+    List<dynamic> slotsToRemove,
+  ) async {
     state = state.copyWith(
       isSubmitting: true,
       errorMessage: null,
@@ -468,10 +471,12 @@ class BookingNotifier extends _$BookingNotifier {
     }
   }
 
-  Future<bool> _checkOverlap(String date,
-      String hall,
-      String start,
-      String end,) async {
+  Future<bool> _checkOverlap(
+    String date,
+    String hall,
+    String start,
+    String end,
+  ) async {
     try {
       final bookings = await FetchHallBookings.fetchBookings(date, hall);
 
@@ -515,17 +520,16 @@ class BookingNotifier extends _$BookingNotifier {
     resetMessages();
 
     // 1. Validate mandatory fields
-    if (details.courseCode
-        .trim()
-        .isEmpty) {
+    if (details.courseCode.trim().isEmpty) {
       state = state.copyWith(errorMessage: "Course Code is required.");
       return;
     }
 
     if (state.selectedHall == '2216-Hall') {
       if (details.slots.isEmpty) {
-        state =
-            state.copyWith(errorMessage: "Please select at least one slot.");
+        state = state.copyWith(
+          errorMessage: "Please select at least one slot.",
+        );
         return;
       }
 
@@ -534,7 +538,8 @@ class BookingNotifier extends _$BookingNotifier {
         final isAvailable = state.timeSlots[slot];
         if (isAvailable == null || isAvailable == false) {
           state = state.copyWith(
-            errorMessage: "Slot '$slot' is no longer available. Please select a different slot.",
+            errorMessage:
+                "Slot '$slot' is no longer available. Please select a different slot.",
           );
           return;
         }
@@ -542,8 +547,9 @@ class BookingNotifier extends _$BookingNotifier {
     } else {
       // Validation for New Halls
       if (state.selectedStartTime == null || state.selectedEndTime == null) {
-        state =
-            state.copyWith(errorMessage: "Please select start and end time.");
+        state = state.copyWith(
+          errorMessage: "Please select start and end time.",
+        );
         return;
       }
 
@@ -557,8 +563,9 @@ class BookingNotifier extends _$BookingNotifier {
       final endMin = timeToMinutes(state.selectedEndTime!);
 
       if (startMin >= endMin) {
-        state =
-            state.copyWith(errorMessage: "End time must be after start time.");
+        state = state.copyWith(
+          errorMessage: "End time must be after start time.",
+        );
         return;
       }
 
@@ -566,17 +573,17 @@ class BookingNotifier extends _$BookingNotifier {
 
       // Check for overlap
       final hasOverlap = await _checkOverlap(
-          details.date,
-          state.selectedHall,
-          state.selectedStartTime!,
-          state.selectedEndTime!
+        details.date,
+        state.selectedHall,
+        state.selectedStartTime!,
+        state.selectedEndTime!,
       );
 
       if (hasOverlap) {
         state = state.copyWith(
-            isSubmitting: false,
-            errorMessage: "Selected time range overlaps with an existing booking in ${state
-                .selectedHall}."
+          isSubmitting: false,
+          errorMessage:
+              "Selected time range overlaps with an existing booking in ${state.selectedHall}.",
         );
         return;
       }
@@ -588,10 +595,11 @@ class BookingNotifier extends _$BookingNotifier {
     // Prepare for submission (update state with times)
     if (state.selectedHall != '2216-Hall') {
       state = state.copyWith(
-          bookingDetails: state.bookingDetails.copyWith(
-              startTime: state.selectedStartTime!,
-              endTime: state.selectedEndTime!
-          )
+        bookingDetails: state.bookingDetails.copyWith(
+          startTime: state.selectedStartTime!,
+          endTime: state.selectedEndTime!,
+          slots: ['${state.selectedStartTime} - ${state.selectedEndTime}'],
+        ),
       );
     }
 
@@ -604,16 +612,19 @@ class BookingNotifier extends _$BookingNotifier {
       bool sameTime = false;
 
       if (state.selectedHall == '2216-Hall') {
-        sameTime = orig.slots.length == details.slots.length &&
+        sameTime =
+            orig.slots.length == details.slots.length &&
             orig.slots.toSet().containsAll(details.slots);
       } else {
-        sameTime = orig.startTime == state.selectedStartTime &&
+        sameTime =
+            orig.startTime == state.selectedStartTime &&
             orig.endTime == state.selectedEndTime;
       }
 
       if (sameDate && sameTime && sameCourse) {
         state = state.copyWith(
-            errorMessage: "No changes detected. Update details to proceed.");
+          errorMessage: "No changes detected. Update details to proceed.",
+        );
         return;
       }
     }
@@ -628,9 +639,7 @@ class BookingNotifier extends _$BookingNotifier {
 
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
-      final snapshot = await FetchUserBooking
-          .fetchBookingDetails(uid)
-          .first;
+      final snapshot = await FetchUserBooking.fetchBookingDetails(uid).first;
 
       if (snapshot.docs.isEmpty) {
         await _performSubmission();
@@ -663,7 +672,8 @@ class BookingNotifier extends _$BookingNotifier {
           } else {
             state = state.copyWith(
               isSubmitting: false,
-              errorMessage: "Weekly slot limit reached. You can book $remaining more slot(s).",
+              errorMessage:
+                  "Weekly slot limit reached. You can book $remaining more slot(s).",
             );
           }
         } else {
