@@ -578,9 +578,20 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       }
     }
 
+    String formatTime(String? time) {
+       if (time == null || time.isEmpty) return "";
+       if (state.selectedHall == '2216-Hall') return time;
+       try {
+         final dt = DateFormat('HH:mm').parse(time);
+         return DateFormat('hh:mm a').format(dt);
+       } catch (e) {
+         return time;
+       }
+    }
+
     // Controllers for display
-    final startCtrl = TextEditingController(text: state.selectedStartTime ?? "");
-    final endCtrl = TextEditingController(text: state.selectedEndTime ?? "");
+    final startCtrl = TextEditingController(text: formatTime(state.selectedStartTime));
+    final endCtrl = TextEditingController(text: formatTime(state.selectedEndTime));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

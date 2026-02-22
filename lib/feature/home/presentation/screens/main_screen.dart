@@ -21,6 +21,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
+  String _selectedFilter = 'All';
 
   @override
   void initState() {
@@ -39,6 +40,69 @@ class _MainScreenState extends State<MainScreen> {
           return const BookingScreen();
         },
       ),
+    );
+  }
+
+  void _showFilterSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Filter by Hall",
+                style: AppFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF124076),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: ['All', '2216-Hall', 'CompScE', 'Pheonix'].map((filter) {
+                  final isSelected = _selectedFilter == filter;
+                  return ChoiceChip(
+                    label: Text(filter),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      if (selected) {
+                        setState(() {
+                          _selectedFilter = filter;
+                        });
+                        Navigator.pop(context);
+                      }
+                    },
+                    selectedColor: const Color(0xFF124076).withOpacity(0.2),
+                    backgroundColor: Colors.grey.shade100,
+                    labelStyle: TextStyle(
+                      color: isSelected ? const Color(0xFF124076) : Colors.black87,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(
+                        color: isSelected
+                            ? const Color(0xFF124076)
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -68,20 +132,56 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.transparent,
           centerTitle: true,
           actions: [
+            // Filter Icon
             IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const OlderBookingScreen(),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.history, color: Colors.black),
+              onPressed: _showFilterSheet,
+              icon: Icon(
+                _selectedFilter == 'All'
+                    ? Icons.filter_alt_outlined
+                    : Icons.filter_alt, // Filled if active
+                color: _selectedFilter == 'All'
+                    ? Colors.black
+                    : const Color(0xFF124076), // Colored if active
+              ),
+              tooltip: "Filter Bookings",
             ),
-            IconButton(
-              onPressed: _signOut,
-              icon: const Icon(Icons.logout, color: Colors.black),
+            // Popup Menu
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert, color: Colors.black),
+              onSelected: (value) {
+                if (value == 'history') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OlderBookingScreen(),
+                    ),
+                  );
+                } else if (value == 'logout') {
+                  _signOut();
+                }
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                const PopupMenuItem<String>(
+                  value: 'history',
+                  child: Row(
+                    children: [
+                      Icon(Icons.history, color: Colors.black87, size: 20),
+                      SizedBox(width: 12),
+                      Text('Previous Bookings'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, color: Colors.black87, size: 20),
+                      SizedBox(width: 12),
+                      Text('Logout'),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -119,9 +219,15 @@ class _MainScreenState extends State<MainScreen> {
               dev.log(today.toString());
 
               for (var doc in sortedDocs) {
-                DateTime bookingDate = DateFormat(
-                  "dd-MM-yyyy",
-                ).parse(doc['date']);
+                final data = doc.data() as Map<String, dynamic>;
+                DateTime bookingDate = DateFormat("dd-MM-yyyy").parse(data['date']);
+                
+                // Filter Logic
+                final hall = data['hall'] is String ? data['hall'] : '2216-Hall';
+                if (_selectedFilter != 'All' && hall != _selectedFilter) {
+                  continue;
+                }
+
                 if ((bookingDate.year == today.year &&
                         bookingDate.month == today.month &&
                         bookingDate.day == today.day) ||
@@ -132,6 +238,9 @@ class _MainScreenState extends State<MainScreen> {
               dev.log(bookings.length.toString());
 
               if (bookings.isEmpty) {
+                if (_selectedFilter != 'All') {
+                   return Center(child: Text('No $_selectedFilter bookings available.'));
+                }
                 return const Center(child: Text('No Booking available.'));
               }
 
