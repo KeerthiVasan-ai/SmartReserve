@@ -7,8 +7,7 @@ import 'package:smart_reserve/main.dart';
 /// when the app is in the foreground.
 class LocalNotificationService {
   LocalNotificationService._();
-  static final LocalNotificationService instance =
-      LocalNotificationService._();
+  static final LocalNotificationService instance = LocalNotificationService._();
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
@@ -26,7 +25,8 @@ class LocalNotificationService {
     // Create the notification channel on Android.
     await _plugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(_channel);
 
     const androidSettings = AndroidInitializationSettings(
@@ -40,7 +40,7 @@ class LocalNotificationService {
     );
 
     await _plugin.initialize(
-      const InitializationSettings(
+      settings: const InitializationSettings(
         android: androidSettings,
         iOS: iosSettings,
       ),
@@ -60,10 +60,10 @@ class LocalNotificationService {
     );
 
     await _plugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000, // unique id
-      title,
-      body,
-      NotificationDetails(android: androidDetails),
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000, // unique id
+      title: title,
+      body: body,
+      notificationDetails: NotificationDetails(android: androidDetails),
     );
   }
 
