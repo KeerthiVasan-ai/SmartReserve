@@ -51,57 +51,11 @@ void main() async {
     debugPrint('[FCM] data: ${message.data}');
     final notification = message.notification;
     if (notification != null) {
-      // 1. System heads-up notification banner
+      // System heads-up notification
       LocalNotificationService.instance.show(
         title: notification.title ?? 'Smart Reserve',
         body: notification.body ?? 'New notification',
       );
-
-      // 2. In-app Material Banner (top of screen)
-      final ctx = navigatorKey.currentContext;
-      if (ctx != null) {
-        ScaffoldMessenger.of(ctx).showMaterialBanner(
-          MaterialBanner(
-            padding: const EdgeInsets.all(12),
-            leading: const Icon(Icons.notifications_active,
-                color: Color(0xFF124076)),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  notification.title ?? 'Smart Reserve',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  notification.body ?? 'New notification',
-                  style: const TextStyle(fontSize: 13),
-                ),
-              ],
-            ),
-            backgroundColor: const Color(0xFFE8EAF6),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(ctx).hideCurrentMaterialBanner();
-                  Navigator.of(ctx).push(
-                    MaterialPageRoute(
-                        builder: (_) => const NotificationScreen()),
-                  );
-                },
-                child: const Text('VIEW'),
-              ),
-              TextButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(ctx).hideCurrentMaterialBanner();
-                },
-                child: const Text('DISMISS'),
-              ),
-            ],
-          ),
-        );
-      }
     }
   });
 

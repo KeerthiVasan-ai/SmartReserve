@@ -10,6 +10,7 @@ import 'package:smart_reserve/feature/notification/data/datasources/check_reques
 import 'package:smart_reserve/feature/notification/data/datasources/insert_notification.dart';
 import 'package:smart_reserve/feature/notification/data/datasources/send_fcm_notification.dart';
 import 'package:smart_reserve/feature/notification/data/datasources/update_notification_status.dart';
+import 'package:smart_reserve/feature/notification/data/datasources/transfer_slot_booking.dart';
 
 /// A simple provider that exposes notification-related actions.
 class NotificationService {
@@ -95,7 +96,10 @@ class NotificationService {
     }
   }
 
-  /// Responds to a notification (accept or deny).
+  /// Responds to a notification (accept or reject).
+  ///
+  /// On accept, transfers the booking slot from the owner to the requester.
+  /// On reject, only updates the notification status.
   static Future<String> respondToRequest({
     required String notificationId,
     required String senderUid,
@@ -104,10 +108,23 @@ class NotificationService {
     String? requesterName,
     String? slotInfo,
     String? date,
+    String? bookingId,
   }) async {
     try {
-      final newStatus = accept ? 'accepted' : 'denied';
+      final newStatus = accept ? 'accepted' : 'rejected';
 
+      // If accepted, transfer the slot from owner (receiverUid) to requester (senderUid)
+      if (accept && bookingId != null && bookingId.isNotEmpty) {
+        await TransferSlotBooking.transferSlot(
+          ownerUid: receiverUid,
+          requesterUid: senderUid,
+          bookingId: bookingId,
+          slotInfo: slotInfo ?? '',
+          date: date ?? '',
+        );
+      }
+
+      // Update notification status in both sender's and receiver's collections
       await UpdateNotificationStatus.updateStatus(
         notificationId: notificationId,
         senderUid: senderUid,
@@ -117,7 +134,7 @@ class NotificationService {
 
       // Send response notification to the requester
       final currentUserName = await FetchName.fetchName() ?? 'Unknown';
-      final action = accept ? 'accepted' : 'denied';
+      final action = accept ? 'accepted' : 'rejected';
 
       await SendFCMNotification.sendToTopic(
         topic: senderUid,
@@ -133,7 +150,7 @@ class NotificationService {
       );
       GCPLog.info('Notification response: $notificationId → $newStatus');
 
-      return 'Request ${accept ? 'accepted' : 'denied'} successfully';
+      return 'Request ${accept ? 'accepted' : 'rejected'} successfully';
     } catch (e) {
       dev.log('Failed to respond to request: $e', name: 'NotificationService');
       GCPLog.error('Failed to respond to notification', error: e);

@@ -41,6 +41,8 @@ abstract class BookingState with _$BookingState {
     @Default('2216-Hall') String selectedHall,
     String? selectedStartTime,
     String? selectedEndTime,
+    @Default(0) int weeklyAllottedSlots,
+    @Default(0) int weeklyUsedSlots,
   }) = _BookingState;
 }
 
@@ -67,6 +69,7 @@ class BookingNotifier extends _$BookingNotifier {
           ticketId: ticketId,
           tokenNumber: token,
           name: name,
+          uid: uid,
           hall: '2216-Hall', // Default
         ),
         selectedHall: '2216-Hall',
@@ -125,6 +128,9 @@ class BookingNotifier extends _$BookingNotifier {
       dateError: null,
     );
 
+    // Fetch weekly slot usage for the selected date's week
+    await _fetchWeeklyUsage(dateString);
+
     // Only fetch slots for 2216-Hall
     if (state.selectedHall == '2216-Hall') {
       try {
@@ -155,6 +161,45 @@ class BookingNotifier extends _$BookingNotifier {
       } catch (e) {
         state = state.copyWith(errorMessage: "Failed to fetch time slots");
       }
+    }
+  }
+
+  /// Fetches and sets the weekly allotted and used slot counts for the
+  /// week that contains [dateString] (dd-MM-yyyy).
+  Future<void> _fetchWeeklyUsage(String dateString) async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final currentWeek = getWeekNumber(dateString);
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('bookingUserDetails')
+          .doc(uid)
+          .collection('bookings')
+          .where('week', isEqualTo: currentWeek)
+          .get();
+
+      int usedSlots = 0;
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data();
+        final slots = data['slots'] as List<dynamic>?;
+        usedSlots += slots?.length ?? 1;
+      }
+
+      // If editing, subtract the original booking's slots from used count
+      if (state.isEditing && state.originalBooking != null) {
+        final originalWeek = getWeekNumber(state.originalBooking!.date);
+        if (originalWeek == currentWeek) {
+          usedSlots -= state.originalBooking!.slots.length;
+          if (usedSlots < 0) usedSlots = 0;
+        }
+      }
+
+      state = state.copyWith(
+        weeklyAllottedSlots: state.slotCount,
+        weeklyUsedSlots: usedSlots,
+      );
+    } catch (_) {
+      // Silently fail — the indicator just won't show updated data
     }
   }
 

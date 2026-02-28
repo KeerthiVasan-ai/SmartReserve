@@ -10,6 +10,7 @@ import 'package:smart_reserve/feature/booking/presentation/providers/booking_pro
 import 'package:smart_reserve/core/presentation/widgets/custom_app_bar.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_button.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/slots_widget.dart';
+import 'package:smart_reserve/feature/booking/presentation/widgets/weekly_slot_usage_widget.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_text_field.dart';
 
 import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
@@ -495,6 +496,21 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                 errorText: bookingState.dateError,
                               ),
                               const SizedBox(height: 10.0),
+                              // Weekly slot usage indicator
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 350),
+                                child: (bookingState.bookingDetails.date.isNotEmpty &&
+                                        bookingState.selectedHall == '2216-Hall' &&
+                                        bookingState.weeklyAllottedSlots > 0)
+                                    ? WeeklySlotUsageWidget(
+                                        key: ValueKey(
+                                          '${bookingState.weeklyUsedSlots}_${bookingState.weeklyAllottedSlots}',
+                                        ),
+                                        allotted: bookingState.weeklyAllottedSlots,
+                                        used: bookingState.weeklyUsedSlots,
+                                      )
+                                    : const SizedBox.shrink(),
+                              ),
                               const SizedBox(height: 10.0),
                               if (bookingState.selectedHall == '2216-Hall')
                                 const Padding(

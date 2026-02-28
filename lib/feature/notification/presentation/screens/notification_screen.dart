@@ -114,6 +114,7 @@ class _NotificationCardState extends State<_NotificationCard> {
     final notificationId = data['notificationId'] ?? '';
     final requestedBy = data['requestedBy'] ?? '';
     final requestedTo = data['requestedTo'] ?? '';
+    final bookingId = data['bookingId'] ?? '';
     final initiatedAt = data['notificationInitiatedAt'] ?? '';
 
     return Padding(
@@ -230,6 +231,7 @@ class _NotificationCardState extends State<_NotificationCard> {
                                   requesterName: requesterName,
                                   slotInfo: slotInfo,
                                   date: date,
+                                  bookingId: bookingId,
                                 ),
                                 icon: const Icon(Icons.check, size: 18),
                                 label: Text(
@@ -264,6 +266,7 @@ class _NotificationCardState extends State<_NotificationCard> {
                                   requesterName: requesterName,
                                   slotInfo: slotInfo,
                                   date: date,
+                                  bookingId: bookingId,
                                 ),
                                 icon: const Icon(Icons.close, size: 18),
                                 label: Text(
@@ -353,6 +356,7 @@ class _NotificationCardState extends State<_NotificationCard> {
     String? requesterName,
     String? slotInfo,
     String? date,
+    String? bookingId,
   }) async {
     setState(() => _isLoading = true);
 
@@ -364,6 +368,7 @@ class _NotificationCardState extends State<_NotificationCard> {
       requesterName: requesterName,
       slotInfo: slotInfo,
       date: date,
+      bookingId: bookingId,
     );
 
     if (context.mounted) {

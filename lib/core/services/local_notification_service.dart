@@ -30,7 +30,7 @@ class LocalNotificationService {
         ?.createNotificationChannel(_channel);
 
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@drawable/ic_notification',
     );
 
     const iosSettings = DarwinInitializationSettings(
@@ -56,7 +56,7 @@ class LocalNotificationService {
       channelDescription: _channel.description,
       importance: Importance.high,
       priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
+      icon: '@drawable/ic_notification',
     );
 
     await _plugin.show(

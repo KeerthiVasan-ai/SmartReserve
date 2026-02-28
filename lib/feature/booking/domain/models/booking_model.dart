@@ -9,6 +9,7 @@ sealed class BookingDetails with _$BookingDetails {
     @Default('') String ticketId,
     @Default('') String tokenNumber,
     @Default('') String name,
+    @Default('') String uid,
     @Default('') String week,
     @Default('') String courseCode,
     @Default('') String date,

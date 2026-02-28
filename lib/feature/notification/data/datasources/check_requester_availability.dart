@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'package:week_number/iso.dart';
 import 'dart:developer' as dev;
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
+import 'package:smart_reserve/core/utils/generate_week.dart';
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_alloted_slots.dart';
 
 class CheckRequesterAvailability {
@@ -16,7 +16,8 @@ class CheckRequesterAvailability {
 
       // 2. Count bookings for the current week
       final now = DateTime.now();
-      final currentWeek = 'W${now.weekNumber.toString().padLeft(2, '0')}';
+      final todayStr = DateFormat('dd-MM-yyyy').format(now);
+      final currentWeek = getWeekNumber(todayStr);
 
       final querySnapshot = await _firestore
           .collection('bookingUserDetails')
@@ -34,7 +35,7 @@ class CheckRequesterAvailability {
       }
 
       dev.log(
-        'User $uid: allotted=$allottedSlots, used=$usedSlots',
+        'User $uid: allotted=$allottedSlots, used=$usedSlots, week=$currentWeek',
         name: 'CheckRequesterAvailability',
       );
       GCPLog.info(
