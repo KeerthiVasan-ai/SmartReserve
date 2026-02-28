@@ -2,7 +2,9 @@ import "dart:developer" as dev;
 
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import "package:firebase_messaging/firebase_messaging.dart";
 import "package:flutter/material.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_reserve/core/theme/app_fonts.dart';
 import "package:intl/intl.dart";
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
@@ -11,24 +13,40 @@ import 'package:smart_reserve/feature/about/presentation/screens/about_screen.da
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_user_booking.dart';
 import 'package:smart_reserve/feature/booking/presentation/screens/booking_screen.dart';
 import 'package:smart_reserve/feature/booking/presentation/screens/previous_booking_screen.dart';
+import 'package:smart_reserve/feature/notification/presentation/providers/notification_provider.dart';
+import 'package:smart_reserve/feature/notification/presentation/screens/notification_screen.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
   String _selectedFilter = 'All';
 
   @override
   void initState() {
     super.initState();
+    // Subscribe to FCM topic for this user
+    _subscribeToFCMTopic();
   }
 
-  void _signOut() {
+  void _subscribeToFCMTopic() async {
+    dev.log('Subscribing to FCM topic: $uid', name: 'MainScreen');
+    await FirebaseMessaging.instance.subscribeToTopic(uid);
+    dev.log('Successfully subscribed to FCM topic: $uid', name: 'MainScreen');
+
+    // Log the FCM token for debugging
+    final token = await FirebaseMessaging.instance.getToken();
+    dev.log('FCM Device Token: $token', name: 'MainScreen');
+  }
+
+  void _signOut() async {
+    // Unsubscribe from FCM topic before signing out
+    await FirebaseMessaging.instance.unsubscribeFromTopic(uid);
     FirebaseAuth.instance.signOut();
   }
 
@@ -68,7 +86,9 @@ class _MainScreenState extends State<MainScreen> {
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
-                children: ['All', '2216-Hall', 'CompScE', 'Pheonix'].map((filter) {
+                children: ['All', '2216-Hall', 'CompScE', 'Pheonix'].map((
+                  filter,
+                ) {
                   final isSelected = _selectedFilter == filter;
                   return ChoiceChip(
                     label: Text(filter),
@@ -84,8 +104,12 @@ class _MainScreenState extends State<MainScreen> {
                     selectedColor: const Color(0xFF124076).withOpacity(0.2),
                     backgroundColor: Colors.grey.shade100,
                     labelStyle: TextStyle(
-                      color: isSelected ? const Color(0xFF124076) : Colors.black87,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      color: isSelected
+                          ? const Color(0xFF124076)
+                          : Colors.black87,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -132,6 +156,63 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.transparent,
           centerTitle: true,
           actions: [
+            // Notification Bell with badge
+            Consumer(
+              builder: (context, ref, _) {
+                final pendingCount = ref.watch(
+                  pendingNotificationCountProvider,
+                );
+                return IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationScreen(),
+                      ),
+                    );
+                  },
+                  icon: Stack(
+                    children: [
+                      const Icon(
+                        Icons.notifications_outlined,
+                        color: Colors.black,
+                      ),
+                      pendingCount.when(
+                        data: (count) => count > 0
+                            ? Positioned(
+                                right: 0,
+                                top: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 16,
+                                    minHeight: 16,
+                                  ),
+                                  child: Text(
+                                    '$count',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
+                    ],
+                  ),
+                  tooltip: "Notifications",
+                );
+              },
+            ),
             // Filter Icon
             IconButton(
               onPressed: _showFilterSheet,
@@ -220,10 +301,14 @@ class _MainScreenState extends State<MainScreen> {
 
               for (var doc in sortedDocs) {
                 final data = doc.data() as Map<String, dynamic>;
-                DateTime bookingDate = DateFormat("dd-MM-yyyy").parse(data['date']);
-                
+                DateTime bookingDate = DateFormat(
+                  "dd-MM-yyyy",
+                ).parse(data['date']);
+
                 // Filter Logic
-                final hall = data['hall'] is String ? data['hall'] : '2216-Hall';
+                final hall = data['hall'] is String
+                    ? data['hall']
+                    : '2216-Hall';
                 if (_selectedFilter != 'All' && hall != _selectedFilter) {
                   continue;
                 }
@@ -239,7 +324,9 @@ class _MainScreenState extends State<MainScreen> {
 
               if (bookings.isEmpty) {
                 if (_selectedFilter != 'All') {
-                   return Center(child: Text('No $_selectedFilter bookings available.'));
+                  return Center(
+                    child: Text('No $_selectedFilter bookings available.'),
+                  );
                 }
                 return const Center(child: Text('No Booking available.'));
               }

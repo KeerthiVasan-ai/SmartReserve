@@ -6,6 +6,7 @@ import "dart:developer" as dev;
 import 'package:smart_reserve/core/presentation/widgets/custom_app_bar.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_list_builder.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
+import 'package:smart_reserve/core/theme/app_fonts.dart';
 
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_user_booking.dart';
 
@@ -15,8 +16,6 @@ class OlderBookingScreen extends StatefulWidget {
   @override
   State<OlderBookingScreen> createState() => _OlderBookingScreenState();
 }
-
-import 'package:smart_reserve/core/theme/app_fonts.dart';
 
 class _OlderBookingScreenState extends State<OlderBookingScreen> {
   final String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -47,7 +46,9 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
-                children: ['All', '2216-Hall', 'CompScE', 'Pheonix'].map((filter) {
+                children: ['All', '2216-Hall', 'CompScE', 'Pheonix'].map((
+                  filter,
+                ) {
                   final isSelected = _selectedFilter == filter;
                   return ChoiceChip(
                     label: Text(filter),
@@ -63,8 +64,12 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
                     selectedColor: const Color(0xFF124076).withOpacity(0.2),
                     backgroundColor: Colors.grey.shade100,
                     labelStyle: TextStyle(
-                      color: isSelected ? const Color(0xFF124076) : Colors.black87,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                      color: isSelected
+                          ? const Color(0xFF124076)
+                          : Colors.black87,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -141,7 +146,9 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
                 ).parse(data['date']);
 
                 // Filter Logic
-                final hall = data['hall'] is String ? data['hall'] : '2216-Hall';
+                final hall = data['hall'] is String
+                    ? data['hall']
+                    : '2216-Hall';
                 if (_selectedFilter != 'All' && hall != _selectedFilter) {
                   continue;
                 }
@@ -156,8 +163,10 @@ class _OlderBookingScreenState extends State<OlderBookingScreen> {
               dev.log(previousBooking.length.toString());
 
               if (previousBooking.isEmpty) {
-                 if (_selectedFilter != 'All') {
-                   return Center(child: Text('No $_selectedFilter bookings available.'));
+                if (_selectedFilter != 'All') {
+                  return Center(
+                    child: Text('No $_selectedFilter bookings available.'),
+                  );
                 }
                 return const Center(child: Text('No Booking available.'));
               }

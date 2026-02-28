@@ -6,8 +6,8 @@ class FetchSlotBooker {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   /// Fetches the booking details for a specific slot on a given date.
-  /// Returns a map with 'name', 'tokenNumber', and 'courseCode' if found,
-  /// or null if no booking exists for that slot.
+  /// Returns a map with 'name', 'tokenNumber', 'courseCode', 'uid', and
+  /// 'ticketId' if found, or null if no booking exists for that slot.
   static Future<Map<String, String>?> fetchBooker(
     String date,
     String slot,
@@ -31,10 +31,14 @@ class FetchSlotBooker {
       }
 
       final data = querySnapshot.docs.first.data();
+      final ticketId = querySnapshot.docs.first.id;
+
       return {
         'name': data['name']?.toString() ?? 'Unknown',
         'tokenNumber': data['tokenNumber']?.toString() ?? 'Unknown',
         'courseCode': data['courseCode']?.toString() ?? 'Unknown',
+        'uid': data['uid']?.toString() ?? '',
+        'ticketId': ticketId,
       };
     } catch (e) {
       dev.log('Failed to fetch slot booker: $e', name: 'FetchSlotBooker');

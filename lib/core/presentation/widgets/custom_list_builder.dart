@@ -281,22 +281,24 @@ class BuildListBuilder extends ConsumerWidget {
 
         String formatSlots(List<dynamic> slots) {
           if (hall == '2216-Hall') return slots.join(', ');
-          return slots.map((slot) {
-             final str = slot.toString();
-             if (!str.contains('-')) return str; 
-             // Assumes "HH:mm - HH:mm" (start - end) or single time? 
-             // If it's single time (2216 style), we excluded it.
-             // Non-2216 stores "HH:mm - HH:mm" in slots[0].
-             try {
-               final parts = str.split('-');
-               if (parts.length != 2) return str;
-               final start = DateFormat('HH:mm').parse(parts[0].trim());
-               final end = DateFormat('HH:mm').parse(parts[1].trim());
-               return "${DateFormat('hh:mm a').format(start)} - ${DateFormat('hh:mm a').format(end)}";
-             } catch (e) {
-               return str;
-             }
-          }).join(', ');
+          return slots
+              .map((slot) {
+                final str = slot.toString();
+                if (!str.contains('-')) return str;
+                // Assumes "HH:mm - HH:mm" (start - end) or single time?
+                // If it's single time (2216 style), we excluded it.
+                // Non-2216 stores "HH:mm - HH:mm" in slots[0].
+                try {
+                  final parts = str.split('-');
+                  if (parts.length != 2) return str;
+                  final start = DateFormat('HH:mm').parse(parts[0].trim());
+                  final end = DateFormat('HH:mm').parse(parts[1].trim());
+                  return "${DateFormat('hh:mm a').format(start)} - ${DateFormat('hh:mm a').format(end)}";
+                } catch (e) {
+                  return str;
+                }
+              })
+              .join(', ');
         }
 
         return FrostedGlassUI(
@@ -392,11 +394,16 @@ class BuildListBuilder extends ConsumerWidget {
                 top: 8,
                 right: 8,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF124076).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFF124076).withOpacity(0.3)),
+                    border: Border.all(
+                      color: const Color(0xFF124076).withOpacity(0.3),
+                    ),
                   ),
                   child: Text(
                     hall,

@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import 'dart:ui';
+import "package:intl/intl.dart";
 import 'package:smart_reserve/core/theme/app_fonts.dart';
-import 'package:smart_reserve/feature/about/presentation/screens/about_screen.dart';
 import 'package:smart_reserve/feature/auth/presentation/screens/verify_screen.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +14,7 @@ import 'package:smart_reserve/core/presentation/widgets/custom_text_field.dart';
 
 import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_slot_booker.dart';
+import 'package:smart_reserve/feature/notification/presentation/providers/notification_provider.dart';
 
 class BookingScreen extends ConsumerStatefulWidget {
   final BookingDetails? existingBooking;
@@ -190,28 +191,83 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                       bookerInfo['courseCode']!,
                     ),
                     const SizedBox(height: 24),
-                    // Close button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.of(ctx).pop(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF124076),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    // Action buttons
+                    Row(
+                      children: [
+                        // Close button
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey.shade200,
+                              foregroundColor: const Color(0xFF124076),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              'Close',
+                              style: AppFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                          elevation: 0,
                         ),
-                        child: Text(
-                          'Close',
-                          style: AppFonts.poppins(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
+                        const SizedBox(width: 10),
+                        // Request Slot button
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () async {
+                              Navigator.of(ctx).pop();
+                              // Show loading
+                              if (!context.mounted) return;
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) => const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+
+                              final message =
+                                  await NotificationService.sendRequest(
+                                    bookingId: bookerInfo['ticketId'] ?? '',
+                                    slotInfo: slot,
+                                    date: date,
+                                    requestedToUid: bookerInfo['uid'] ?? '',
+                                    requestedToName: bookerInfo['name'] ?? '',
+                                  );
+
+                              if (context.mounted) {
+                                Navigator.of(context).pop(); // Pop loading
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(message)),
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.swap_horiz, size: 18),
+                            label: Text(
+                              'Request',
+                              style: AppFonts.poppins(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF124076),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 0,
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -380,33 +436,51 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                               // Hall Selection
                               // Hall Selection
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 4.0),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 25.0,
+                                  vertical: 4.0,
+                                ),
                                 child: DropdownButtonFormField<String>(
                                   value: bookingState.selectedHall,
                                   decoration: const InputDecoration(
                                     labelText: "Select Hall",
                                     prefixIcon: Icon(Icons.meeting_room),
                                     border: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF124076)),
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF124076),
+                                      ),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.black),
-                                    ),
-                                    labelStyle: TextStyle(color: Color(0xFF124076)),
-                                  ),
-                                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF124076)),
-                                  items: ['2216-Hall', 'CompScE', 'Pheonix'].map((String hall) {
-                                    return DropdownMenuItem<String>(
-                                      value: hall,
-                                      child: Text(
-                                        hall,
-                                        style: AppFonts.poppins(color: const Color(0xFF124076)),
+                                      borderSide: BorderSide(
+                                        color: Colors.black,
                                       ),
-                                    );
-                                  }).toList(),
+                                    ),
+                                    labelStyle: TextStyle(
+                                      color: Color(0xFF124076),
+                                    ),
+                                  ),
+                                  icon: const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Color(0xFF124076),
+                                  ),
+                                  items: ['2216-Hall', 'CompScE', 'Pheonix']
+                                      .map((String hall) {
+                                        return DropdownMenuItem<String>(
+                                          value: hall,
+                                          child: Text(
+                                            hall,
+                                            style: AppFonts.poppins(
+                                              color: const Color(0xFF124076),
+                                            ),
+                                          ),
+                                        );
+                                      })
+                                      .toList(),
                                   onChanged: (String? newValue) {
                                     if (newValue != null) {
-                                      ref.read(bookingProvider.notifier).updateHall(newValue);
+                                      ref
+                                          .read(bookingProvider.notifier)
+                                          .updateHall(newValue);
                                     }
                                   },
                                 ),
@@ -569,29 +643,37 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
         // Format to HH:mm
         final formatted =
             "${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}";
-        
+
         if (isStartTime) {
-            ref.read(bookingProvider.notifier).updateTimeRange(formatted, state.selectedEndTime);
+          ref
+              .read(bookingProvider.notifier)
+              .updateTimeRange(formatted, state.selectedEndTime);
         } else {
-            ref.read(bookingProvider.notifier).updateTimeRange(state.selectedStartTime, formatted);
+          ref
+              .read(bookingProvider.notifier)
+              .updateTimeRange(state.selectedStartTime, formatted);
         }
       }
     }
 
     String formatTime(String? time) {
-       if (time == null || time.isEmpty) return "";
-       if (state.selectedHall == '2216-Hall') return time;
-       try {
-         final dt = DateFormat('HH:mm').parse(time);
-         return DateFormat('hh:mm a').format(dt);
-       } catch (e) {
-         return time;
-       }
+      if (time == null || time.isEmpty) return "";
+      if (state.selectedHall == '2216-Hall') return time;
+      try {
+        final dt = DateFormat('HH:mm').parse(time);
+        return DateFormat('hh:mm a').format(dt);
+      } catch (e) {
+        return time;
+      }
     }
 
     // Controllers for display
-    final startCtrl = TextEditingController(text: formatTime(state.selectedStartTime));
-    final endCtrl = TextEditingController(text: formatTime(state.selectedEndTime));
+    final startCtrl = TextEditingController(
+      text: formatTime(state.selectedStartTime),
+    );
+    final endCtrl = TextEditingController(
+      text: formatTime(state.selectedEndTime),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

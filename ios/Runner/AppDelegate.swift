@@ -1,5 +1,7 @@
 import UIKit
 import Flutter
+import FirebaseCore
+import FirebaseMessaging
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -7,6 +9,13 @@ import Flutter
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    FirebaseApp.configure()
+
+    // Required for iOS foreground notification banners
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self
+    }
+
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
