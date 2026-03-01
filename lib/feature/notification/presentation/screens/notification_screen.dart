@@ -115,6 +115,7 @@ class _NotificationCardState extends State<_NotificationCard> {
     final requestedBy = data['requestedBy'] ?? '';
     final requestedTo = data['requestedTo'] ?? '';
     final bookingId = data['bookingId'] ?? '';
+    final requesterCourseCode = data['requesterCourseCode'] ?? '';
     final initiatedAt = data['notificationInitiatedAt'] ?? '';
 
     return Padding(
@@ -192,6 +193,12 @@ class _NotificationCardState extends State<_NotificationCard> {
                   ],
                 ),
 
+                // Course code (if provided by requester)
+                if (requesterCourseCode.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  _buildInfoChip(Icons.subject_rounded, requesterCourseCode),
+                ],
+
                 // Timestamp
                 if (initiatedAt.isNotEmpty) ...[
                   const SizedBox(height: 8),
@@ -232,6 +239,7 @@ class _NotificationCardState extends State<_NotificationCard> {
                                   slotInfo: slotInfo,
                                   date: date,
                                   bookingId: bookingId,
+                                  requesterCourseCode: requesterCourseCode,
                                 ),
                                 icon: const Icon(Icons.check, size: 18),
                                 label: Text(
@@ -267,6 +275,7 @@ class _NotificationCardState extends State<_NotificationCard> {
                                   slotInfo: slotInfo,
                                   date: date,
                                   bookingId: bookingId,
+                                  requesterCourseCode: requesterCourseCode,
                                 ),
                                 icon: const Icon(Icons.close, size: 18),
                                 label: Text(
@@ -357,6 +366,7 @@ class _NotificationCardState extends State<_NotificationCard> {
     String? slotInfo,
     String? date,
     String? bookingId,
+    String? requesterCourseCode,
   }) async {
     setState(() => _isLoading = true);
 
@@ -369,6 +379,7 @@ class _NotificationCardState extends State<_NotificationCard> {
       slotInfo: slotInfo,
       date: date,
       bookingId: bookingId,
+      requesterCourseCode: requesterCourseCode,
     );
 
     if (context.mounted) {
