@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'dart:ui';
 import "package:intl/intl.dart";
@@ -193,82 +194,141 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                     ),
                     const SizedBox(height: 24),
                     // Action buttons
-                    Row(
-                      children: [
-                        // Close button
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.of(ctx).pop(),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey.shade200,
-                              foregroundColor: const Color(0xFF124076),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Close',
-                              style: AppFonts.poppins(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        // Request Slot button
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () async {
-                              Navigator.of(ctx).pop();
-                              // Show loading
-                              if (!context.mounted) return;
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (_) => const Center(
-                                  child: CircularProgressIndicator(),
+                    Builder(
+                      builder: (_) {
+                        final currentUid =
+                            FirebaseAuth.instance.currentUser?.uid ?? '';
+                        final isOwnSlot =
+                            bookerInfo['uid'] == currentUid;
+
+                        if (isOwnSlot) {
+                          // Own slot — only show Close
+                          return Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
                                 ),
-                              );
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.green.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle_outline,
+                                      size: 14,
+                                      color: Colors.green.shade700,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'This is your booking',
+                                      style: AppFonts.poppins(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.green.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () => Navigator.of(ctx).pop(),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey.shade200,
+                                    foregroundColor: const Color(0xFF124076),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    'Close',
+                                    style: AppFonts.poppins(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
 
-                              final message =
-                                  await NotificationService.sendRequest(
-                                    bookingId: bookerInfo['ticketId'] ?? '',
-                                    slotInfo: slot,
+                        // Other user's slot — show Close + Request
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.of(ctx).pop(),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey.shade200,
+                                  foregroundColor: const Color(0xFF124076),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                child: Text(
+                                  'Close',
+                                  style: AppFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.of(ctx).pop();
+                                  if (!context.mounted) return;
+                                  _showCourseCodeBottomSheet(
+                                    context,
+                                    slot: slot,
                                     date: date,
-                                    requestedToUid: bookerInfo['uid'] ?? '',
-                                    requestedToName: bookerInfo['name'] ?? '',
+                                    bookerInfo: bookerInfo,
                                   );
-
-                              if (context.mounted) {
-                                Navigator.of(context).pop(); // Pop loading
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(message)),
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.swap_horiz, size: 18),
-                            label: Text(
-                              'Request',
-                              style: AppFonts.poppins(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
+                                },
+                                icon: const Icon(Icons.swap_horiz, size: 18),
+                                label: Text(
+                                  'Request',
+                                  style: AppFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF124076),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 0,
+                                ),
                               ),
                             ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF124076),
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 0,
-                            ),
-                          ),
-                        ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -310,6 +370,263 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                 color: const Color(0xFF124076),
               ),
               textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCourseCodeBottomSheet(
+    BuildContext context, {
+    required String slot,
+    required String date,
+    required Map<String, String> bookerInfo,
+  }) {
+    final courseCodeController = TextEditingController();
+    bool isSending = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(ctx).viewInsets.bottom,
+              ),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(24),
+                      ),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.6),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.white.withOpacity(0.55),
+                          Colors.white.withOpacity(0.25),
+                        ],
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Drag handle
+                        Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade400,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Header
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF124076).withOpacity(0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.swap_horiz_rounded,
+                            color: Color(0xFF124076),
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Request Slot',
+                          style: AppFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF124076),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Enter your course code for this slot',
+                          style: AppFonts.poppins(
+                            fontSize: 13,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Slot & Date info chips
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _buildChip(Icons.access_time, slot),
+                            const SizedBox(width: 8),
+                            _buildChip(Icons.calendar_today, date),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Course Code text field
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: const Color(0xFF124076).withOpacity(0.2),
+                            ),
+                          ),
+                          child: TextField(
+                            controller: courseCodeController,
+                            textCapitalization: TextCapitalization.characters,
+                            style: AppFonts.poppins(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF124076),
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'e.g. CS3401',
+                              hintStyle: AppFonts.poppins(
+                                fontSize: 14,
+                                color: Colors.grey.shade400,
+                              ),
+                              labelText: 'Course Code',
+                              labelStyle: AppFonts.poppins(
+                                fontSize: 14,
+                                color: const Color(0xFF124076).withOpacity(0.7),
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.subject_rounded,
+                                color: Color(0xFF124076),
+                                size: 20,
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Send Request button
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: isSending
+                              ? const Center(
+                                  child: SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                    ),
+                                  ),
+                                )
+                              : ElevatedButton.icon(
+                                  onPressed: () async {
+                                    final code =
+                                        courseCodeController.text.trim();
+                                    if (code.isEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            'Please enter a course code',
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
+
+                                    setSheetState(() => isSending = true);
+
+                                    final message =
+                                        await NotificationService.sendRequest(
+                                      bookingId:
+                                          bookerInfo['ticketId'] ?? '',
+                                      slotInfo: slot,
+                                      date: date,
+                                      requestedToUid:
+                                          bookerInfo['uid'] ?? '',
+                                      requestedToName:
+                                          bookerInfo['name'] ?? '',
+                                      courseCode: code,
+                                    );
+
+                                    if (ctx.mounted) {
+                                      Navigator.of(ctx).pop();
+                                    }
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(content: Text(message)),
+                                      );
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.send_rounded,
+                                    size: 18,
+                                  ),
+                                  label: Text(
+                                    'Send Request',
+                                    style: AppFonts.poppins(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF124076),
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildChip(IconData icon, String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFF124076).withOpacity(0.08),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: const Color(0xFF124076)),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: AppFonts.poppins(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF124076),
             ),
           ),
         ],

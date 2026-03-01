@@ -19,25 +19,23 @@ class _LoginScreenState extends State<LoginScreen> {
   final _loginFormKey = GlobalKey<FormState>();
   final TextEditingController userName = TextEditingController();
   final TextEditingController password = TextEditingController();
+  bool _isLoading = false;
 
   void _login() async {
     if (_loginFormKey.currentState!.validate()) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(child: CircularProgressIndicator());
-        },
-      );
+      setState(() => _isLoading = true);
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: userName.text.trim(),
           password: password.text,
         );
-        Navigator.pop(context);
+        // Auth state listener in Auth wrapper will navigate to MainScreen.
+        // No need to pop or navigate here.
         GCPLog.info('User logged in successfully');
       } on FirebaseAuthException catch (e) {
         GCPLog.error('Login auth error: ${e.code}', error: e);
-        Navigator.pop(context);
+        if (!mounted) return;
+        setState(() => _isLoading = false);
         if (e.code == 'invalid-email') {
           ScaffoldMessenger.of(
             context,
@@ -49,6 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } catch (e) {
         GCPLog.error('Login unexpected error', error: e);
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Something went wrong. Please try again.")));
       }
     }
   }
@@ -65,84 +68,96 @@ class _LoginScreenState extends State<LoginScreen> {
     return BackgroundShapes(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Center(
-            child: Form(
-              key: _loginFormKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 0.0,
-                      horizontal: 30.0,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Hello,",
-                          style: AppFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 40,
-                          ),
+        body: Stack(
+          children: [
+            SafeArea(
+              child: Center(
+                child: Form(
+                  key: _loginFormKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 0.0,
+                          horizontal: 30.0,
                         ),
-                        Text(
-                          "Welcome Back!",
-                          style: AppFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 40.0),
-                  BuildLoginTextForm(
-                    controller: userName,
-                    label: "Email",
-                    readOnly: false,
-                    obscureText: false,
-                    isPassword: false,
-                  ),
-                  const SizedBox(height: 10.0),
-                  BuildLoginTextForm(
-                    controller: password,
-                    label: "Password",
-                    readOnly: false,
-                    obscureText: true,
-                    isPassword: true,
-                  ),
-                  const SizedBox(height: 10.0),
-                  GestureDetector(
-                    onTap: forgetPassword,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Forget Password?",
-                            style: AppFonts.firaSans(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Hello,",
+                              style: AppFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 40,
+                              ),
                             ),
-                          ),
-                        ],
+                            Text(
+                              "Welcome Back!",
+                              style: AppFonts.poppins(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 40.0),
+                      BuildLoginTextForm(
+                        controller: userName,
+                        label: "Email",
+                        readOnly: false,
+                        obscureText: false,
+                        isPassword: false,
+                      ),
+                      const SizedBox(height: 10.0),
+                      BuildLoginTextForm(
+                        controller: password,
+                        label: "Password",
+                        readOnly: false,
+                        obscureText: true,
+                        isPassword: true,
+                      ),
+                      const SizedBox(height: 10.0),
+                      GestureDetector(
+                        onTap: forgetPassword,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                "Forget Password?",
+                                style: AppFonts.firaSans(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      AbsorbPointer(
+                        absorbing: _isLoading,
+                        child: BuildElevatedButton(
+                          actionOnButton: _login,
+                          buttonText: "Login",
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 10.0),
-                  BuildElevatedButton(
-                    actionOnButton: _login,
-                    buttonText: "Login",
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+            if (_isLoading)
+              Container(
+                color: Colors.black54,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+          ],
         ),
       ),
     );

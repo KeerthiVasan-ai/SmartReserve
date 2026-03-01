@@ -25,6 +25,7 @@ class NotificationService {
     required String date,
     required String requestedToUid,
     required String requestedToName,
+    String? courseCode,
   }) async {
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
@@ -61,6 +62,8 @@ class NotificationService {
         'date': date,
         'status': 'pending',
         'notificationInitiatedAt': now,
+        if (courseCode != null && courseCode.isNotEmpty)
+          'requesterCourseCode': courseCode,
       };
 
       // 5. Insert into Firestore (both sent & received)
@@ -109,6 +112,7 @@ class NotificationService {
     String? slotInfo,
     String? date,
     String? bookingId,
+    String? requesterCourseCode,
   }) async {
     try {
       final newStatus = accept ? 'accepted' : 'rejected';
@@ -121,6 +125,7 @@ class NotificationService {
           bookingId: bookingId,
           slotInfo: slotInfo ?? '',
           date: date ?? '',
+          requesterCourseCode: requesterCourseCode,
         );
       }
 

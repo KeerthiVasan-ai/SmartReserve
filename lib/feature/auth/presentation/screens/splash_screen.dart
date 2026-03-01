@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (serverDetails.isAppUnderMaintenance) {
       Timer(
-        const Duration(seconds: 10),
+        const Duration(seconds: 1),
         () => Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else if (!serverDetails.isAppUnderMaintenance &&
         (serverDetails.version != AppConstants.APP_VERSION)) {
       Timer(
-        const Duration(seconds: 10),
+        const Duration(seconds: 1),
         () => Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     } else {
       Timer(
-        const Duration(seconds: 10),
+        const Duration(seconds: 1),
         () => Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const Auth()),

@@ -21,6 +21,7 @@ class TransferSlotBooking {
     required String bookingId,
     required String slotInfo,
     required String date,
+    String? requesterCourseCode,
   }) async {
     try {
       // 1. Fetch owner's booking document
@@ -60,6 +61,8 @@ class TransferSlotBooking {
         'tokenNumber': requesterToken,
         'uid': requesterUid,
         'slots': [slotInfo], // Only the transferred slot
+        if (requesterCourseCode != null && requesterCourseCode.isNotEmpty)
+          'courseCode': requesterCourseCode,
       };
 
       // 4. Determine the owner's remaining slots

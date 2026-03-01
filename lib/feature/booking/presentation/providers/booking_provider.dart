@@ -181,6 +181,9 @@ class BookingNotifier extends _$BookingNotifier {
       int usedSlots = 0;
       for (var doc in querySnapshot.docs) {
         final data = doc.data();
+        // Only count 2216-Hall bookings (treat missing/empty hall as 2216-Hall for legacy data)
+        final hall = data['hall'] as String? ?? '2216-Hall';
+        if (hall != '2216-Hall' && hall.isNotEmpty) continue;
         final slots = data['slots'] as List<dynamic>?;
         usedSlots += slots?.length ?? 1;
       }
@@ -257,6 +260,11 @@ class BookingNotifier extends _$BookingNotifier {
         timeSlots: slots,
         isLoading: false,
       );
+
+      // Fetch weekly usage so the indicator shows immediately
+      if (existingBooking.date.isNotEmpty) {
+        await _fetchWeeklyUsage(existingBooking.date);
+      }
     } catch (e) {
       state = state.copyWith(isLoading: false, errorMessage: e.toString());
     }
@@ -448,8 +456,9 @@ class BookingNotifier extends _$BookingNotifier {
     String uid,
     String ticketId,
     String date,
-    List<dynamic> slotsToRemove,
-  ) async {
+    List<dynamic> slotsToRemove, {
+    String hall = '2216-Hall',
+  }) async {
     state = state.copyWith(
       isSubmitting: true,
       errorMessage: null,
@@ -462,45 +471,19 @@ class BookingNotifier extends _$BookingNotifier {
         ticketId,
         slotsToRemove,
       );
-      if (!ref.mounted) return;
 
       // 2. Delete slots from global bookings
       await DeleteUserBooking.deleteBookingSlots(date, ticketId, slotsToRemove);
-      if (!ref.mounted) return;
 
-      // 3. Update availability (make slots available again)
-      // Only for 2216-Hall, check if hall field exists or assume 2216 if not
-      // Using a quick check or fetch? The caller passes uid, ticketId.
-      // We might need to fetch the booking first to know the HALL if we don't have it.
-      // However, deleteBooking is called from UI where we usually have the booking list.
-      // For now, let's assume if we are deleting, we should check availability update.
-      // But wait... deleteBooking signature doesn't pass the Hall.
-      // We need to fetch it or pass it.
-      // For now, let's just wrap it in try catch or fetch it?
-      // Actually `deleteBooking` in provider is called... where?
-      // It's called from `PreviousBookingScreen` usually.
-      // We might need to update that signature later but for now:
-
-      // We can try to fetch the booking details before deleting? Or just attempt update and fail gracefully?
-      // Or safer: Always update slot availability if we strictly follow 2216 logic,
-      // but providing 'slots' for CompScE might mean we inadvertently update 2216 slots if names collide?
-      // New halls don't use 'slots' names same as 2216 (which are 08:30-09:20 etc) vs (10:00).
-      // So colliding is low risk but possible.
-      // Best to know the HALL.
-      // I will leave it as is for now as 2216-Hall is default, and refactor delete later if needed.
-      // actually, let's assume if it has slots, it might be 2216.
-
-      // 3. Update availability (make slots available again)
-      final myDate = DateFormat("dd-MM-yyyy").parse(date);
-      // NOTE: We don't have Hall info here easily to check '2216-Hall' strictly.
-      // But attempting to delete slot availability for a slot that doesn't exist (e.g. 10:00)
-      // in timeSlots collection is generally harmless or handled by the datasource.
-      // For now, we leave it as is to support legacy 2216 behavior.
-      await UpdateTimeSlots.deleteSlot(
-        DateFormat('yyyy-MM-dd').format(myDate),
-        slotsToRemove,
-        true,
-      );
+      // 3. Update availability (only for 2216-Hall)
+      if (hall == '2216-Hall' || hall.isEmpty) {
+        final myDate = DateFormat("dd-MM-yyyy").parse(date);
+        await UpdateTimeSlots.deleteSlot(
+          DateFormat('yyyy-MM-dd').format(myDate),
+          slotsToRemove,
+          true,
+        );
+      }
       if (!ref.mounted) return;
 
       state = state.copyWith(

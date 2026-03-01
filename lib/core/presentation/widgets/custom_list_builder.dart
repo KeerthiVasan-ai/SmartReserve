@@ -27,6 +27,7 @@ class BuildListBuilder extends ConsumerWidget {
     String ticketId,
     String dateStr,
     List<dynamic> allSlots,
+    String hall,
   ) async {
     List<String> selectedSlots = [];
     final DateTime now = DateTime.now();
@@ -95,7 +96,7 @@ class BuildListBuilder extends ConsumerWidget {
                 Navigator.pop(context);
                 ref
                     .read(bookingProvider.notifier)
-                    .deleteBooking(uid, ticketId, dateStr, allSlots);
+                    .deleteBooking(uid, ticketId, dateStr, allSlots, hall: hall);
               },
               child: const Text("Yes"),
             ),
@@ -159,6 +160,7 @@ class BuildListBuilder extends ConsumerWidget {
                                   ticketId,
                                   dateStr,
                                   selectedSlots,
+                                  hall: hall,
                                 );
                           },
                     child: const Text("Delete Selected"),
@@ -382,6 +384,7 @@ class BuildListBuilder extends ConsumerWidget {
                                 data['ticketId'],
                                 data['date'],
                                 data['slots'],
+                                hall,
                               );
                             },
                           ),

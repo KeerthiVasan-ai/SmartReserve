@@ -15,26 +15,28 @@ class DeleteUserBooking {
           .collection('bookings')
           .doc(bookingId);
 
-      await bookingReference.update({
-        'slots': FieldValue.arrayRemove(slotsToRemove),
-      });
-
-      // Check if slots are empty, if so, delete the document
+      // Check current slots to decide: delete doc or just remove slots
       DocumentSnapshot snapshot = await bookingReference.get();
       if (snapshot.exists) {
         List<dynamic> currentSlots =
             (snapshot.data() as Map<String, dynamic>)['slots'] ?? [];
-        if (currentSlots.isEmpty) {
+        // If removing all remaining slots, delete the whole document at once
+        final remainingSlots =
+            currentSlots.where((s) => !slotsToRemove.contains(s)).toList();
+        if (remainingSlots.isEmpty) {
           await bookingReference.delete();
-          dev.log('Document deleted as no slots remain!', name: "Info");
-          GCPLog.info('User booking document deleted (no slots): $bookingId');
+          dev.log('Document deleted as all slots removed!', name: "Info");
+          GCPLog.info('User booking document deleted: $bookingId');
+        } else {
+          await bookingReference.update({
+            'slots': FieldValue.arrayRemove(slotsToRemove),
+          });
+          dev.log('Slots removed successfully!', name: "Success");
+          GCPLog.info(
+            'User booking slots removed: $bookingId, slots: $slotsToRemove',
+          );
         }
       }
-
-      dev.log('Slots removed successfully!', name: "Success");
-      GCPLog.info(
-        'User booking slots removed: $bookingId, slots: $slotsToRemove',
-      );
     } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to delete user booking slots', error: error);
@@ -53,26 +55,27 @@ class DeleteUserBooking {
           .collection('booking')
           .doc(bookingId);
 
-      await bookingReference.update({
-        'slots': FieldValue.arrayRemove(slotsToRemove),
-      });
-
-      // Check if slots are empty, if so, delete the document
+      // Check current slots to decide: delete doc or just remove slots
       DocumentSnapshot snapshot = await bookingReference.get();
       if (snapshot.exists) {
         List<dynamic> currentSlots =
             (snapshot.data() as Map<String, dynamic>)['slots'] ?? [];
-        if (currentSlots.isEmpty) {
+        final remainingSlots =
+            currentSlots.where((s) => !slotsToRemove.contains(s)).toList();
+        if (remainingSlots.isEmpty) {
           await bookingReference.delete();
-          dev.log('Document deleted as no slots remain!', name: "Info");
+          dev.log('Document deleted as all slots removed!', name: "Info");
           GCPLog.info(
-            'Global booking document deleted (no slots): $bookingId on $date',
+            'Global booking document deleted: $bookingId on $date',
           );
+        } else {
+          await bookingReference.update({
+            'slots': FieldValue.arrayRemove(slotsToRemove),
+          });
+          dev.log('Slots removed successfully!', name: "Success");
+          GCPLog.info('Global booking slots removed: $bookingId on $date');
         }
       }
-
-      dev.log('Slots removed successfully!', name: "Success");
-      GCPLog.info('Global booking slots removed: $bookingId on $date');
     } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to delete global booking slots', error: error);
