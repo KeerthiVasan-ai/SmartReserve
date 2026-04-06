@@ -5,6 +5,7 @@ import "package:firebase_messaging/firebase_messaging.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:smart_reserve/firebase_options.dart";
+import 'package:smart_reserve/core/services/gcp_credentials.dart';
 import 'package:smart_reserve/feature/auth/presentation/screens/splash_screen.dart';
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 import 'package:smart_reserve/core/services/local_notification_service.dart';
@@ -71,7 +72,9 @@ void main() async {
   // Handle foreground messages
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     debugPrint('[FCM] onMessage received: ${message.messageId}');
-    debugPrint('[FCM] notification: ${message.notification?.title} - ${message.notification?.body}');
+    debugPrint(
+      '[FCM] notification: ${message.notification?.title} - ${message.notification?.body}',
+    );
     debugPrint('[FCM] data: ${message.data}');
     final notification = message.notification;
     if (notification != null) {
@@ -109,9 +112,9 @@ class MyApp extends StatelessWidget {
       title: "Smart Reserve",
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.noScaling,
-          ),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.noScaling),
           child: child!,
         );
       },
@@ -119,4 +122,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

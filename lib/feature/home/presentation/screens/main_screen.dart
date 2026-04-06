@@ -7,6 +7,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_reserve/core/theme/app_fonts.dart';
 import "package:intl/intl.dart";
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_list_builder.dart';
 import 'package:smart_reserve/feature/about/presentation/screens/about_screen.dart';

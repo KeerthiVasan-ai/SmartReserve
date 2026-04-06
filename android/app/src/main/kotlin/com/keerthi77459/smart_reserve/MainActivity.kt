@@ -11,7 +11,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
-class MainActivity: FlutterActivity() {
+class MainActivity : FlutterActivity() {
     private val CHANNEL = "smart_reserve/in_app_update"
     private lateinit var appUpdateManager: AppUpdateManager
     private val REQUEST_CODE_UPDATE = 1729
@@ -25,7 +25,10 @@ class MainActivity: FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            CHANNEL
+        ).setMethodCallHandler { call, result ->
             if (call.method == "checkForUpdate") {
                 pendingResult = result
                 checkAndTriggerUpdate()
@@ -39,7 +42,7 @@ class MainActivity: FlutterActivity() {
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
 
         appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.updateAvailable
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
                 && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
             ) {
                 // Request the update
@@ -68,11 +71,17 @@ class MainActivity: FlutterActivity() {
                 RESULT_OK -> {
                     pendingResult?.success("Update Successful")
                 }
+
                 RESULT_CANCELED -> {
                     pendingResult?.error("UPDATE_CANCELED", "User canceled update", null)
                 }
+
                 else -> {
-                    pendingResult?.error("UPDATE_FAILED", "Update failed with code: $resultCode", null)
+                    pendingResult?.error(
+                        "UPDATE_FAILED",
+                        "Update failed with code: $resultCode",
+                        null
+                    )
                 }
             }
             pendingResult = null
@@ -83,7 +92,7 @@ class MainActivity: FlutterActivity() {
         super.onResume()
         // Resume immediate update if one was in progress
         appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.developerTriggeredUpdateInProgress) {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 appUpdateManager.startUpdateFlowForResult(
                     appUpdateInfo,
                     AppUpdateType.IMMEDIATE,

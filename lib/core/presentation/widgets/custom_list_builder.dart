@@ -8,6 +8,7 @@ import 'package:smart_reserve/core/presentation/widgets/frosted_glass.dart';
 import 'package:smart_reserve/feature/booking/presentation/providers/booking_provider.dart';
 import 'package:smart_reserve/feature/booking/presentation/screens/booking_screen.dart';
 import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 class BuildListBuilder extends ConsumerWidget {
   final List<DocumentSnapshot> bookings;

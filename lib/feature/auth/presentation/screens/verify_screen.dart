@@ -1,16 +1,12 @@
 import "package:flutter/material.dart";
-import 'package:smart_reserve/core/theme/app_fonts.dart';
-import 'package:smart_reserve/feature/booking/presentation/widgets/ticket_widget.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
-import "package:ticket_widget/ticket_widget.dart";
-
-import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_app_bar.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_button.dart';
-import 'package:smart_reserve/feature/booking/presentation/widgets/report_details_widget.dart';
-import 'package:smart_reserve/feature/booking/presentation/widgets/ticket_painter.dart';
-import 'package:smart_reserve/feature/home/presentation/screens/main_screen.dart';
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
+import 'package:smart_reserve/core/theme/app_fonts.dart';
+import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
+import 'package:smart_reserve/feature/booking/presentation/widgets/ticket_widget.dart';
+import 'package:smart_reserve/feature/home/presentation/screens/main_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
   final BookingDetails bookingDetails;
