@@ -10,6 +10,7 @@ import 'package:smart_reserve/core/presentation/widgets/custom_button.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/report_details_widget.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/ticket_painter.dart';
 import 'package:smart_reserve/feature/home/presentation/screens/main_screen.dart';
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 
 class VerifyScreen extends StatefulWidget {
   final BookingDetails bookingDetails;
@@ -30,6 +31,16 @@ class VerifyScreen extends StatefulWidget {
 }
 
 class _VerifyScreenState extends State<VerifyScreen> {
+  @override
+  void initState() {
+    super.initState();
+    GCPLog.info(
+      widget.isEditing
+          ? 'Booking update summary displayed: ${widget.bookingDetails.ticketId}'
+          : 'Booking confirmation displayed: ${widget.bookingDetails.ticketId}',
+    );
+  }
+
   void backToHome() {
     Navigator.pushAndRemoveUntil(
       context,

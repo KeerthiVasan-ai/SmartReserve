@@ -47,6 +47,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   void _signOut() async {
     // Unsubscribe from FCM topic before signing out
     await FirebaseMessaging.instance.unsubscribeFromTopic(uid);
+    GCPLog.info('User logged out: $uid');
     FirebaseAuth.instance.signOut();
   }
 

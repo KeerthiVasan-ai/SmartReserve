@@ -94,6 +94,9 @@ class BuildListBuilder extends ConsumerWidget {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
+                GCPLog.info(
+                  'User confirmed cancellation for ticket: $ticketId, slots: $allSlots',
+                );
                 ref
                     .read(bookingProvider.notifier)
                     .deleteBooking(uid, ticketId, dateStr, allSlots, hall: hall);
@@ -153,6 +156,9 @@ class BuildListBuilder extends ConsumerWidget {
                         ? null
                         : () {
                             Navigator.pop(context);
+                            GCPLog.info(
+                              'User confirmed partial cancellation for ticket: $ticketId, selected: $selectedSlots',
+                            );
                             ref
                                 .read(bookingProvider.notifier)
                                 .deleteBooking(
@@ -244,6 +250,9 @@ class BuildListBuilder extends ConsumerWidget {
                   onTap: isValid
                       ? () {
                           Navigator.pop(context);
+                          GCPLog.info(
+                            'User selected specific slot to edit: $slot (ticket: ${data['ticketId']})',
+                          );
                           final booking = BookingDetails.fromJson(
                             data,
                           ).copyWith(ticketId: data['ticketId']);
@@ -362,6 +371,9 @@ class BuildListBuilder extends ConsumerWidget {
                                 final booking = BookingDetails.fromJson(
                                   data,
                                 ).copyWith(ticketId: data['ticketId']);
+                                GCPLog.info(
+                                  'User initiated edit for single-slot booking: ${data['ticketId']}',
+                                );
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -378,6 +390,9 @@ class BuildListBuilder extends ConsumerWidget {
                           IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
+                              GCPLog.info(
+                                'User clicked delete icon for ticket: ${data['ticketId']}',
+                              );
                               _showDeleteDialog(
                                 context,
                                 ref,

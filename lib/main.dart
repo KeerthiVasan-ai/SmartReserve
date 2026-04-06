@@ -51,6 +51,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GCPCredentials.instance.load();
   await GCPLog.instance.setupLoggingApi();
+  GCPLog.info('Application started and logging initialized');
 
   // Initialise local notification plugin (creates channel + handles taps).
   await LocalNotificationService.instance.init();
