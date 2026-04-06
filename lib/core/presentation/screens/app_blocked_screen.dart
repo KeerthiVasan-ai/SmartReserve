@@ -77,7 +77,7 @@ class _AppBlockedScreenState extends State<AppBlockedScreen> {
                     ElevatedButton.icon(
                       onPressed: () async {
                         final rawUrl =
-                            AppConstants.APP_URL + (widget.version ?? '');
+                            AppConstants.APP_URL;
                         final uri = Uri.parse(rawUrl);
                         print(uri);
                         GCPLog.info('Attempting to launch URL: $uri');

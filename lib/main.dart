@@ -6,9 +6,9 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:smart_reserve/firebase_options.dart";
 import 'package:smart_reserve/feature/auth/presentation/screens/splash_screen.dart';
-import 'package:smart_reserve/core/services/gcp_credentials.dart';
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
 import 'package:smart_reserve/core/services/local_notification_service.dart';
+import 'package:smart_reserve/core/services/native_update_service.dart';
 import 'package:smart_reserve/feature/notification/presentation/screens/notification_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -52,6 +52,11 @@ void main() async {
   await GCPCredentials.instance.load();
   await GCPLog.instance.setupLoggingApi();
   GCPLog.info('Application started and logging initialized');
+
+  // Check for mandatory in-app updates (Android Only)
+  if (Platform.isAndroid) {
+    NativeUpdateService.checkForUpdate();
+  }
 
   // Initialise local notification plugin (creates channel + handles taps).
   await LocalNotificationService.instance.init();

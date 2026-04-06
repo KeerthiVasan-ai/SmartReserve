@@ -7,5 +7,5 @@ class AppConstants {
   static final NEW_VERSION_AVAILABLE = "Update Available";
 
   static final APP_URL =
-      "https://github.com/KeerthiVasan-ai/SmartReserve/releases/tag/v";
+      "https://play.google.com/store/apps/details?id=com.keerthi77459.smart_reserve";
 }
