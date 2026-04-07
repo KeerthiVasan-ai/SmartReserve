@@ -253,6 +253,7 @@ class BookingNotifier extends _$BookingNotifier {
       state = state.copyWith(
         bookingDetails: existingBooking.copyWith(slots: []),
         originalBooking: existingBooking,
+        selectedHall: existingBooking.hall.isEmpty ? '2216-Hall' : existingBooking.hall,
         editingSlot: editingSlot,
         isEditing: true,
         slotCount: slotCount,
