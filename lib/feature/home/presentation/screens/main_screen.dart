@@ -14,6 +14,7 @@ import 'package:smart_reserve/feature/about/presentation/screens/about_screen.da
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_user_booking.dart';
 import 'package:smart_reserve/feature/booking/presentation/screens/booking_screen.dart';
 import 'package:smart_reserve/feature/booking/presentation/screens/previous_booking_screen.dart';
+import 'package:smart_reserve/feature/home/presentation/widgets/filter_bottom_sheet.dart';
 import 'package:smart_reserve/feature/notification/presentation/providers/notification_provider.dart';
 import 'package:smart_reserve/feature/notification/presentation/screens/notification_screen.dart';
 
@@ -25,12 +26,13 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  final String uid = FirebaseAuth.instance.currentUser!.uid;
+  late String uid;
   String _selectedFilter = 'All';
 
   @override
   void initState() {
     super.initState();
+    uid = FirebaseAuth.instance.currentUser?.uid ?? '';
     // Subscribe to FCM topic for this user
     _subscribeToFCMTopic();
   }
@@ -66,67 +68,16 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   void _showFilterSheet() {
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor: Colors.transparent, // Transparent background for glass effect
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Filter by Hall",
-                style: AppFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF124076),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: ['All', '2216-Hall', 'CompScE', 'Pheonix'].map((
-                  filter,
-                ) {
-                  final isSelected = _selectedFilter == filter;
-                  return ChoiceChip(
-                    label: Text(filter),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      if (selected) {
-                        setState(() {
-                          _selectedFilter = filter;
-                        });
-                        Navigator.pop(context);
-                      }
-                    },
-                    selectedColor: const Color(0xFF124076).withOpacity(0.2),
-                    backgroundColor: Colors.grey.shade100,
-                    labelStyle: TextStyle(
-                      color: isSelected
-                          ? const Color(0xFF124076)
-                          : Colors.black87,
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.normal,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(
-                        color: isSelected
-                            ? const Color(0xFF124076)
-                            : Colors.grey.shade300,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
+        return FilterBottomSheet(
+          selectedFilter: _selectedFilter,
+          onFilterSelected: (String filter) {
+            setState(() {
+              _selectedFilter = filter;
+            });
+            Navigator.pop(context);
+          },
         );
       },
     );

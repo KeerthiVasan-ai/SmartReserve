@@ -2,11 +2,12 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
-import 'package:smart_reserve/feature/auth/presentation/screens/forget_password_screen.dart';
+import 'package:smart_reserve/feature/auth/presentation/widgets/forget_password_bottom_sheet.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 
 import 'package:smart_reserve/core/presentation/widgets/custom_button.dart';
 import 'package:smart_reserve/feature/auth/presentation/widgets/login_text_form.dart';
+import 'package:smart_reserve/core/presentation/widgets/smart_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,36 +31,37 @@ class _LoginScreenState extends State<LoginScreen> {
           password: password.text,
         );
         // Auth state listener in Auth wrapper will navigate to MainScreen.
-        // No need to pop or navigate here.
+        // No need to pop or navigate here, but we reset loading just in case.
         GCPLog.info('User logged in successfully');
+        if (mounted) setState(() => _isLoading = false);
       } on FirebaseAuthException catch (e) {
         GCPLog.error('Login auth error: ${e.code}', error: e);
         if (!mounted) return;
         setState(() => _isLoading = false);
         if (e.code == 'invalid-email') {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("Invalid Email")));
+          SmartSnackBar.showError(context, "The email address you entered is invalid.");
         } else if (e.code == 'invalid-credential') {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("Check your Credentials")));
+          SmartSnackBar.showError(context, "Mismatch in credentials. Please check and try again.");
         }
       } catch (e) {
         GCPLog.error('Login unexpected error', error: e);
         if (!mounted) return;
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(
+        SmartSnackBar.showError(
           context,
-        ).showSnackBar(SnackBar(content: Text("Something went wrong. Please try again.")));
+          "An unexpected error occurred. Our team is looking into it.",
+          title: "Login Failed",
+        );
       }
     }
   }
 
   void forgetPassword() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()),
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const ForgetPasswordBottomSheet(),
     );
   }
 

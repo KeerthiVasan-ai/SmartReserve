@@ -6,6 +6,7 @@ import 'package:smart_reserve/core/theme/app_fonts.dart';
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 import 'package:smart_reserve/feature/notification/presentation/providers/notification_provider.dart';
 import 'package:smart_reserve/feature/notification/data/datasources/fetch_notifications.dart';
+import 'package:smart_reserve/core/presentation/widgets/smart_snackbar.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -383,9 +384,11 @@ class _NotificationCardState extends State<_NotificationCard> {
     );
 
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
+      if (accept) {
+        SmartSnackBar.showSuccess(context, message, title: 'Request Accepted');
+      } else {
+        SmartSnackBar.showInfo(context, message, title: 'Request Rejected');
+      }
     }
 
     if (mounted) {

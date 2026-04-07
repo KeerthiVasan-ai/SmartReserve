@@ -7,12 +7,14 @@ import 'package:smart_reserve/feature/auth/presentation/screens/verify_screen.da
 import 'package:smart_reserve/core/presentation/widgets/background_shapes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smart_reserve/feature/booking/presentation/providers/booking_provider.dart';
+import 'package:smart_reserve/core/presentation/widgets/smart_snackbar.dart';
 
 import 'package:smart_reserve/core/presentation/widgets/custom_app_bar.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_button.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/slots_widget.dart';
 import 'package:smart_reserve/feature/booking/presentation/widgets/weekly_slot_usage_widget.dart';
 import 'package:smart_reserve/core/presentation/widgets/custom_text_field.dart';
+import 'package:smart_reserve/core/presentation/widgets/loading_overlay.dart';
 
 import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_slot_booker.dart';
@@ -95,10 +97,10 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     if (!context.mounted) return;
 
     if (bookerInfo == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not find booking info for this slot.'),
-        ),
+      SmartSnackBar.showError(
+        context,
+        'The booking information for this slot is currently unavailable.',
+        title: 'Info Not Found',
       );
       return;
     }
@@ -540,13 +542,10 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                     final code =
                                         courseCodeController.text.trim();
                                     if (code.isEmpty) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            'Please enter a course code',
-                                          ),
-                                        ),
+                                      SmartSnackBar.showWarning(
+                                        context,
+                                        'You must enter a course code to send a request.',
+                                        title: 'Code Required',
                                       );
                                       return;
                                     }
@@ -570,9 +569,10 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                                       Navigator.of(ctx).pop();
                                     }
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(content: Text(message)),
+                                      SmartSnackBar.showSuccess(
+                                        context,
+                                        message,
+                                        title: "Request Sent",
                                       );
                                     }
                                   },
@@ -652,16 +652,12 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     // Listen for side effects (success/error)
     ref.listen(bookingProvider, (previous, next) {
       if (next.errorMessage != null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.errorMessage!)));
+        SmartSnackBar.showError(context, next.errorMessage!, title: "Booking Error");
         ref.read(bookingProvider.notifier).resetMessages();
       }
 
       if (next.successMessage != null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.successMessage!)));
+        SmartSnackBar.showSuccess(context, next.successMessage!, title: "Success");
 
         Navigator.pushAndRemoveUntil(
           context,
@@ -689,7 +685,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     final bookingState = ref.watch(bookingProvider);
     final details = bookingState.bookingDetails;
 
-    // Sync controllers with state if needed for initial load or formatted text
+    // Sync controllers with state
     if (details.tokenNumber.isNotEmpty &&
         tokenNumber.text != details.tokenNumber) {
       tokenNumber.text = details.tokenNumber;
@@ -707,255 +703,249 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
       courseCode.addListener(_onCourseCodeChanged);
     }
 
-    return BackgroundShapes(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: CustomAppBar(
-          title: bookingState.isEditing ? "Edit Booking" : "Book your Slot",
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Color(0xFF124076)),
-            onPressed: () => Navigator.of(context).pop(),
+    return AttractiveLoadingOverlay(
+      isLoading: bookingState.isLoading || bookingState.isSubmitting,
+      message: bookingState.isSubmitting ? "Booking In Progress" : "Fetching Details",
+      child: BackgroundShapes(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: CustomAppBar(
+            title: bookingState.isEditing ? "Edit Booking" : "Book your Slot",
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF124076)),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
-        ),
-        body: bookingState.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Stack(
-                children: [
-                  ListView(
-                    children: [
-                      Center(
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              const SizedBox(height: 40),
-                              BuildTextForm(
-                                controller: tokenNumber,
-                                label: "Staff Id",
-                                readOnly: true,
-                                prefixIcon: const Icon(Icons.token),
+          body: bookingState.isLoading
+              ? const SizedBox.shrink()
+              : ListView(
+                  children: [
+                    Center(
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const SizedBox(height: 40),
+                            BuildTextForm(
+                              controller: tokenNumber,
+                              label: "Staff Id",
+                              readOnly: true,
+                              prefixIcon: const Icon(Icons.token),
+                            ),
+                            const SizedBox(height: 10.0),
+                            BuildTextForm(
+                              controller: name,
+                              label: "Name",
+                              readOnly: true,
+                              prefixIcon: const Icon(Icons.person),
+                            ),
+                            const SizedBox(height: 10.0),
+                            BuildTextForm(
+                              controller: courseCode,
+                              label: "Course Code",
+                              readOnly: false,
+                              prefixIcon: const Icon(Icons.subject),
+                            ),
+                            const SizedBox(height: 10.0),
+                            // Hall Selection
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 25.0,
+                                vertical: 4.0,
                               ),
-                              const SizedBox(height: 10.0),
-                              BuildTextForm(
-                                controller: name,
-                                label: "Name",
-                                readOnly: true,
-                                prefixIcon: const Icon(Icons.person),
-                              ),
-                              const SizedBox(height: 10.0),
-                              BuildTextForm(
-                                controller: courseCode,
-                                label: "Course Code",
-                                readOnly: false,
-                                prefixIcon: const Icon(Icons.subject),
-                              ),
-                              const SizedBox(height: 10.0),
-                              // Hall Selection
-                              // Hall Selection
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 25.0,
-                                  vertical: 4.0,
-                                ),
-                                child: DropdownButtonFormField<String>(
-                                  value: bookingState.selectedHall,
-                                  decoration: const InputDecoration(
-                                    labelText: "Select Hall",
-                                    prefixIcon: Icon(Icons.meeting_room),
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xFF124076),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    labelStyle: TextStyle(
+                              child: DropdownButtonFormField<String>(
+                                value: bookingState.selectedHall,
+                                decoration: const InputDecoration(
+                                  labelText: "Select Hall",
+                                  prefixIcon: Icon(Icons.meeting_room),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(
                                       color: Color(0xFF124076),
                                     ),
                                   ),
-                                  icon: const Icon(
-                                    Icons.arrow_drop_down,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  labelStyle: TextStyle(
                                     color: Color(0xFF124076),
                                   ),
-                                  items: ['2216-Hall', 'CompScE', 'Pheonix']
-                                      .map((String hall) {
-                                        return DropdownMenuItem<String>(
-                                          value: hall,
-                                          child: Text(
-                                            hall,
-                                            style: AppFonts.poppins(
-                                              color: const Color(0xFF124076),
-                                            ),
+                                ),
+                                icon: const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Color(0xFF124076),
+                                ),
+                                items: ['2216-Hall', 'CompScE', 'Pheonix']
+                                    .map((String hall) {
+                                      return DropdownMenuItem<String>(
+                                        value: hall,
+                                        child: Text(
+                                          hall,
+                                          style: AppFonts.poppins(
+                                            color: const Color(0xFF124076),
                                           ),
-                                        );
-                                      })
-                                      .toList(),
-                                  onChanged: (String? newValue) {
-                                    if (newValue != null) {
-                                      ref
-                                          .read(bookingProvider.notifier)
-                                          .updateHall(newValue);
-                                    }
-                                  },
+                                        ),
+                                      );
+                                    })
+                                    .toList(),
+                                onChanged: bookingState.isEditing
+                                    ? null
+                                    : (String? newValue) {
+                                        if (newValue != null) {
+                                          ref
+                                              .read(bookingProvider.notifier)
+                                              .updateHall(newValue);
+                                        }
+                                      },
+                              ),
+                            ),
+                            const SizedBox(height: 10.0),
+                            BuildTextForm(
+                              controller: date,
+                              label: "Date",
+                              readOnly: true,
+                              prefixIcon: const Icon(Icons.date_range),
+                              onTap: _selectDate,
+                              errorText: bookingState.dateError,
+                            ),
+                            const SizedBox(height: 10.0),
+                            // Weekly slot usage indicator
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 350),
+                              child: (bookingState.bookingDetails.date.isNotEmpty &&
+                                      bookingState.selectedHall == '2216-Hall' &&
+                                      bookingState.weeklyAllottedSlots > 0)
+                                  ? WeeklySlotUsageWidget(
+                                      key: ValueKey(
+                                        '${bookingState.weeklyUsedSlots}_${bookingState.weeklyAllottedSlots}',
+                                      ),
+                                      allotted: bookingState.weeklyAllottedSlots,
+                                      used: bookingState.weeklyUsedSlots,
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                            const SizedBox(height: 10.0),
+                            if (bookingState.selectedHall == '2216-Hall')
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 25.0,
+                                ),
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Select the Slots",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF124076),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 10.0),
-                              BuildTextForm(
-                                controller: date,
-                                label: "Date",
-                                readOnly: true,
-                                prefixIcon: const Icon(Icons.date_range),
-                                onTap: _selectDate,
-                                errorText: bookingState.dateError,
-                              ),
-                              const SizedBox(height: 10.0),
-                              // Weekly slot usage indicator
-                              AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 350),
-                                child: (bookingState.bookingDetails.date.isNotEmpty &&
-                                        bookingState.selectedHall == '2216-Hall' &&
-                                        bookingState.weeklyAllottedSlots > 0)
-                                    ? WeeklySlotUsageWidget(
-                                        key: ValueKey(
-                                          '${bookingState.weeklyUsedSlots}_${bookingState.weeklyAllottedSlots}',
-                                        ),
-                                        allotted: bookingState.weeklyAllottedSlots,
-                                        used: bookingState.weeklyUsedSlots,
-                                      )
-                                    : const SizedBox.shrink(),
-                              ),
-                              const SizedBox(height: 10.0),
-                              if (bookingState.selectedHall == '2216-Hall')
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 25.0,
+                            // Show hint when editing and date changed
+                            if (bookingState.isEditing &&
+                                bookingState.originalBooking != null &&
+                                details.date.isNotEmpty &&
+                                details.date !=
+                                    bookingState.originalBooking!.date)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 25.0,
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber.shade50,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: Colors.amber.shade300,
+                                    ),
                                   ),
                                   child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        "Select the Slots",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF124076),
+                                      Icon(
+                                        Icons.info_outline,
+                                        color: Colors.amber.shade700,
+                                        size: 18,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          "Editing: ${bookingState.editingSlot ?? bookingState.originalBooking!.slots.join(', ')} on ${bookingState.originalBooking!.date}",
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.amber.shade900,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              // const SizedBox(height: 10.0),
-                              // Show hint when editing and date changed
-                              if (bookingState.isEditing &&
-                                  bookingState.originalBooking != null &&
-                                  details.date.isNotEmpty &&
-                                  details.date !=
-                                      bookingState.originalBooking!.date)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 25.0,
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8.0),
-                                    decoration: BoxDecoration(
-                                      color: Colors.amber.shade50,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: Colors.amber.shade300,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.info_outline,
-                                          color: Colors.amber.shade700,
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            "Editing: ${bookingState.editingSlot ?? bookingState.originalBooking!.slots.join(', ')} on ${bookingState.originalBooking!.date}",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: Colors.amber.shade900,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              if (bookingState.isEditing &&
-                                  bookingState.originalBooking != null &&
-                                  details.date.isNotEmpty &&
-                                  details.date !=
-                                      bookingState.originalBooking!.date)
-                                const SizedBox(height: 10.0),
-                              if (bookingState.selectedHall == '2216-Hall')
-                                BuildSlots(
-                                  timeSlots: bookingState.timeSlots,
-                                  onSlotsSelected: (slot) => ref
-                                      .read(bookingProvider.notifier)
-                                      .toggleSlot(slot),
-                                  onSlotLongPress: (slot) =>
-                                      _showSlotBookerDialog(
-                                        context,
-                                        details.date,
-                                        slot,
-                                      ),
-                                  selectedSlots: details.slots,
-                                  currentlyBookedSlots: () {
-                                    if (!bookingState.isEditing)
-                                      return <String>[];
-                                    // Only show amber on the SAME date as original booking
-                                    final isSameDate =
-                                        details.date ==
-                                        bookingState.originalBooking?.date;
-                                    if (!isSameDate) return <String>[];
-                                    if (bookingState.editingSlot != null)
-                                      return [bookingState.editingSlot!];
-                                    return bookingState
-                                            .originalBooking
-                                            ?.slots ??
-                                        <String>[];
-                                  }(),
-                                )
-                              else
-                                _buildTimeRangePicker(
-                                  context,
-                                  bookingState,
-                                  ref,
-                                ),
-                              const SizedBox(height: 20.0),
-                              BuildElevatedButton(
-                                actionOnButton: () {
-                                  ref
-                                      .read(bookingProvider.notifier)
-                                      .verifyAndSubmit();
-                                },
-                                buttonText: bookingState.isEditing
-                                    ? "UPDATE BOOKING"
-                                    : "PROCEED TO BOOK",
                               ),
-                            ],
-                          ),
+                            if (bookingState.isEditing &&
+                                bookingState.originalBooking != null &&
+                                details.date.isNotEmpty &&
+                                details.date !=
+                                    bookingState.originalBooking!.date)
+                              const SizedBox(height: 10.0),
+                            if (bookingState.selectedHall == '2216-Hall')
+                              BuildSlots(
+                                timeSlots: bookingState.timeSlots,
+                                onSlotsSelected: (slot) => ref
+                                    .read(bookingProvider.notifier)
+                                    .toggleSlot(slot),
+                                onSlotLongPress: (slot) =>
+                                    _showSlotBookerDialog(
+                                      context,
+                                      details.date,
+                                      slot,
+                                    ),
+                                selectedSlots: details.slots,
+                                currentlyBookedSlots: () {
+                                  if (!bookingState.isEditing)
+                                    return <String>[];
+                                  final isSameDate =
+                                      details.date ==
+                                      bookingState.originalBooking?.date;
+                                  if (!isSameDate) return <String>[];
+                                  if (bookingState.editingSlot != null)
+                                    return [bookingState.editingSlot!];
+                                  return bookingState
+                                          .originalBooking
+                                          ?.slots ??
+                                      <String>[];
+                                }(),
+                              )
+                            else
+                              _buildTimeRangePicker(
+                                context,
+                                bookingState,
+                                ref,
+                              ),
+                            const SizedBox(height: 20.0),
+                            BuildElevatedButton(
+                              actionOnButton: () {
+                                ref
+                                    .read(bookingProvider.notifier)
+                                    .verifyAndSubmit();
+                              },
+                              buttonText: bookingState.isEditing
+                                  ? "UPDATE BOOKING"
+                                  : "PROCEED TO BOOK",
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                  if (bookingState.isSubmitting)
-                    Container(
-                      color: Colors.black54,
-                      child: const Center(child: CircularProgressIndicator()),
                     ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }
