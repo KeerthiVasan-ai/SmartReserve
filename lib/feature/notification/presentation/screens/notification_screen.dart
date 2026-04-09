@@ -123,10 +123,8 @@ class _NotificationCardState extends State<_NotificationCard> {
       padding: const EdgeInsets.only(bottom: 12),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
-          child: Container(
-            padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white.withOpacity(0.70)),
@@ -306,8 +304,7 @@ class _NotificationCardState extends State<_NotificationCard> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildStatusChip(String status) {

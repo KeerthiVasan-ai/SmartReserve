@@ -5,11 +5,13 @@ class FrostedGlassUI extends StatelessWidget {
   final double theWidth;
   final double theHeight;
   final Widget theChild;
+  final bool useBlur;
 
   const FrostedGlassUI({
     required this.theWidth,
     required this.theHeight,
     required this.theChild,
+    this.useBlur = false,
     super.key,
   });
 
@@ -25,10 +27,11 @@ class FrostedGlassUI extends StatelessWidget {
           color: Colors.transparent,
           child: Stack(
             children: [
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                child: Container(),
-              ),
+              if (useBlur)
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                  child: Container(),
+                ),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
