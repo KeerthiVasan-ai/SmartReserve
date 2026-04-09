@@ -897,6 +897,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                             if (bookingState.selectedHall == '2216-Hall')
                               BuildSlots(
                                 timeSlots: bookingState.timeSlots,
+                                disabledReasons: bookingState.disabledReasons,
                                 onSlotsSelected: (slot) => ref
                                     .read(bookingProvider.notifier)
                                     .toggleSlot(slot),

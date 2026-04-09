@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BookingState {
 
- BookingDetails get bookingDetails; Map<String, bool> get timeSlots; Map<String, String> get timeKeys; int get slotCount; bool get isLoading; bool get isSubmitting; String? get errorMessage; String? get successMessage; String? get courseCodeError; String? get dateError; bool get isEditing; BookingDetails? get originalBooking; String? get editingSlot; String get selectedHall; String? get selectedStartTime; String? get selectedEndTime; int get weeklyAllottedSlots; int get weeklyUsedSlots;
+ BookingDetails get bookingDetails; Map<String, bool> get timeSlots; Map<String, String> get disabledReasons; Map<String, String> get timeKeys; int get slotCount; bool get isLoading; bool get isSubmitting; String? get errorMessage; String? get successMessage; String? get courseCodeError; String? get dateError; bool get isEditing; BookingDetails? get originalBooking; String? get editingSlot; String get selectedHall; String? get selectedStartTime; String? get selectedEndTime; int get weeklyAllottedSlots; int get weeklyUsedSlots;
 /// Create a copy of BookingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $BookingStateCopyWith<BookingState> get copyWith => _$BookingStateCopyWithImpl<B
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookingState&&(identical(other.bookingDetails, bookingDetails) || other.bookingDetails == bookingDetails)&&const DeepCollectionEquality().equals(other.timeSlots, timeSlots)&&const DeepCollectionEquality().equals(other.timeKeys, timeKeys)&&(identical(other.slotCount, slotCount) || other.slotCount == slotCount)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage)&&(identical(other.courseCodeError, courseCodeError) || other.courseCodeError == courseCodeError)&&(identical(other.dateError, dateError) || other.dateError == dateError)&&(identical(other.isEditing, isEditing) || other.isEditing == isEditing)&&(identical(other.originalBooking, originalBooking) || other.originalBooking == originalBooking)&&(identical(other.editingSlot, editingSlot) || other.editingSlot == editingSlot)&&(identical(other.selectedHall, selectedHall) || other.selectedHall == selectedHall)&&(identical(other.selectedStartTime, selectedStartTime) || other.selectedStartTime == selectedStartTime)&&(identical(other.selectedEndTime, selectedEndTime) || other.selectedEndTime == selectedEndTime)&&(identical(other.weeklyAllottedSlots, weeklyAllottedSlots) || other.weeklyAllottedSlots == weeklyAllottedSlots)&&(identical(other.weeklyUsedSlots, weeklyUsedSlots) || other.weeklyUsedSlots == weeklyUsedSlots));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookingState&&(identical(other.bookingDetails, bookingDetails) || other.bookingDetails == bookingDetails)&&const DeepCollectionEquality().equals(other.timeSlots, timeSlots)&&const DeepCollectionEquality().equals(other.disabledReasons, disabledReasons)&&const DeepCollectionEquality().equals(other.timeKeys, timeKeys)&&(identical(other.slotCount, slotCount) || other.slotCount == slotCount)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage)&&(identical(other.courseCodeError, courseCodeError) || other.courseCodeError == courseCodeError)&&(identical(other.dateError, dateError) || other.dateError == dateError)&&(identical(other.isEditing, isEditing) || other.isEditing == isEditing)&&(identical(other.originalBooking, originalBooking) || other.originalBooking == originalBooking)&&(identical(other.editingSlot, editingSlot) || other.editingSlot == editingSlot)&&(identical(other.selectedHall, selectedHall) || other.selectedHall == selectedHall)&&(identical(other.selectedStartTime, selectedStartTime) || other.selectedStartTime == selectedStartTime)&&(identical(other.selectedEndTime, selectedEndTime) || other.selectedEndTime == selectedEndTime)&&(identical(other.weeklyAllottedSlots, weeklyAllottedSlots) || other.weeklyAllottedSlots == weeklyAllottedSlots)&&(identical(other.weeklyUsedSlots, weeklyUsedSlots) || other.weeklyUsedSlots == weeklyUsedSlots));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookingDetails,const DeepCollectionEquality().hash(timeSlots),const DeepCollectionEquality().hash(timeKeys),slotCount,isLoading,isSubmitting,errorMessage,successMessage,courseCodeError,dateError,isEditing,originalBooking,editingSlot,selectedHall,selectedStartTime,selectedEndTime,weeklyAllottedSlots,weeklyUsedSlots);
+int get hashCode => Object.hashAll([runtimeType,bookingDetails,const DeepCollectionEquality().hash(timeSlots),const DeepCollectionEquality().hash(disabledReasons),const DeepCollectionEquality().hash(timeKeys),slotCount,isLoading,isSubmitting,errorMessage,successMessage,courseCodeError,dateError,isEditing,originalBooking,editingSlot,selectedHall,selectedStartTime,selectedEndTime,weeklyAllottedSlots,weeklyUsedSlots]);
 
 @override
 String toString() {
-  return 'BookingState(bookingDetails: $bookingDetails, timeSlots: $timeSlots, timeKeys: $timeKeys, slotCount: $slotCount, isLoading: $isLoading, isSubmitting: $isSubmitting, errorMessage: $errorMessage, successMessage: $successMessage, courseCodeError: $courseCodeError, dateError: $dateError, isEditing: $isEditing, originalBooking: $originalBooking, editingSlot: $editingSlot, selectedHall: $selectedHall, selectedStartTime: $selectedStartTime, selectedEndTime: $selectedEndTime, weeklyAllottedSlots: $weeklyAllottedSlots, weeklyUsedSlots: $weeklyUsedSlots)';
+  return 'BookingState(bookingDetails: $bookingDetails, timeSlots: $timeSlots, disabledReasons: $disabledReasons, timeKeys: $timeKeys, slotCount: $slotCount, isLoading: $isLoading, isSubmitting: $isSubmitting, errorMessage: $errorMessage, successMessage: $successMessage, courseCodeError: $courseCodeError, dateError: $dateError, isEditing: $isEditing, originalBooking: $originalBooking, editingSlot: $editingSlot, selectedHall: $selectedHall, selectedStartTime: $selectedStartTime, selectedEndTime: $selectedEndTime, weeklyAllottedSlots: $weeklyAllottedSlots, weeklyUsedSlots: $weeklyUsedSlots)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $BookingStateCopyWith<$Res>  {
   factory $BookingStateCopyWith(BookingState value, $Res Function(BookingState) _then) = _$BookingStateCopyWithImpl;
 @useResult
 $Res call({
- BookingDetails bookingDetails, Map<String, bool> timeSlots, Map<String, String> timeKeys, int slotCount, bool isLoading, bool isSubmitting, String? errorMessage, String? successMessage, String? courseCodeError, String? dateError, bool isEditing, BookingDetails? originalBooking, String? editingSlot, String selectedHall, String? selectedStartTime, String? selectedEndTime, int weeklyAllottedSlots, int weeklyUsedSlots
+ BookingDetails bookingDetails, Map<String, bool> timeSlots, Map<String, String> disabledReasons, Map<String, String> timeKeys, int slotCount, bool isLoading, bool isSubmitting, String? errorMessage, String? successMessage, String? courseCodeError, String? dateError, bool isEditing, BookingDetails? originalBooking, String? editingSlot, String selectedHall, String? selectedStartTime, String? selectedEndTime, int weeklyAllottedSlots, int weeklyUsedSlots
 });
 
 
@@ -62,11 +62,12 @@ class _$BookingStateCopyWithImpl<$Res>
 
 /// Create a copy of BookingState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? bookingDetails = null,Object? timeSlots = null,Object? timeKeys = null,Object? slotCount = null,Object? isLoading = null,Object? isSubmitting = null,Object? errorMessage = freezed,Object? successMessage = freezed,Object? courseCodeError = freezed,Object? dateError = freezed,Object? isEditing = null,Object? originalBooking = freezed,Object? editingSlot = freezed,Object? selectedHall = null,Object? selectedStartTime = freezed,Object? selectedEndTime = freezed,Object? weeklyAllottedSlots = null,Object? weeklyUsedSlots = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? bookingDetails = null,Object? timeSlots = null,Object? disabledReasons = null,Object? timeKeys = null,Object? slotCount = null,Object? isLoading = null,Object? isSubmitting = null,Object? errorMessage = freezed,Object? successMessage = freezed,Object? courseCodeError = freezed,Object? dateError = freezed,Object? isEditing = null,Object? originalBooking = freezed,Object? editingSlot = freezed,Object? selectedHall = null,Object? selectedStartTime = freezed,Object? selectedEndTime = freezed,Object? weeklyAllottedSlots = null,Object? weeklyUsedSlots = null,}) {
   return _then(_self.copyWith(
 bookingDetails: null == bookingDetails ? _self.bookingDetails : bookingDetails // ignore: cast_nullable_to_non_nullable
 as BookingDetails,timeSlots: null == timeSlots ? _self.timeSlots : timeSlots // ignore: cast_nullable_to_non_nullable
-as Map<String, bool>,timeKeys: null == timeKeys ? _self.timeKeys : timeKeys // ignore: cast_nullable_to_non_nullable
+as Map<String, bool>,disabledReasons: null == disabledReasons ? _self.disabledReasons : disabledReasons // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,timeKeys: null == timeKeys ? _self.timeKeys : timeKeys // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,slotCount: null == slotCount ? _self.slotCount : slotCount // ignore: cast_nullable_to_non_nullable
 as int,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
@@ -188,10 +189,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot,  String selectedHall,  String? selectedStartTime,  String? selectedEndTime,  int weeklyAllottedSlots,  int weeklyUsedSlots)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> disabledReasons,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot,  String selectedHall,  String? selectedStartTime,  String? selectedEndTime,  int weeklyAllottedSlots,  int weeklyUsedSlots)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BookingState() when $default != null:
-return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot,_that.selectedHall,_that.selectedStartTime,_that.selectedEndTime,_that.weeklyAllottedSlots,_that.weeklyUsedSlots);case _:
+return $default(_that.bookingDetails,_that.timeSlots,_that.disabledReasons,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot,_that.selectedHall,_that.selectedStartTime,_that.selectedEndTime,_that.weeklyAllottedSlots,_that.weeklyUsedSlots);case _:
   return orElse();
 
 }
@@ -209,10 +210,10 @@ return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot,  String selectedHall,  String? selectedStartTime,  String? selectedEndTime,  int weeklyAllottedSlots,  int weeklyUsedSlots)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> disabledReasons,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot,  String selectedHall,  String? selectedStartTime,  String? selectedEndTime,  int weeklyAllottedSlots,  int weeklyUsedSlots)  $default,) {final _that = this;
 switch (_that) {
 case _BookingState():
-return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot,_that.selectedHall,_that.selectedStartTime,_that.selectedEndTime,_that.weeklyAllottedSlots,_that.weeklyUsedSlots);case _:
+return $default(_that.bookingDetails,_that.timeSlots,_that.disabledReasons,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot,_that.selectedHall,_that.selectedStartTime,_that.selectedEndTime,_that.weeklyAllottedSlots,_that.weeklyUsedSlots);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -229,10 +230,10 @@ return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot,  String selectedHall,  String? selectedStartTime,  String? selectedEndTime,  int weeklyAllottedSlots,  int weeklyUsedSlots)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BookingDetails bookingDetails,  Map<String, bool> timeSlots,  Map<String, String> disabledReasons,  Map<String, String> timeKeys,  int slotCount,  bool isLoading,  bool isSubmitting,  String? errorMessage,  String? successMessage,  String? courseCodeError,  String? dateError,  bool isEditing,  BookingDetails? originalBooking,  String? editingSlot,  String selectedHall,  String? selectedStartTime,  String? selectedEndTime,  int weeklyAllottedSlots,  int weeklyUsedSlots)?  $default,) {final _that = this;
 switch (_that) {
 case _BookingState() when $default != null:
-return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot,_that.selectedHall,_that.selectedStartTime,_that.selectedEndTime,_that.weeklyAllottedSlots,_that.weeklyUsedSlots);case _:
+return $default(_that.bookingDetails,_that.timeSlots,_that.disabledReasons,_that.timeKeys,_that.slotCount,_that.isLoading,_that.isSubmitting,_that.errorMessage,_that.successMessage,_that.courseCodeError,_that.dateError,_that.isEditing,_that.originalBooking,_that.editingSlot,_that.selectedHall,_that.selectedStartTime,_that.selectedEndTime,_that.weeklyAllottedSlots,_that.weeklyUsedSlots);case _:
   return null;
 
 }
@@ -244,7 +245,7 @@ return $default(_that.bookingDetails,_that.timeSlots,_that.timeKeys,_that.slotCo
 
 
 class _BookingState implements BookingState {
-  const _BookingState({this.bookingDetails = const BookingDetails(), final  Map<String, bool> timeSlots = const {}, final  Map<String, String> timeKeys = const {}, this.slotCount = 0, this.isLoading = true, this.isSubmitting = false, this.errorMessage, this.successMessage, this.courseCodeError, this.dateError, this.isEditing = false, this.originalBooking, this.editingSlot, this.selectedHall = '2216-Hall', this.selectedStartTime, this.selectedEndTime, this.weeklyAllottedSlots = 0, this.weeklyUsedSlots = 0}): _timeSlots = timeSlots,_timeKeys = timeKeys;
+  const _BookingState({this.bookingDetails = const BookingDetails(), final  Map<String, bool> timeSlots = const {}, final  Map<String, String> disabledReasons = const {}, final  Map<String, String> timeKeys = const {}, this.slotCount = 0, this.isLoading = true, this.isSubmitting = false, this.errorMessage, this.successMessage, this.courseCodeError, this.dateError, this.isEditing = false, this.originalBooking, this.editingSlot, this.selectedHall = '2216-Hall', this.selectedStartTime, this.selectedEndTime, this.weeklyAllottedSlots = 0, this.weeklyUsedSlots = 0}): _timeSlots = timeSlots,_disabledReasons = disabledReasons,_timeKeys = timeKeys;
   
 
 @override@JsonKey() final  BookingDetails bookingDetails;
@@ -253,6 +254,13 @@ class _BookingState implements BookingState {
   if (_timeSlots is EqualUnmodifiableMapView) return _timeSlots;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_timeSlots);
+}
+
+ final  Map<String, String> _disabledReasons;
+@override@JsonKey() Map<String, String> get disabledReasons {
+  if (_disabledReasons is EqualUnmodifiableMapView) return _disabledReasons;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_disabledReasons);
 }
 
  final  Map<String, String> _timeKeys;
@@ -288,16 +296,16 @@ _$BookingStateCopyWith<_BookingState> get copyWith => __$BookingStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookingState&&(identical(other.bookingDetails, bookingDetails) || other.bookingDetails == bookingDetails)&&const DeepCollectionEquality().equals(other._timeSlots, _timeSlots)&&const DeepCollectionEquality().equals(other._timeKeys, _timeKeys)&&(identical(other.slotCount, slotCount) || other.slotCount == slotCount)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage)&&(identical(other.courseCodeError, courseCodeError) || other.courseCodeError == courseCodeError)&&(identical(other.dateError, dateError) || other.dateError == dateError)&&(identical(other.isEditing, isEditing) || other.isEditing == isEditing)&&(identical(other.originalBooking, originalBooking) || other.originalBooking == originalBooking)&&(identical(other.editingSlot, editingSlot) || other.editingSlot == editingSlot)&&(identical(other.selectedHall, selectedHall) || other.selectedHall == selectedHall)&&(identical(other.selectedStartTime, selectedStartTime) || other.selectedStartTime == selectedStartTime)&&(identical(other.selectedEndTime, selectedEndTime) || other.selectedEndTime == selectedEndTime)&&(identical(other.weeklyAllottedSlots, weeklyAllottedSlots) || other.weeklyAllottedSlots == weeklyAllottedSlots)&&(identical(other.weeklyUsedSlots, weeklyUsedSlots) || other.weeklyUsedSlots == weeklyUsedSlots));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookingState&&(identical(other.bookingDetails, bookingDetails) || other.bookingDetails == bookingDetails)&&const DeepCollectionEquality().equals(other._timeSlots, _timeSlots)&&const DeepCollectionEquality().equals(other._disabledReasons, _disabledReasons)&&const DeepCollectionEquality().equals(other._timeKeys, _timeKeys)&&(identical(other.slotCount, slotCount) || other.slotCount == slotCount)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.successMessage, successMessage) || other.successMessage == successMessage)&&(identical(other.courseCodeError, courseCodeError) || other.courseCodeError == courseCodeError)&&(identical(other.dateError, dateError) || other.dateError == dateError)&&(identical(other.isEditing, isEditing) || other.isEditing == isEditing)&&(identical(other.originalBooking, originalBooking) || other.originalBooking == originalBooking)&&(identical(other.editingSlot, editingSlot) || other.editingSlot == editingSlot)&&(identical(other.selectedHall, selectedHall) || other.selectedHall == selectedHall)&&(identical(other.selectedStartTime, selectedStartTime) || other.selectedStartTime == selectedStartTime)&&(identical(other.selectedEndTime, selectedEndTime) || other.selectedEndTime == selectedEndTime)&&(identical(other.weeklyAllottedSlots, weeklyAllottedSlots) || other.weeklyAllottedSlots == weeklyAllottedSlots)&&(identical(other.weeklyUsedSlots, weeklyUsedSlots) || other.weeklyUsedSlots == weeklyUsedSlots));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bookingDetails,const DeepCollectionEquality().hash(_timeSlots),const DeepCollectionEquality().hash(_timeKeys),slotCount,isLoading,isSubmitting,errorMessage,successMessage,courseCodeError,dateError,isEditing,originalBooking,editingSlot,selectedHall,selectedStartTime,selectedEndTime,weeklyAllottedSlots,weeklyUsedSlots);
+int get hashCode => Object.hashAll([runtimeType,bookingDetails,const DeepCollectionEquality().hash(_timeSlots),const DeepCollectionEquality().hash(_disabledReasons),const DeepCollectionEquality().hash(_timeKeys),slotCount,isLoading,isSubmitting,errorMessage,successMessage,courseCodeError,dateError,isEditing,originalBooking,editingSlot,selectedHall,selectedStartTime,selectedEndTime,weeklyAllottedSlots,weeklyUsedSlots]);
 
 @override
 String toString() {
-  return 'BookingState(bookingDetails: $bookingDetails, timeSlots: $timeSlots, timeKeys: $timeKeys, slotCount: $slotCount, isLoading: $isLoading, isSubmitting: $isSubmitting, errorMessage: $errorMessage, successMessage: $successMessage, courseCodeError: $courseCodeError, dateError: $dateError, isEditing: $isEditing, originalBooking: $originalBooking, editingSlot: $editingSlot, selectedHall: $selectedHall, selectedStartTime: $selectedStartTime, selectedEndTime: $selectedEndTime, weeklyAllottedSlots: $weeklyAllottedSlots, weeklyUsedSlots: $weeklyUsedSlots)';
+  return 'BookingState(bookingDetails: $bookingDetails, timeSlots: $timeSlots, disabledReasons: $disabledReasons, timeKeys: $timeKeys, slotCount: $slotCount, isLoading: $isLoading, isSubmitting: $isSubmitting, errorMessage: $errorMessage, successMessage: $successMessage, courseCodeError: $courseCodeError, dateError: $dateError, isEditing: $isEditing, originalBooking: $originalBooking, editingSlot: $editingSlot, selectedHall: $selectedHall, selectedStartTime: $selectedStartTime, selectedEndTime: $selectedEndTime, weeklyAllottedSlots: $weeklyAllottedSlots, weeklyUsedSlots: $weeklyUsedSlots)';
 }
 
 
@@ -308,7 +316,7 @@ abstract mixin class _$BookingStateCopyWith<$Res> implements $BookingStateCopyWi
   factory _$BookingStateCopyWith(_BookingState value, $Res Function(_BookingState) _then) = __$BookingStateCopyWithImpl;
 @override @useResult
 $Res call({
- BookingDetails bookingDetails, Map<String, bool> timeSlots, Map<String, String> timeKeys, int slotCount, bool isLoading, bool isSubmitting, String? errorMessage, String? successMessage, String? courseCodeError, String? dateError, bool isEditing, BookingDetails? originalBooking, String? editingSlot, String selectedHall, String? selectedStartTime, String? selectedEndTime, int weeklyAllottedSlots, int weeklyUsedSlots
+ BookingDetails bookingDetails, Map<String, bool> timeSlots, Map<String, String> disabledReasons, Map<String, String> timeKeys, int slotCount, bool isLoading, bool isSubmitting, String? errorMessage, String? successMessage, String? courseCodeError, String? dateError, bool isEditing, BookingDetails? originalBooking, String? editingSlot, String selectedHall, String? selectedStartTime, String? selectedEndTime, int weeklyAllottedSlots, int weeklyUsedSlots
 });
 
 
@@ -325,11 +333,12 @@ class __$BookingStateCopyWithImpl<$Res>
 
 /// Create a copy of BookingState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? bookingDetails = null,Object? timeSlots = null,Object? timeKeys = null,Object? slotCount = null,Object? isLoading = null,Object? isSubmitting = null,Object? errorMessage = freezed,Object? successMessage = freezed,Object? courseCodeError = freezed,Object? dateError = freezed,Object? isEditing = null,Object? originalBooking = freezed,Object? editingSlot = freezed,Object? selectedHall = null,Object? selectedStartTime = freezed,Object? selectedEndTime = freezed,Object? weeklyAllottedSlots = null,Object? weeklyUsedSlots = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? bookingDetails = null,Object? timeSlots = null,Object? disabledReasons = null,Object? timeKeys = null,Object? slotCount = null,Object? isLoading = null,Object? isSubmitting = null,Object? errorMessage = freezed,Object? successMessage = freezed,Object? courseCodeError = freezed,Object? dateError = freezed,Object? isEditing = null,Object? originalBooking = freezed,Object? editingSlot = freezed,Object? selectedHall = null,Object? selectedStartTime = freezed,Object? selectedEndTime = freezed,Object? weeklyAllottedSlots = null,Object? weeklyUsedSlots = null,}) {
   return _then(_BookingState(
 bookingDetails: null == bookingDetails ? _self.bookingDetails : bookingDetails // ignore: cast_nullable_to_non_nullable
 as BookingDetails,timeSlots: null == timeSlots ? _self._timeSlots : timeSlots // ignore: cast_nullable_to_non_nullable
-as Map<String, bool>,timeKeys: null == timeKeys ? _self._timeKeys : timeKeys // ignore: cast_nullable_to_non_nullable
+as Map<String, bool>,disabledReasons: null == disabledReasons ? _self._disabledReasons : disabledReasons // ignore: cast_nullable_to_non_nullable
+as Map<String, String>,timeKeys: null == timeKeys ? _self._timeKeys : timeKeys // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,slotCount: null == slotCount ? _self.slotCount : slotCount // ignore: cast_nullable_to_non_nullable
 as int,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable

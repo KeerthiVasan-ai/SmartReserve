@@ -5,6 +5,7 @@ class BuildSlots extends StatefulWidget {
   final Map<String, bool> timeSlots;
   final Function(String) onSlotsSelected;
   final Function(String)? onSlotLongPress;
+  final Map<String, String>? disabledReasons;
   final List<String> selectedSlots;
   final List<String> currentlyBookedSlots;
 
@@ -12,6 +13,7 @@ class BuildSlots extends StatefulWidget {
     required this.timeSlots,
     required this.onSlotsSelected,
     this.onSlotLongPress,
+    this.disabledReasons,
     required this.selectedSlots,
     this.currentlyBookedSlots = const [],
     super.key,
@@ -50,15 +52,51 @@ class _BuildSlotsState extends State<BuildSlots> {
     }
 
     final bool isBooked = !isAvailable && !isSelected && !isCurrentlyBooked;
+    final bool isGloballyDisabled = widget.disabledReasons?.containsKey(slot) ?? false;
+    final String? adminReason = isGloballyDisabled ? widget.disabledReasons![slot] : null;
 
     return GestureDetector(
-      onLongPress: isBooked && widget.onSlotLongPress != null
-          ? () => widget.onSlotLongPress!(slot)
+      onLongPress: isBooked
+          ? () {
+              if (isGloballyDisabled && adminReason != null && adminReason.isNotEmpty) {
+                // Show Admin disabled reason dialog
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Admin Restriction', style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold)),
+                    content: Text('This slot is globally disabled.\n\nReason: $adminReason', style: const TextStyle(fontFamily: 'Poppins', fontSize: 14)),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text('OK', style: TextStyle(color: Color(0xFF124076))),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (widget.onSlotLongPress != null) {
+                widget.onSlotLongPress!(slot);
+              }
+            }
           : null,
       child: ElevatedButton(
         onPressed: () {
           if (isAvailable) {
             widget.onSlotsSelected(slot);
+          } else if (isGloballyDisabled && adminReason != null && adminReason.isNotEmpty) {
+             // Also show admin reason on simple tap so they don't get confused!
+             showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Slot Disabled', style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold)),
+                  content: Text('Reason: $adminReason', style: const TextStyle(fontFamily: 'Poppins', fontSize: 14)),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text('Close', style: TextStyle(color: Color(0xFF124076))),
+                    ),
+                  ],
+                ),
+              );
           }
         },
         style: ButtonStyle(

@@ -27,6 +27,7 @@ abstract class BookingState with _$BookingState {
   const factory BookingState({
     @Default(BookingDetails()) BookingDetails bookingDetails,
     @Default({}) Map<String, bool> timeSlots,
+    @Default({}) Map<String, String> disabledReasons,
     @Default({}) Map<String, String> timeKeys,
     @Default(0) int slotCount,
     @Default(true) bool isLoading,
@@ -135,6 +136,7 @@ class BookingNotifier extends _$BookingNotifier {
     if (state.selectedHall == '2216-Hall') {
       try {
         final slots = await FetchTimeSlots.fetchTimeSlots(dateForFetch);
+        final reasons = await FetchTimeSlots.fetchTimeSlotReasons(dateForFetch);
 
         // If editing and same date as original, free the slot being edited
         if (state.isEditing && state.originalBooking != null) {
@@ -157,7 +159,10 @@ class BookingNotifier extends _$BookingNotifier {
           }
         }
 
-        state = state.copyWith(timeSlots: slots);
+        state = state.copyWith(
+          timeSlots: slots,
+          disabledReasons: reasons,
+        );
       } catch (e) {
         state = state.copyWith(errorMessage: "Failed to fetch time slots");
       }

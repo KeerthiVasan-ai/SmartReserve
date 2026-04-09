@@ -21,4 +21,29 @@ class FetchTimeSlots {
     }
     return timeSlots;
   }
+
+  static Future<Map<String, String>> fetchTimeSlotReasons(String date) async {
+    try {
+      DocumentSnapshot documentSnapshot = await _firestore
+          .collection("slotConfigurations")
+          .doc("globalSlots")
+          .get();
+          
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data() as Map<String, dynamic>?;
+        if (data != null) {
+          final Map<String, String> reasons = {};
+          data.forEach((key, value) {
+            if (value is Map && value['reason'] != null && value['reason'].toString().isNotEmpty) {
+              reasons[key] = value['reason'].toString();
+            }
+          });
+          return reasons;
+        }
+      }
+    } catch (e) {
+      dev.log("Error fetching global reasons: $e", name: "FetchTimeSlots");
+    }
+    return {}; // Safely default to an empty map
+  }
 }
