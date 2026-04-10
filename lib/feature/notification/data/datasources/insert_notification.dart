@@ -44,4 +44,32 @@ class InsertNotification {
       rethrow;
     }
   }
+  
+  /// Atomically writes the notification to the user's "admin" sub-collection.
+  /// Used for record-keeping of notifications sent to administrators.
+  static Future<void> insertAdminNotification({
+    required String notificationId,
+    required Map<String, dynamic> data,
+    required String userUid,
+  }) async {
+    try {
+      final adminRef = _firestore
+          .collection('notification')
+          .doc(userUid)
+          .collection('admin')
+          .doc(notificationId);
+
+      await adminRef.set(data);
+
+      dev.log(
+        'Admin Notification $notificationId inserted for user=$userUid',
+        name: 'InsertNotification',
+      );
+      GCPLog.info('Admin notification inserted for user: $userUid');
+    } catch (e) {
+      dev.log('Failed to insert admin notification: $e', name: 'InsertNotification');
+      GCPLog.error('Failed to insert admin notification', error: e);
+      rethrow;
+    }
+  }
 }

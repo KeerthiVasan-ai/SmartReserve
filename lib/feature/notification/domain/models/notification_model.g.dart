@@ -17,6 +17,7 @@ _SlotNotification _$SlotNotificationFromJson(Map<String, dynamic> json) =>
       slotInfo: json['slotInfo'] as String? ?? '',
       date: json['date'] as String? ?? '',
       status: json['status'] as String? ?? 'pending',
+      type: json['type'] as String? ?? 'booking',
       notificationInitiatedAt: json['notificationInitiatedAt'] as String? ?? '',
     );
 
@@ -31,5 +32,6 @@ Map<String, dynamic> _$SlotNotificationToJson(_SlotNotification instance) =>
       'slotInfo': instance.slotInfo,
       'date': instance.date,
       'status': instance.status,
+      'type': instance.type,
       'notificationInitiatedAt': instance.notificationInitiatedAt,
     };

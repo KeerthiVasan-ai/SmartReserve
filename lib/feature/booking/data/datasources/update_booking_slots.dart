@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:developer" as dev;
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
+import 'package:smart_reserve/feature/booking/data/datasources/fetch_user_name.dart';
+import 'package:smart_reserve/feature/notification/data/datasources/admin_notification_service.dart';
 
 class UpdateBookingSlots {
   /// Swaps a single slot in an existing booking document.
@@ -43,6 +45,28 @@ class UpdateBookingSlots {
       GCPLog.info(
         'User booking slot swapped: $oldSlot → $newSlot (ticket: $ticketId)',
       );
+
+      // Notify admins
+      try {
+        final userName = await FetchName.fetchName() ?? 'A User';
+        final doc = await bookingRef.get();
+        if (doc.exists) {
+          final data = doc.data() as Map<String, dynamic>;
+          final hall = data['hall'] ?? 'Unknown Hall';
+          final date = data['date'] ?? 'Unknown Date';
+
+          await AdminNotificationService.notifyAdminOnUpdate(
+            userName: userName,
+            hall: hall,
+            oldDate: date,
+            oldSlot: oldSlot,
+            newDate: date,
+            newSlot: newSlot,
+          );
+        }
+      } catch (e) {
+        dev.log('Failed to send admin notification: $e', name: 'UpdateBookingSlots');
+      }
     } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to swap slot in user booking', error: error);
@@ -184,6 +208,23 @@ class UpdateBookingSlots {
       GCPLog.info(
         'Slot moved: $oldSlot@$oldDate → $newSlot@$newDate (ticket: $ticketId)',
       );
+
+      // Notify admins
+      try {
+        final userName = await FetchName.fetchName() ?? 'A User';
+        final hall = fullBookingData['hall'] ?? 'Unknown Hall';
+
+        await AdminNotificationService.notifyAdminOnUpdate(
+          userName: userName,
+          hall: hall,
+          oldDate: oldDate,
+          oldSlot: oldSlot,
+          newDate: newDate,
+          newSlot: newSlot,
+        );
+      } catch (e) {
+        dev.log('Failed to send admin notification: $e', name: 'UpdateBookingSlots');
+      }
     } catch (error) {
       dev.log(error.toString(), name: "Error");
       GCPLog.error('Failed to move slot to new date', error: error);

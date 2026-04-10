@@ -15,6 +15,7 @@ sealed class SlotNotification with _$SlotNotification {
     @Default('') String slotInfo,
     @Default('') String date,
     @Default('pending') String status,
+    @Default('booking') String type,
     @Default('') String notificationInitiatedAt,
   }) = _SlotNotification;
 

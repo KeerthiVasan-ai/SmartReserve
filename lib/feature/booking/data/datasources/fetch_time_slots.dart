@@ -30,15 +30,23 @@ class FetchTimeSlots {
           .get();
           
       if (documentSnapshot.exists) {
-        final data = documentSnapshot.data() as Map<String, dynamic>?;
-        if (data != null) {
-          final Map<String, String> reasons = {};
-          data.forEach((key, value) {
-            if (value is Map && value['reason'] != null && value['reason'].toString().isNotEmpty) {
-              reasons[key] = value['reason'].toString();
-            }
-          });
-          return reasons;
+        final globalData = documentSnapshot.data() as Map<String, dynamic>?;
+        if (globalData != null) {
+          // Parse the selected date to extract its weekday (1=Monday, 7=Sunday)
+          // Format expected: yyyy-MM-dd
+          DateTime parsedDate = DateTime.parse(date);
+          String weekdayKey = parsedDate.weekday.toString();
+          
+          final data = globalData[weekdayKey] as Map<String, dynamic>?;
+          if (data != null) {
+            final Map<String, String> reasons = {};
+            data.forEach((key, value) {
+              if (value is Map && value['reason'] != null && value['reason'].toString().isNotEmpty) {
+                reasons[key] = value['reason'].toString();
+              }
+            });
+            return reasons;
+          }
         }
       }
     } catch (e) {

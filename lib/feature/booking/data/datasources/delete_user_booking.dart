@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:developer" as dev;
 import 'package:smart_reserve/core/services/gcp_logging_service.dart';
+import 'package:smart_reserve/feature/booking/data/datasources/fetch_user_name.dart';
+import 'package:smart_reserve/feature/notification/data/datasources/admin_notification_service.dart';
 
 class DeleteUserBooking {
   static Future<void> deleteUserBookingSlots(
@@ -35,6 +37,23 @@ class DeleteUserBooking {
           GCPLog.info(
             'User booking slots removed: $bookingId, slots: $slotsToRemove',
           );
+        }
+
+        // Notify admins
+        try {
+          final userName = await FetchName.fetchName() ?? 'A User';
+          final data = snapshot.data() as Map<String, dynamic>;
+          final hall = data['hall'] ?? 'Unknown Hall';
+          final date = data['date'] ?? 'Unknown Date';
+
+          await AdminNotificationService.notifyAdminOnCancellation(
+            userName: userName,
+            hall: hall,
+            date: date,
+            slots: slotsToRemove,
+          );
+        } catch (e) {
+          dev.log('Failed to send admin notification: $e', name: 'DeleteUserBooking');
         }
       }
     } catch (error) {

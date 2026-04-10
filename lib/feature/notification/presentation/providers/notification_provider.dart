@@ -41,7 +41,21 @@ class NotificationService {
         return 'You have no available slots for this week to make a request';
       }
 
-      // 2. Fetch requester's name
+      // 2. Check for existing pending request for this specific booking
+      final existingRequest = await _firestore
+          .collection('notification')
+          .doc(requesterUid)
+          .collection('sent')
+          .where('bookingId', isEqualTo: bookingId)
+          .where('status', isEqualTo: 'pending')
+          .limit(1)
+          .get();
+
+      if (existingRequest.docs.isNotEmpty) {
+        return 'You already have a pending request for this slot';
+      }
+
+      // 3. Fetch requester's name
       final requesterName = await FetchName.fetchName() ?? 'Unknown';
 
       // 3. Generate notification ID
