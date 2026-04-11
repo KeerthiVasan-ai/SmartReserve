@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ServerDetails {
 
- bool get isAppUnderMaintenance; String get version;
+ bool get isAppUnderMaintenance; String get version;@JsonKey(name: 'allowed_user_version') List<String> get allowedUserVersions;
 /// Create a copy of ServerDetails
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ServerDetailsCopyWith<ServerDetails> get copyWith => _$ServerDetailsCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerDetails&&(identical(other.isAppUnderMaintenance, isAppUnderMaintenance) || other.isAppUnderMaintenance == isAppUnderMaintenance)&&(identical(other.version, version) || other.version == version));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ServerDetails&&(identical(other.isAppUnderMaintenance, isAppUnderMaintenance) || other.isAppUnderMaintenance == isAppUnderMaintenance)&&(identical(other.version, version) || other.version == version)&&const DeepCollectionEquality().equals(other.allowedUserVersions, allowedUserVersions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isAppUnderMaintenance,version);
+int get hashCode => Object.hash(runtimeType,isAppUnderMaintenance,version,const DeepCollectionEquality().hash(allowedUserVersions));
 
 @override
 String toString() {
-  return 'ServerDetails(isAppUnderMaintenance: $isAppUnderMaintenance, version: $version)';
+  return 'ServerDetails(isAppUnderMaintenance: $isAppUnderMaintenance, version: $version, allowedUserVersions: $allowedUserVersions)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ServerDetailsCopyWith<$Res>  {
   factory $ServerDetailsCopyWith(ServerDetails value, $Res Function(ServerDetails) _then) = _$ServerDetailsCopyWithImpl;
 @useResult
 $Res call({
- bool isAppUnderMaintenance, String version
+ bool isAppUnderMaintenance, String version,@JsonKey(name: 'allowed_user_version') List<String> allowedUserVersions
 });
 
 
@@ -65,11 +65,12 @@ class _$ServerDetailsCopyWithImpl<$Res>
 
 /// Create a copy of ServerDetails
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isAppUnderMaintenance = null,Object? version = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isAppUnderMaintenance = null,Object? version = null,Object? allowedUserVersions = null,}) {
   return _then(_self.copyWith(
 isAppUnderMaintenance: null == isAppUnderMaintenance ? _self.isAppUnderMaintenance : isAppUnderMaintenance // ignore: cast_nullable_to_non_nullable
 as bool,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
-as String,
+as String,allowedUserVersions: null == allowedUserVersions ? _self.allowedUserVersions : allowedUserVersions // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -151,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isAppUnderMaintenance,  String version)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isAppUnderMaintenance,  String version, @JsonKey(name: 'allowed_user_version')  List<String> allowedUserVersions)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ServerDetails() when $default != null:
-return $default(_that.isAppUnderMaintenance,_that.version);case _:
+return $default(_that.isAppUnderMaintenance,_that.version,_that.allowedUserVersions);case _:
   return orElse();
 
 }
@@ -172,10 +173,10 @@ return $default(_that.isAppUnderMaintenance,_that.version);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isAppUnderMaintenance,  String version)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isAppUnderMaintenance,  String version, @JsonKey(name: 'allowed_user_version')  List<String> allowedUserVersions)  $default,) {final _that = this;
 switch (_that) {
 case _ServerDetails():
-return $default(_that.isAppUnderMaintenance,_that.version);}
+return $default(_that.isAppUnderMaintenance,_that.version,_that.allowedUserVersions);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -189,10 +190,10 @@ return $default(_that.isAppUnderMaintenance,_that.version);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isAppUnderMaintenance,  String version)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isAppUnderMaintenance,  String version, @JsonKey(name: 'allowed_user_version')  List<String> allowedUserVersions)?  $default,) {final _that = this;
 switch (_that) {
 case _ServerDetails() when $default != null:
-return $default(_that.isAppUnderMaintenance,_that.version);case _:
+return $default(_that.isAppUnderMaintenance,_that.version,_that.allowedUserVersions);case _:
   return null;
 
 }
@@ -204,11 +205,18 @@ return $default(_that.isAppUnderMaintenance,_that.version);case _:
 @JsonSerializable()
 
 class _ServerDetails implements ServerDetails {
-  const _ServerDetails({this.isAppUnderMaintenance = false, this.version = ''});
+  const _ServerDetails({this.isAppUnderMaintenance = false, this.version = '', @JsonKey(name: 'allowed_user_version') final  List<String> allowedUserVersions = const []}): _allowedUserVersions = allowedUserVersions;
   factory _ServerDetails.fromJson(Map<String, dynamic> json) => _$ServerDetailsFromJson(json);
 
 @override@JsonKey() final  bool isAppUnderMaintenance;
 @override@JsonKey() final  String version;
+ final  List<String> _allowedUserVersions;
+@override@JsonKey(name: 'allowed_user_version') List<String> get allowedUserVersions {
+  if (_allowedUserVersions is EqualUnmodifiableListView) return _allowedUserVersions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_allowedUserVersions);
+}
+
 
 /// Create a copy of ServerDetails
 /// with the given fields replaced by the non-null parameter values.
@@ -223,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServerDetails&&(identical(other.isAppUnderMaintenance, isAppUnderMaintenance) || other.isAppUnderMaintenance == isAppUnderMaintenance)&&(identical(other.version, version) || other.version == version));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ServerDetails&&(identical(other.isAppUnderMaintenance, isAppUnderMaintenance) || other.isAppUnderMaintenance == isAppUnderMaintenance)&&(identical(other.version, version) || other.version == version)&&const DeepCollectionEquality().equals(other._allowedUserVersions, _allowedUserVersions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,isAppUnderMaintenance,version);
+int get hashCode => Object.hash(runtimeType,isAppUnderMaintenance,version,const DeepCollectionEquality().hash(_allowedUserVersions));
 
 @override
 String toString() {
-  return 'ServerDetails(isAppUnderMaintenance: $isAppUnderMaintenance, version: $version)';
+  return 'ServerDetails(isAppUnderMaintenance: $isAppUnderMaintenance, version: $version, allowedUserVersions: $allowedUserVersions)';
 }
 
 
@@ -243,7 +251,7 @@ abstract mixin class _$ServerDetailsCopyWith<$Res> implements $ServerDetailsCopy
   factory _$ServerDetailsCopyWith(_ServerDetails value, $Res Function(_ServerDetails) _then) = __$ServerDetailsCopyWithImpl;
 @override @useResult
 $Res call({
- bool isAppUnderMaintenance, String version
+ bool isAppUnderMaintenance, String version,@JsonKey(name: 'allowed_user_version') List<String> allowedUserVersions
 });
 
 
@@ -260,11 +268,12 @@ class __$ServerDetailsCopyWithImpl<$Res>
 
 /// Create a copy of ServerDetails
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isAppUnderMaintenance = null,Object? version = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isAppUnderMaintenance = null,Object? version = null,Object? allowedUserVersions = null,}) {
   return _then(_ServerDetails(
 isAppUnderMaintenance: null == isAppUnderMaintenance ? _self.isAppUnderMaintenance : isAppUnderMaintenance // ignore: cast_nullable_to_non_nullable
 as bool,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
-as String,
+as String,allowedUserVersions: null == allowedUserVersions ? _self._allowedUserVersions : allowedUserVersions // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

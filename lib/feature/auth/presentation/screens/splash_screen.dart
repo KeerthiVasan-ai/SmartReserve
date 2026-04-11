@@ -37,7 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     } else if (!serverDetails.isAppUnderMaintenance &&
-        (serverDetails.version != AppConstants.APP_VERSION)) {
+        (!serverDetails.allowedUserVersions.contains(
+          AppConstants.APP_VERSION,
+        ))) {
       Timer(
         const Duration(seconds: 1),
         () => Navigator.pushReplacement(
@@ -79,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
                 Text(
-                  "v1.4.0-Stable",
+                  "v${AppConstants.APP_VERSION}-Stable",
                   style: AppFonts.firaSans(
                     fontWeight: FontWeight.bold,
                     fontSize: 12.0,
