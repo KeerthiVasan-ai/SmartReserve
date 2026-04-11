@@ -1,0 +1,49 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer' as dev;
+import 'package:smart_reserve/core/services/gcp_logging_service.dart';
+
+class FetchSlotBooker {
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  /// Fetches the booking details for a specific slot on a given date.
+  /// Returns a map with 'name', 'tokenNumber', 'courseCode', 'uid', and
+  /// 'ticketId' if found, or null if no booking exists for that slot.
+  static Future<Map<String, String>?> fetchBooker(
+    String date,
+    String slot,
+  ) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('bookingDetails')
+          .doc(date)
+          .collection('booking')
+          .where('slots', arrayContains: slot)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        dev.log(
+          'No booker found for slot $slot on $date',
+          name: 'FetchSlotBooker',
+        );
+        GCPLog.warning('No booker found for slot $slot on $date');
+        return null;
+      }
+
+      final data = querySnapshot.docs.first.data();
+      final ticketId = querySnapshot.docs.first.id;
+
+      return {
+        'name': data['name']?.toString() ?? 'Unknown',
+        'tokenNumber': data['tokenNumber']?.toString() ?? 'Unknown',
+        'courseCode': data['courseCode']?.toString() ?? 'Unknown',
+        'uid': data['uid']?.toString() ?? '',
+        'ticketId': ticketId,
+      };
+    } catch (e) {
+      dev.log('Failed to fetch slot booker: $e', name: 'FetchSlotBooker');
+      GCPLog.error('Failed to fetch slot booker', error: e);
+      return null;
+    }
+  }
+}
