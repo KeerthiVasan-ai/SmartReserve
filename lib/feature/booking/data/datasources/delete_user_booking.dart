@@ -8,8 +8,9 @@ class DeleteUserBooking {
   static Future<void> deleteUserBookingSlots(
     String userId,
     String bookingId,
-    List<dynamic> slotsToRemove,
-  ) async {
+    List<dynamic> slotsToRemove, {
+    bool notifyAdmin = true,
+  }) async {
     try {
       DocumentReference bookingReference = FirebaseFirestore.instance
           .collection('bookingUserDetails')
@@ -40,20 +41,23 @@ class DeleteUserBooking {
         }
 
         // Notify admins
-        try {
-          final userName = await FetchName.fetchName() ?? 'A User';
-          final data = snapshot.data() as Map<String, dynamic>;
-          final hall = data['hall'] ?? 'Unknown Hall';
-          final date = data['date'] ?? 'Unknown Date';
+        if (notifyAdmin) {
+          try {
+            final userName = await FetchName.fetchName() ?? 'A User';
+            final data = snapshot.data() as Map<String, dynamic>;
+            final hall = data['hall'] ?? 'Unknown Hall';
+            final date = data['date'] ?? 'Unknown Date';
 
-          await AdminNotificationService.notifyAdminOnCancellation(
-            userName: userName,
-            hall: hall,
-            date: date,
-            slots: slotsToRemove,
-          );
-        } catch (e) {
-          dev.log('Failed to send admin notification: $e', name: 'DeleteUserBooking');
+            await AdminNotificationService.notifyAdminOnCancellation(
+              userName: userName,
+              hall: hall,
+              date: date,
+              slots: slotsToRemove,
+            );
+          } catch (e) {
+            dev.log('Failed to send admin notification: $e',
+                name: 'DeleteUserBooking');
+          }
         }
       }
     } catch (error) {
