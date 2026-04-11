@@ -15,6 +15,7 @@ import 'package:smart_reserve/feature/booking/data/datasources/insert_booking_de
 import 'package:smart_reserve/feature/booking/data/datasources/update_time_slots.dart';
 import 'package:smart_reserve/feature/booking/data/datasources/update_booking_slots.dart';
 import 'package:smart_reserve/feature/booking/data/datasources/delete_user_booking.dart';
+import 'package:smart_reserve/feature/notification/data/datasources/admin_notification_service.dart';
 
 import 'package:smart_reserve/feature/booking/data/datasources/fetch_hall_bookings.dart';
 import 'package:smart_reserve/feature/booking/domain/models/booking_model.dart';
@@ -362,6 +363,7 @@ class BookingNotifier extends _$BookingNotifier {
           uid,
           old.ticketId,
           old.slots,
+          notifyAdmin: false,
         );
         await DeleteUserBooking.deleteBookingSlots(
           old.date,
@@ -395,6 +397,21 @@ class BookingNotifier extends _$BookingNotifier {
           ticketId: updatedDetails.ticketId,
           bookingData: bookingData,
         );
+
+        // Notify admins of the update
+        try {
+          final userName = await FetchName.fetchName() ?? 'A User';
+          await AdminNotificationService.notifyAdminOnUpdate(
+            userName: userName,
+            hall: updatedDetails.hall,
+            oldDate: old.date,
+            oldSlot: old.slots.join(", "),
+            newDate: updatedDetails.date,
+            newSlot: updatedDetails.slots.join(", "),
+          );
+        } catch (e) {
+          // Silent notification failure
+        }
 
         if (updatedDetails.hall == '2216-Hall') {
           final newDate = DateFormat("dd-MM-yyyy").parse(updatedDetails.date);
